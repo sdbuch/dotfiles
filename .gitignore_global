@@ -1,0 +1,15 @@
+.DS_Store
+.DS_Store?
+.Trashes
+.Spotlight-V100
+._*
+*.o
+*.so
+*.tar
+*.zip
+*.rar
+*.gz
+*.log
+*.sql
+*.sqlite
+*.swp

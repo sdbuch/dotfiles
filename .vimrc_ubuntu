@@ -1,0 +1,82 @@
+" set leader character
+let mapleader = ","
+
+" set up alternate line breaking with gq to operate on lines in
+" range individually
+noremap <silent> <Leader>gq :set opfunc=BreakLines<CR>g@
+ounmap <Leader>gq
+" opfunc for breaking lines
+function! BreakLines(type)
+  execute "normal `["
+  let st_line= line('.')
+  execute "normal `]"
+  let end_line= line('.')
+  " operate in reverse so that every line in range is broken
+  for i in reverse(range(st_line, end_line))
+    execute "normal ". i ."Ggqq"
+  endfor
+  execute "normal `]"
+endfunction
+
+" Start matchit
+runtime macros/matchit.vim
+
+execute pathogen#infect()
+filetype plugin on
+filetype indent on
+Helptags
+
+
+" Delete newlines with backspace
+set backspace=indent,eol,start
+
+
+
+"show line numbers
+set nu
+
+
+" set path searching
+set path=.,**
+nnoremap <Leader>f :find *
+nnoremap <Leader>s :sfind *
+nnoremap <leader>v :vert sfind *
+nnoremap <Leader>t :tabfind *
+
+" set buffer manipulation
+set wildcharm=<C-z>
+nnoremap <Leader>b :buffer <C-z><S-Tab>
+nnoremap <Leader>B :sbuffer <C-z><S-Tab>
+nnoremap <Leader>q :bp\|bd #<CR>
+nnoremap <Leader>gb :bnext<CR>
+nnoremap <Leader>gB :bprevious<CR>
+
+"set window movements
+nnoremap <Leader>w <C-W>w
+nnoremap <Leader>W <C-W>W
+
+" set wildmenu
+set wildmode=list:full
+set wildignore=*.swp,*.bak
+set wildignore+=*.pyc,*.class,*.sln,*.Master,*.csproj,*.csproj.user,*.cache,*.dll,*.pdb,*.min.*
+set wildignore+=*/.git/**/*,*/.hg/**/*,*/.svn/**/*
+set wildignore+=tags
+set wildignore+=*.tar.*
+set wildignore+=*.synctex.gz,*.pdf,*.dvi,*.fls,*.fdb_latexmk,*.blg,*.toc,*.out
+
+
+" set tag manipulations
+nnoremap <Leader>j :tjump /
+
+" set line size; 'set tw' works too
+set textwidth=80
+
+" enable syntax highlighting by default
+syntax enable
+
+" custom tab width and stops
+set tabstop=2 softtabstop=0 expandtab shiftwidth=2 smarttab
+
+" turn on autoindent
+set autoindent
+

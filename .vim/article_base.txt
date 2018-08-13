@@ -1,0 +1,75 @@
+\documentclass[11pt]{article}
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsbsy,amsfonts,amssymb,amsthm,color,dsfont,mleftright}
+\usepackage{tikz-cd}
+\tikzcdset{arrow style=tikz, diagrams = {>=stealth}}
+\usepackage{thmtools}
+\usepackage[english]{babel}
+
+\usepackage{textcomp}
+\usepackage[theoremfont]{newpxtext}
+\usepackage{cabin}
+\usepackage[varqu,varl]{inconsolata}
+\usepackage[bigdelims,vvarbb]{newpxmath}
+\usepackage[scr=boondoxo]{mathalfa}
+\usepackage[linktoc=all]{hyperref}
+\linespread{1.05}
+\frenchspacing
+
+\usepackage{listings}
+\usepackage{comment}
+\usepackage{url}
+% \urlstyle{sf}
+\usepackage{nameref,cleveref}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{floatrow}
+\usepackage{graphicx}
+\usepackage{csquotes}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[
+backend=biber,
+style=alphabetic,
+sorting=ynt,
+doi=false,
+hyperref=true,
+isbn=false,
+url=false
+]{biblatex}
+\addbibresource{refs.bib}
+\renewbibmacro{in:}{}
+\AtEveryBibitem{%
+  \clearlist{language}%
+}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\hypersetup{
+colorlinks = true,
+urlcolor = blue,
+linkcolor = blue,
+citecolor = red
+}
+
+% My macros
+\input{mymacros.def}
+
+% Compilation without certain environments
+% Lets you hide proofs from a document, for example
+% \excludecomment{proof}
+% \excludecomment{remark}
+
+\title{}
+\author{Sam Buchanan}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+
+\end{abstract}
+
+\printbibliography
+
+\end{document}
