@@ -21,15 +21,16 @@ endfunction
 " Start matchit
 runtime macros/matchit.vim
 
-execute pathogen#infect()
 filetype plugin on
 filetype indent on
-Helptags
+silent! helptags ALL
 
 
 " Delete newlines with backspace
 set backspace=indent,eol,start
 
+" Colors
+colorscheme wombat256mod
 
 
 "show line numbers
