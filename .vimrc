@@ -11,7 +11,7 @@ packadd! matchit
 packloadall
 silent! helptags ALL
 
-" ALE integration
+" ALE integration with lightline
 " Taken from https://github.com/maximbaz/lightline-ale
 let g:lightline = {}
 
@@ -39,6 +39,10 @@ let g:lightline.active = { 'right': [
 let g:lightline#ale#indicator_warnings = "(!) "
 let g:lightline#ale#indicator_errors = "(✗) "
 let g:lightline#ale#indicator_ok = "(✓)"
+
+" ALE settings
+let g:ale_lint_on_text_changed = 'never' " don't auto-update
+let g:ale_lint_on_enter = 0 " update after writing file
 
 " set up alternate line breaking with gq to operate on lines in
 " range individually
