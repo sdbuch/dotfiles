@@ -1,0 +1,315 @@
+\RequirePackage{algpseudocode}
+\RequirePackage{amsmath,amsbsy,amsfonts,amssymb,amsthm,color,dsfont,mleftright}
+\RequirePackage{mathtools}
+%\RequirePackage{xparse}
+%\RequirePackage{textcase}
+%\RequirePackage{xspace}
+\RequirePackage{suffix}
+\begingroup
+    \makeatletter
+    \@for\theoremstyle:=definition,remark,plain\do{%
+        \expandafter\g@addto@macro\csname th@\theoremstyle\endcsname{%
+            \addtolength\thm@preskip\parskip
+            }%
+        }
+\endgroup
+\RequirePackage{thmtools}
+
+% MACROS
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+% shortcuts for vectors
+\def\ddefloop#1{\ifx\ddefloop#1\else\ddef{#1}\expandafter\ddefloop\fi}
+
+% \bfA, \bfB, ...
+\def\ddef#1{\expandafter\def\csname bf#1\endcsname{\ensuremath{\mathbf{#1}}}}
+\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\ddefloop
+
+% \bfalpha, \bfbeta, ...,  \bfGamma, \bfDelta, ...,
+\def\ddef#1{\expandafter\def\csname bf#1\endcsname{\ensuremath{\pmb{\csname #1\endcsname}}}}
+\ddefloop {alpha}{beta}{gamma}{delta}{epsilon}{varepsilon}{zeta}{eta}{theta}{vartheta}{iota}{kappa}{lambda}{mu}{nu}{xi}{pi}{varpi}{rho}{varrho}{sigma}{varsigma}{tau}{upsilon}{phi}{varphi}{chi}{psi}{omega}{Gamma}{Delta}{Theta}{Lambda}{Xi}{Pi}{Sigma}{varSigma}{Upsilon}{Phi}{Psi}{Omega}{ell}\ddefloop
+
+% \bbA, \bbB, ...
+\def\ddef#1{\expandafter\def\csname bb#1\endcsname{\ensuremath{\mathbb{#1}}}}
+\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZ\ddefloop
+
+% \cA, \cB, ...
+\def\ddef#1{\expandafter\def\csname c#1\endcsname{\ensuremath{\mathscr{#1}}}}
+\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZ\ddefloop
+
+% \sA, \sB, ...
+\def\ddef#1{\expandafter\def\csname s#1\endcsname{\ensuremath{\mathcal{#1}}}}
+\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZ\ddefloop
+
+% \fA, \fB, ...
+% \def\ddef#1{\expandafter\def\csname f#1\endcsname{\ensuremath{\mathfrak{#1}}}}
+%\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\ddefloop
+
+% \vA, \vB, ..., \va, \vb, ...
+\def\ddef#1{\expandafter\def\csname
+v#1\endcsname{\ensuremath{\boldsymbol{#1}}}}
+\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\ddefloop
+
+% \valpha, \vbeta, ...,  \vGamma, \vDelta, ...,
+\def\ddef#1{\expandafter\def\csname
+v#1\endcsname{\ensuremath{\boldsymbol{\csname #1\endcsname}}}}
+\ddefloop {alpha}{beta}{gamma}{delta}{epsilon}{varepsilon}{zeta}{eta}{theta}{vartheta}{iota}{kappa}{lambda}{mu}{nu}{xi}{pi}{varpi}{rho}{varrho}{sigma}{varsigma}{tau}{upsilon}{phi}{varphi}{chi}{psi}{omega}{Gamma}{Delta}{Theta}{Lambda}{Xi}{Pi}{Sigma}{varSigma}{Upsilon}{Phi}{Psi}{Omega}{ell}\ddefloop
+
+% Var symbol shortcuts
+\newcommand\Sig{\ensuremath{\varSigma}}
+\newcommand\vSig{\ensuremath{\vvarSigma}}
+\newcommand\veps{\ensuremath{\varepsilon}}
+\newcommand\vveps{\ensuremath{\vvarepsilon}}
+\newcommand\eps{\ensuremath{\epsilon}}
+\newcommand{\Diff}{\mathop{}\!\mathrm{D}}
+\newcommand{\diff}{\mathop{}\!\mathrm{d}}
+\newcommand{\Partial}[2]{{\frac{\partial #2}{\partial #1}}}
+\newcommand{\PPartial}[1]{{\tfrac{\partial}{\partial #1}}}
+%\newcommand{\ddiff}[2]{\mathop{\frac{\diff #1}{\diff #2}}}
+\newcommand{\half}{\tfrac{1}{2}} % conflicts with exam.cls
+\newcommand{\third}{\tfrac{1}{3}}
+\newcommand{\fourth}{\tfrac{1}{4}}
+\newcommand{\sixth}{\tfrac{1}{4}}
+\newcommand{\eighth}{\tfrac{1}{8}}
+
+% Accenting
+\newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
+\newcommand{\conj}[1]{\overbar{#1}}
+\renewcommand\t{{\ensuremath{\scriptscriptstyle{\top}}}}
+\newcommand\textlcsc[1]{\textsc{\MakeTextLowercase{#1}}}
+\newcommand{\maxcut}{\textlcsc{MAX-CUT}\xspace}
+\newcommand{\wh}{\widehat}
+\newcommand{\wt}{\widetilde}
+\newcommand{\ol}[1]{\overbar{#1}}
+\newcommand{\sdb}[1]{{\color{red} \textbf{SB: #1}}}
+\newcommand{\kron}{\otimes}
+\newcommand{\elwise}{\circleddot}
+\newcommand{\dsum}{\oplus}
+
+% general pairing commands
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+\DeclarePairedDelimiter\ip{\langle}{\rangle}%
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+% Swap the definition of \abs* and \norm*, so that \abs
+% and \norm resizes the size of the brackets, and the 
+% starred version does not.
+%\makeatletter
+%\let\oldabs\abs
+%\def\abs{\@ifstar{\oldabs}{\oldabs*}}
+%
+%\let\oldnorm\norm
+%\def\norm{\@ifstar{\oldnorm}{\oldnorm*}}
+%%
+%\let\oldip\ip
+%\def\ip{\@ifstar{\oldip}{\oldip*}}
+%\makeatother
+%
+%\let\oldceil\ceil
+%\def\ceil{\@ifstar{\oldceil}{\oldceil*}}
+%\makeatother
+%
+%\let\oldfloor\floor
+%\def\floor{\@ifstar{\oldfloor}{\oldfloor*}}
+%\makeatother
+%
+%\newcommand{\iu}{\hat{\mathfrak{i}}}
+\newcommand{\iu}{\mathfrak{i}}
+\newcommand\labelthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+% set commands
+% source: https://tex.stackexchange.com/questions/13634/define-pretty-sets-in-latex-esp-how-to-do-the-condition-separator
+% make a bunch of these for different (delimiter, separator)
+% combos (colon or bar, braces or bracket, etc.)
+% the command to produce the conditional bar is \given
+\providecommand\given{} % so it exists
+\newcommand\SetSymbolColon[1][]{
+   \nonscript\,#1: \allowbreak \nonscript\,\mathopen{}}
+\newcommand\SetSymbolBar[1][]{
+   \nonscript\,#1\vert \allowbreak \nonscript\,\mathopen{}}
+\DeclarePairedDelimiterX\SetBraceColon[1]{\lbrace}{\rbrace}%
+ { \renewcommand\given{\SetSymbolColon[\delimsize]} #1 }
+ \DeclarePairedDelimiterX\SetBracketColon[1]{[}{]}%
+ { \renewcommand\given{\SetSymbolColon[\delimsize]} #1 }
+\DeclarePairedDelimiterX\SetBraceBar[1]{\lbrace}{\rbrace}%
+ { \renewcommand\given{\SetSymbolBar[\delimsize]} #1 }
+ \DeclarePairedDelimiterX\SetBracketBar[1]{[}{]}%
+ { \renewcommand\given{\SetSymbolBar[\delimsize]} #1 }
+
+\DeclarePairedDelimiterX\SetBraceColonBig[1]{\biggl\lbrace}{\biggr\rbrace}%
+ { \renewcommand\given{\SetSymbolColon[\delimsize]} #1 }
+ \DeclarePairedDelimiterX\SetBracketColonBig[1]{\biggl[}{\biggr]}%
+ { \renewcommand\given{\SetSymbolColon[\delimsize]} #1 }
+\DeclarePairedDelimiterX\SetBraceBarBig[1]{\biggl\lbrace}{\biggr\rbrace}%
+ { \renewcommand\given{\SetSymbolBar[\delimsize]} #1 }
+ \DeclarePairedDelimiterX\SetBracketBarBig[1]{\biggl[}{\biggr]}%
+ { \renewcommand\given{\SetSymbolBar[\delimsize]} #1 }
+
+% for actual use
+\newcommand{\set}[1]{\SetBraceColon{#1}}
+\WithSuffix\newcommand\set*[1]{\SetBraceColonBig{#1}}
+% probability/expectation blocks
+\let\Pr\relax
+\newcommand{\Pr}[1]{\operatorname{\mathbb P} \SetBracketBar{#1}}
+\newcommand{\E}[1]{\operatorname{\mathbb E} \SetBracketBar{#1}}
+\WithSuffix\newcommand\Pr*[1]{\operatorname{\mathbb P}\SetBracketBarBig{#1}}
+\WithSuffix\newcommand\E*[1]{\operatorname{\mathbb E}\SetBracketBarBig{#1}}
+
+
+% misc operators
+\newcommand{\xor}{\oplus}
+\newcommand{\bigxor}{\bigoplus}
+\let\max\relax
+\newcommand{\max}{\operatorname{max}}
+\let\min\relax
+\newcommand{\min}{\operatorname{min}}
+\newcommand{\minimize}[1]{\underset{#1}{\operatorname{minimize}}}
+\newcommand{\maximize}[1]{\underset{#1}{\operatorname{maximize}}}
+\newcommand{\argmin}[1]{\underset{#1}{\operatorname{arg\,min}}}
+\newcommand{\argmax}[1]{\underset{#1}{\operatorname{arg\,max}}}
+\newcommand{\orth}{\operatorname{orth}}
+\newcommand{\ow}{\operatorname{otherwise}}
+\newcommand{\iid}{\operatorname{i.i.d.}}
+\newcommand{\st}{\operatorname{subject\,to}}
+\newcommand{\defn}{\overset{\text{def}}{=}}
+\newcommand{\normsubdiff}[1]{\partial\norm{\,\cdot\,}_{#1}}
+\newcommand{\iter}[2]{#1^{(#2)}}
+\newcommand{\prox}[1]{{\operatorname{prox}}_{#1}}
+\newcommand\restr[2]{{
+  \left.\kern-\nulldelimiterspace
+#1
+    \vphantom{\big|}
+  \right|_{#2}
+}}
+
+% Vector operators
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\Diag}{\operatorname{Diag}}
+\newcommand{\vect}{\operatorname{vec}}
+\newcommand{\Sym}{\operatorname{sym}} 
+\newcommand{\Symm}{\operatorname{sym}} 
+\newcommand{\Skew}{\operatorname{skew}} 
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\sign}{\operatorname{sign}}
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\vol}{\operatorname{vol}}
+%\newcommand*{\tp}{^{\mkern+2mu T}}
+\newcommand*{\tp}{^{\mathrm{T}}}
+\let\adj\relax
+\newcommand*{\adj}{^{\ast}}
+\newcommand*{\inv}{^{-1}}
+\newcommand*{\One}{\mathbf{1}}
+\newcommand*{\Zero}{\mathbf{0}}
+\newcommand*{\Id}{\operatorname{\mathrm{Id}}}
+
+% Sets
+\newcommand{\M}{\mathrm{M}}
+\newcommand{\GL}{\mathrm{GL}}
+\newcommand{\SL}{\mathrm{SL}}
+\newcommand{\T}{\mathbb{T}}
+\newcommand{\Sph}{\mathbb{S}}
+\newcommand{\St}{\mathrm{St}}
+\let\O\relax
+\newcommand{\O}{\mathrm{O}}
+\newcommand{\SO}{\mathrm{SO}}
+\newcommand{\U}{\mathrm{U}}
+\newcommand{\SU}{\mathrm{SU}}
+\newcommand{\SP}{\mathrm{SP}}
+
+% Calculus/geometry operators
+\newcommand{\Hess}[1]{\operatorname{Hess}#1}
+\newcommand{\Third}[1]{\operatorname{Third}#1}
+\newcommand{\grad}[1]{\operatorname{grad}#1}
+\newcommand{\Div}[1]{\operatorname{div}#1}
+\newcommand{\Curl}[1]{\operatorname{curl}#1}
+\newcommand{\imult}{\mathop{\lrcorner}}
+\newcommand{\downto}{\downarrow}
+\newcommand{\upto}{\uparrow}
+\newcommand{\VF}{\mathfrak{X}}
+
+% CS operators
+\newcommand{\polylog}{\operatorname{polylog}}
+\newcommand{\poly}{\operatorname{poly}}
+\providecommand{\kl}[2]{\operatorname{\mathsf{D}}\left(\begin{array}{c} #1 \\ \hline  \hline  #2\end{array} \right)} 
+\newcommand{\Disc}[3]{\operatorname{\mathsf{Disc}_{#1}^{#2}}\left( #3 \right)}
+\newcommand{\IC}[3]{\operatorname{\mathsf{IC}_{#1}^{#2}}\left( #3 \right)}
+\newcommand{\RCC}[3]{\operatorname{\mathsf{R}_{#1}^{#2}}\left( #3 \right)}
+\newcommand{\DCC}[3]{\operatorname{\mathsf{D}_{#1}^{#2}}\left( #3 \right)}
+\newcommand{\xc}{\operatorname{xc}}
+\newcommand{\bsos}{\operatorname{\overbar{sos}}}
+\newcommand{\sos}{\operatorname{sos}}
+
+% Stats operators
+% \newcommand{\E}{\operatorname{\mathbb{E}}}
+% \newcommand{\Pr}{\operatorname{\mathbb P}}
+\newcommand{\Ind}[1]{\operatorname{\mathds{1}}_{#1}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\stddev}{\operatorname{stddev}}
+\newcommand{\cov}{\operatorname{cov}}
+\newcommand{\leb}{\operatorname{\mu}}
+\newcommand{\Pound}{\operatorname{\#}}
+\newcommand{\Unif}[1]{\operatorname{Unif}(#1)}
+\newcommand{\Bern}[1]{\operatorname{Bern}(#1)}
+\newcommand{\Pois}[1]{\operatorname{Pois}(#1)}
+\newcommand{\Binom}[2]{\operatorname{Binom}(#1, #2)}
+\newcommand{\Exp}{\operatorname{Exp}}
+\newcommand\indep{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+% Topology / set operators
+\DeclareMathOperator{\bd}{bd}
+\DeclareMathOperator{\relbd}{relbd}
+\DeclareMathOperator{\cl}{cl}
+\DeclareMathOperator{\conv}{conv}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\epi}{epi}
+\DeclareMathOperator{\aff}{aff}
+\DeclareMathOperator{\cone}{cone}
+\DeclareMathOperator{\Int}{int}
+\DeclareMathOperator{\relint}{relint}
+\DeclareMathOperator{\ri}{ri}
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\Null}{null}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\row}{row}
+\DeclareMathOperator{\col}{col}
+\DeclareMathOperator{\range}{range}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\dist}{dist}
+\DeclareMathOperator{\nnz}{nnz}
+\DeclareMathOperator{\RE}{RE}
+\DeclareMathOperator{\err}{err}
+\newcommand{\proj}[1]{\operatorname{proj}_{#1}}
+\newcommand{\HdR}[2]{H_{\mathrm{dR}}^{#2}(#1)}
+
+\newcommand\memosb[1]{{\color{blue}\{\emph{SB}:} #1{\color{blue}\}}}
+% \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+
+\newtheorem{theorem}{Theorem}[section] % add numbering for theorems, everything else consistent with them
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{observation}[theorem]{Observation}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}{Exercise}[section] % number exercises separately
+
+% hyphenation
+\hyphenation{homeo-mor-phism}
+\hyphenation{homeo-mor-phic}
