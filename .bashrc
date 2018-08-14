@@ -121,6 +121,7 @@ fi
 # Path adds
 export PATH=$PATH:/home/sam/mosek/8/tools/platform/linux64x86/bin
 export PATH=$PATH:/home/sam/bin
+export PATH=$PATH:/usr/local/cuda/bin
 # Vim as default editor
 export EDITOR=vim
 
@@ -129,6 +130,13 @@ export TERM="xterm-256color"
 
 # more aliases
 alias tmuxa='tmux attach-session -t'
+
+# for CUDA
+export CUDA_HOME=/usr/local/cuda
+
+
+# CUDNN library path
+export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
 
 # added by Anaconda3 installer
 export PATH="/home/sam/anaconda3/bin:$PATH"
