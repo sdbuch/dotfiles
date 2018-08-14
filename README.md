@@ -23,6 +23,11 @@ Dependencies:
 - pip stuff
   - python linting: mypy, pylint, flake8 (all through pip)
 
+- software to install
+  - mosek, MATLAB
+  - conda
+  - cuda (https://developer.nvidia.com/cuda-downloads)
+
 - Notes
   - change .gitconfig if on linux
   - pick one of the .vimrc files if on linux (.vimrc_linux)

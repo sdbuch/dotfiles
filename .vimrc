@@ -8,6 +8,7 @@ let mapleader = ","
 " VIM 8: load packages
 " see h: add-package
 packadd! matchit
+" packadd! onedark.vim
 packloadall
 silent! helptags ALL
 
@@ -214,7 +215,7 @@ nnoremap <Leader>j :tjump /
 set textwidth=64
 
 " enable syntax highlighting by default
-syntax enable
+syntax on
 
 " custom tab width and stops
 set tabstop=2 softtabstop=0 expandtab shiftwidth=2 smarttab
