@@ -23,3 +23,6 @@
 *.out
 *.run.xml
 Icon*
+*.mat
+*.pyc
+__pycache__*

@@ -2,4 +2,4 @@
 	name = hwagyesa
 	email = hwagyesa@users.noreply.github.com
 [core]
-	excludesFile = /Users/sadboys/.gitignore_global
+	excludesfile = /home/sam/.gitignore_global
