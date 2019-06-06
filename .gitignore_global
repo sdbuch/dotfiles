@@ -26,3 +26,4 @@ Icon*
 *.mat
 *.pyc
 __pycache__*
+*.fig
