@@ -13,3 +13,6 @@
 *.sql
 *.sqlite
 *.swp
+*.mat
+*.pyc
+__pycache__*
