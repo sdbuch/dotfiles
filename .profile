@@ -6,9 +6,10 @@ alias rm='rm -i'
 alias mv='mv -i'
 alias ls='ls -G'
 alias la='ls -FaG'
-alias ll='ls -FflasG'
+alias ll='ls -FlasG'
 alias lt='ls -FlasGrt'
 alias mex='/Applications/MATLAB.app/bin/mex'
+alias rpi='arp -a -n | grep b8:27:eb:'
 #alias vim='vim --servername VIM'
 
 # Source global definitions
@@ -31,6 +32,8 @@ export PATH=${PATH}:~/projects/github/keychain
 #export PATH=${PATH}:/usr/local/lib/python2.7/site-packages/
 #export PYTHONPATH=/usr/local/lib/python2.7/site-packages/
 #export PYTHONPATH=$PYTHONPATH:~/projects/verilog/esn_v/util
+
+export PATHO=$PATH
 
 # For private exports
 if [ -r ~/.not_public ]
@@ -82,3 +85,32 @@ eval `keychain --eval --agents ssh --inherit any id_rsa id_rsa_b id_rsa_johnvisi
 # History file parameters
 HISTSIZ=1000
 HISTFILESIZE=2000
+# added by Anaconda3 2018.12 installer
+# >>> conda init >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$(CONDA_REPORT_ERRORS=false '/Users/sadboys/anaconda3/bin/conda' shell.bash hook 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    \eval "$__conda_setup"
+else
+    if [ -f "/Users/sadboys/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/sadboys/anaconda3/etc/profile.d/conda.sh"
+        CONDA_CHANGEPS1=false conda activate base
+    else
+        \export PATH="/Users/sadboys/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda init <<<
+
+# PATH management with anaconda, for brew
+brew () {
+  export PATH="$PATHO"
+  echo "Anaconda removed from path"
+  command brew "$@"
+  export PATH="/Users/sadboys/anaconda3/bin:$PATHO"
+  echo "Anaconda restored to path"
+}
+
+# Things for CaImAn (Spyder settings)
+export MKL_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1

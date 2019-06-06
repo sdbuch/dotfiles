@@ -41,6 +41,7 @@ let g:lightline#ale#indicator_ok = "(✓)"
 let g:ale_lint_on_text_changed = 'never' " don't auto-update
 let g:ale_lint_on_enter = 0 " update after writing file
 let g:ale_set_balloons = 1 " add hover information using mouse
+let g:ale_pattern_options = {'\.tex$': {'ale_enabled': 0}}
 
 " set up alternate line breaking with gq to operate on lines in
 " range individually
@@ -164,12 +165,6 @@ set backspace=indent,eol,start
 
 " jemdoc?
 filetype plugin on
-augroup filetypedetect
-	au! BufNewFile,BufRead *.jemdoc setf jemdoc
-augroup END
-
-" Last line is for proper wrapping of jemdoc lists, etc.
-autocmd Filetype jemdoc setlocal comments=:#,fb:-,fb:.,fb:--,fb:..,fb:\:
 
 "show line numbers
 set nu
@@ -209,7 +204,7 @@ set wildignorecase
 nnoremap <Leader>j :tjump /
 
 " set line size; 'set tw' works too
-set textwidth=64
+set textwidth=79
 
 " enable syntax highlighting by default
 syntax on
@@ -225,6 +220,7 @@ command! Makegcc :r ~/.vim/gcc_makefile.txt
 command! Maketex :r ~/.vim/tex_makefile.txt
 command! Memoir :r ~/.vim/memoir_base.txt
 command! Article :r ~/.vim/article_base.txt
+command! Chapter :r ~/.vim/chapter_base.txt
 command! Figure :r ~/.vim/figure_base.txt
 command! Beamer :r ~/.vim/beamer_base.txt
 command! Tikz :r ~/.vim/tikz_base.txt

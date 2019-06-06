@@ -1,11 +1,17 @@
-\documentclass[11pt]{article}
+\documentclass[10pt]{article}
 \usepackage[letterpaper,margin=1in]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amsbsy,amsfonts,amssymb,amsthm,color,dsfont,mleftright}
 \usepackage{tikz-cd}
 \tikzcdset{arrow style=tikz, diagrams = {>=stealth}}
 \usepackage{thmtools}
+\usepackage{mathtools}
+\usepackage{suffix}
 \usepackage[english]{babel}
+\usepackage{tikz}
+\usetikzlibrary{bayesnet}
+\usetikzlibrary{arrows}
+\usepackage{scalerel,stackengine} % For wide check
 
 \usepackage{textcomp}
 \usepackage[theoremfont]{newpxtext}
@@ -13,6 +19,7 @@
 \usepackage[varqu,varl]{inconsolata}
 \usepackage[bigdelims,vvarbb]{newpxmath}
 \usepackage[scr=boondoxo]{mathalfa}
+\usepackage{bm}
 \usepackage[linktoc=all]{hyperref}
 \linespread{1.05}
 \frenchspacing
@@ -35,7 +42,8 @@ sorting=ynt,
 doi=false,
 hyperref=true,
 isbn=false,
-url=false
+url=false,
+maxbibnames=99
 ]{biblatex}
 \addbibresource{refs.bib}
 \renewbibmacro{in:}{}
@@ -51,13 +59,40 @@ linkcolor = blue,
 citecolor = red
 }
 
-% My macros
-\input{mymacros.def}
+%subsubsubsection
+%\setcounter{tocdepth}{4}
+%\setcounter{secnumdepth}{4}
+
+% Macros
+\input{sam_preamble.def}
+\input{sam_macros.def}
+
+% Theorems settings
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{observation}[theorem]{Observation}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+\newtheorem{exercise}{Exercise} % number exercises separately
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{notation}{Notation}
 
 % Compilation without certain environments
 % Lets you hide proofs from a document, for example
 % \excludecomment{proof}
 % \excludecomment{remark}
+
+
 
 \title{}
 \author{Sam Buchanan}
