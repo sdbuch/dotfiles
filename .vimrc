@@ -1,10 +1,6 @@
 " set leader character
 let mapleader = ","
 
-" run pathogen plugin manager
-" execute pathogen#infect()
-" Helptags
-
 " VIM 8: load packages
 " see h: add-package
 packadd! matchit
@@ -44,6 +40,7 @@ let g:lightline#ale#indicator_ok = "(✓)"
 " ALE settings
 let g:ale_lint_on_text_changed = 'never' " don't auto-update
 let g:ale_lint_on_enter = 0 " update after writing file
+let g:ale_set_balloons = 1 " add hover information using mouse
 
 " set up alternate line breaking with gq to operate on lines in
 " range individually
@@ -237,7 +234,7 @@ command! Listings :r ~/.vim/listings_base.txt
 " path (~/my_file for home, or /home/user/my_file otherwise) as
 " argument
 " Also need this set up in .ssh/config
-command! -nargs=1 Ejv :e scp://sam@john-vision/<args>
+"command! -nargs=1 Ejv :e scp://sam@john-vision/<args>
 
 " add a shortcut to ;t for toggling tagbar
 " nmap <localleader>t  :TagbarToggle<CR> 
@@ -254,3 +251,73 @@ command! -nargs=1 Ejv :e scp://sam@john-vision/<args>
 " add a shortcut with pyclewn to step to next line
 nmap <F8> :exe "Cstep"<CR>
 
+" add a custom command for editing remote files
+"command! -nargs=1 Ejv :exec "call EditRemoteJV(\""fnameescape(expand("<args>"))"\")"
+command! -nargs=1 Ejv :call EditRemoteJV(fnameescape("<args>"))
+command! Wjv :call WriteRemoteJV()
+
+function! EditRemoteJV(path)
+  " Potential problems with this function:
+  " 1. issues with symlinks. Current workaround: ignore them
+  " 2. Since we are using rsync, you can specify a directory
+  "    accidentally and the whole thing will get downloaded. Not
+  "    sure how to work around this right now...
+
+  " Check input
+  if empty(a:path)
+    echoerr "Need to provide argument: filepath on john-vision machine to open"
+    return
+  endif
+  
+  " Set up variables
+  let l:path = a:path
+  let l:filename = fnamemodify(path, ":t")
+  let l:local_tmp_dir="~/tmp/jv_remote_vim_files"
+  let l:edit_local_jv_path = local_tmp_dir . "/" . filename
+  let l:edit_remote_jv_path = l:path
+  " Rsync the remote file
+  " NOTE: dealing with symlinks causes a lot of trouble. So we
+  " just ignore unsafe symlinks (those that don't have a
+  " corresponding thing to point to locally), and give an error
+  " if nothing is copied
+  let l:cmd_str = "!rsync -ar --safe-links sam@john-vision:" . l:edit_remote_jv_path 
+        \ . " " . l:edit_local_jv_path
+  exec "new | 0read " . l:cmd_str
+  exec "bdelete!"
+  if empty(glob(l:edit_local_jv_path))
+    " Give an error for symlink
+    echoerr "Could not find file on remote server, or it was a symlink."
+    return
+  endif
+  " Start editing the synced file
+  exec "edit " . l:edit_local_jv_path
+
+  " Assume success: put paths in buffer variables
+  " nb: these go with the newly-created buffer.
+  let b:edit_local_jv_path = l:edit_local_jv_path
+  let b:edit_remote_jv_path = l:edit_remote_jv_path
+endfunction
+
+function! WriteRemoteJV()
+  " Check that a valid EditRemoteJV occurred before this call
+  if !exists("b:edit_remote_jv_path") || empty(b:edit_remote_jv_path)
+    echoerr "There is no remote read present in this buffer (nothing to write)."
+    return
+  endif
+  " Write the current file to disk (supercede :w functionality)
+  exec 'write'
+
+  " Bring path variables into locals
+  let l:remote_path = b:edit_remote_jv_path
+  let l:local_path = b:edit_local_jv_path
+
+  " Build the rsync command
+  let l:cmd_str = "!rsync -ar " . l:local_path . " sam@john-vision:"
+        \ . l:remote_path
+  echo l:cmd_str
+
+  " Run the command to copy the file to the remote server
+  "exec l:cmd_str
+  exec 'new | 0read ' . l:cmd_str
+  exec 'bdelete!'
+endfunction
