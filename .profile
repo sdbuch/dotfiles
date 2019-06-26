@@ -51,7 +51,7 @@ fi
 
 #colors
 export CLICOLOR=1
-export LSCOLORS='GxFxCxDxBxegedabagaced'
+#export LSCOLORS='GxFxCxDxBxegedabagaced'
 #export LSCOLORS='BxBxhxDxfxhxhxhxhxcxcx'
 
 
@@ -83,8 +83,8 @@ fi
 eval `keychain --eval --agents ssh --inherit any id_rsa id_rsa_b id_rsa_johnvision`
 
 # History file parameters
-HISTSIZ=1000
-HISTFILESIZE=2000
+HISTSIZ=10000
+HISTFILESIZE=200000
 # added by Anaconda3 2018.12 installer
 # >>> conda init >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -114,3 +114,6 @@ brew () {
 # Things for CaImAn (Spyder settings)
 export MKL_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
+
+test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+

@@ -29,6 +29,7 @@
 \usepackage{url}
 % \urlstyle{sf}
 \usepackage{nameref,cleveref}
+\crefrangeformat{equation}{(#3#1#4) to~(#5#2#6)} % get rid of eqs.
 \usepackage{multirow}
 \usepackage{enumitem}
 \usepackage{floatrow}

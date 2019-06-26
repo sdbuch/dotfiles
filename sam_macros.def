@@ -284,6 +284,19 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand\indep{\protect\mathpalette{\protect\independenT}{\perp}}
 \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
 
+% Trig stuff
+\newcommand{\sech}{\operatorname{sech}}
+\newcommand{\csch}{\operatorname{csch}}
+\newcommand{\arcsec}{\operatorname{arcsec}}
+\newcommand{\arccot}{\operatorname{arcCot}}
+\newcommand{\arccsc}{\operatorname{arcCsc}}
+\newcommand{\arccosh}{\operatorname{arcCosh}}
+\newcommand{\arcsinh}{\operatorname{arcsinh}}
+\newcommand{\arctanh}{\operatorname{arctanh}}
+\newcommand{\arcsech}{\operatorname{arcsech}}
+\newcommand{\arccsch}{\operatorname{arcCsch}}
+\newcommand{\arccoth}{\operatorname{arcCoth}}
+
 % Topology / set operators
 \let\bd\relax
 \newcommand{\bd}{\operatorname{bd}}
