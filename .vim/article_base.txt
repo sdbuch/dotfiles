@@ -6,7 +6,6 @@
 \tikzcdset{arrow style=tikz, diagrams = {>=stealth}}
 \usepackage{thmtools}
 \usepackage{mathtools}
-\usepackage{suffix}
 \usepackage[english]{babel}
 \usepackage{tikz}
 \usetikzlibrary{bayesnet}
