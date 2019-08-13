@@ -59,6 +59,7 @@ urlcolor = blue,
 linkcolor = blue,
 citecolor = red
 }
+\hypersetup{pdfstartview=FitW}
 
 %subsubsubsection
 %\setcounter{tocdepth}{4}

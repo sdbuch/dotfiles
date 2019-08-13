@@ -128,6 +128,9 @@ let g:vimtex_indent_ignored_envs = [
 let g:vimtex_indent_ignored_envs = ['document']
 " comment the above for compiling documents without proofs
 
+" Set up tex spellchecking options
+let g:tex_comment_nospell = 1
+
 "set up forward and backward search with skim in vimtex
 " -g switch makes the viewer open in the background
 "let g:vimtex_view_general_viewer
@@ -147,13 +150,13 @@ let g:vimtex_indent_ignored_envs = ['document']
 "  endif
 "  if has('nvim')
 "    call jobstart(l:cmd + [line('.'), l:out, l:tex])
-"    echom "nvim"
+"    echom 'nvim'
 "  elseif has('job')
 "    call job_start(l:cmd + [line('.'), l:out, l:tex])
-"    echom "job"
+"    echom 'job'
 "  else
 "    call system(join(l:cmd + [line('.'), shellescape(l:out), shellescape(l:tex)], ' '))
-"    echom "system"
+"    echom 'system'
 "  endif
 "endfunction
 
@@ -214,6 +217,31 @@ set tabstop=2 softtabstop=0 expandtab shiftwidth=2 smarttab
 
 " turn on autoindent
 set autoindent
+
+" change hl settings
+set nohlsearch
+hi Search ctermbg=DarkRed
+hi Search ctermfg=Black
+
+" Change case sensitive searching
+" Note that this also affects substitutions.
+set ignorecase " search case-insensitive by default
+set smartcase  " automatically put a \C if capitalization
+
+" Change hl settings for spell
+hi clear SpellBad
+hi SpellBad ctermbg=None
+hi SpellBad ctermfg=196
+hi SpellBad cterm=underline
+hi SpellCap ctermbg=None
+hi SpellCap ctermfg=12
+hi SpellCap cterm=underline
+hi SpellRare ctermbg=None
+hi SpellRare ctermfg=13
+hi SpellRare cterm=underline
+hi SpellLocal ctermbg=None
+hi SpellLocal ctermfg=14
+hi SpellLocal cterm=underline
 
 "Add some shortcut commands
 command! Makegcc :r ~/.vim/gcc_makefile.txt

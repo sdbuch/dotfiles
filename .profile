@@ -1,6 +1,6 @@
 # .bashrc
 
-# User specific aliases and functions
+# User specific aliases 
 alias cp='cp -i'
 alias rm='rm -i'
 alias mv='mv -i'
@@ -10,7 +10,14 @@ alias ll='ls -FlasG'
 alias lt='ls -FlasGrt'
 alias mex='/Applications/MATLAB.app/bin/mex'
 alias rpi='arp -a -n | grep b8:27:eb:'
+
 #alias vim='vim --servername VIM'
+
+# User functions
+function cdl() { 
+  cd "$@"
+  ll
+}
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then

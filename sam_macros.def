@@ -130,49 +130,33 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand\labelthis{\addtocounter{equation}{1}\tag{\theequation}}
 
 % set commands
-% source: https://tex.stackexchange.com/questions/13634/define-pretty-sets-in-latex-esp-how-to-do-the-condition-separator
-% make a bunch of these for different (delimiter, separator)
-% combos (colon or bar, braces or bracket, etc.)
-% the command to produce the conditional bar is \given
+% source: mathtools documentation
 \providecommand\given{} % so it exists
-\newcommand\SetSymbolColon[1][]{
-   \nonscript\,#1: \allowbreak \nonscript\,\mathopen{}}
-\newcommand\SetSymbolBar[1][]{
-   \nonscript\,#1\vert \allowbreak \nonscript\,\mathopen{}}
-\newcommand\SetSymbolBarBig[1][]{
-   \nonscript\,#1\bigg{\vert} \allowbreak \nonscript\,\mathopen{}}
-\DeclarePairedDelimiterX\SetBraceColon[1]{\lbrace}{\rbrace}%
- { \renewcommand\given{\SetSymbolColon[\delimsize]} #1 }
- \DeclarePairedDelimiterX\SetBracketColon[1]{[}{]}%
- { \renewcommand\given{\SetSymbolColon[\delimsize]} #1 }
-\DeclarePairedDelimiterX\SetBraceBar[1]{\lbrace}{\rbrace}%
- { \renewcommand\given{\SetSymbolBar[\delimsize]} #1 }
- \DeclarePairedDelimiterX\SetBracketBar[1]{[}{]}%
- { \renewcommand\given{\SetSymbolBar[\delimsize]} #1 }
-
-\DeclarePairedDelimiterX\SetBraceColonBig[1]{\biggl\lbrace}{\biggr\rbrace}%
- { \renewcommand\given{\SetSymbolColon[\delimsize]} #1 }
- \DeclarePairedDelimiterX\SetBracketColonBig[1]{\biggl[}{\biggr]}%
- { \renewcommand\given{\SetSymbolColonBig[\delimsize]} #1 }
-\DeclarePairedDelimiterX\SetBraceBarBig[1]{\biggl\lbrace}{\biggr\rbrace}%
- { \renewcommand\given{\SetSymbolBarBig[\delimsize]} #1 }
- \DeclarePairedDelimiterX\SetBracketBarBig[1]{\biggl[}{\biggr]}%
- { \renewcommand\given{\SetSymbolBarBig[\delimsize]} #1 }
-
-% for actual use
-\newcommand{\set}[1]{\SetBraceColon{#1}}
-\newcommand{\setbar}[1]{\SetBraceBar{#1}}
-\WithSuffix\newcommand\set*[1]{\SetBraceColonBig{#1}}
-% probability/expectation blocks
+% Delimiter command
+\newcommand\SetBar[1][]{%
+  \nonscript\:#1\vert
+  \allowbreak
+  \nonscript\:
+  \mathopen{}
+}
+% Set type commands
+\DeclarePairedDelimiterX\set[1]\{\}{%
+  \renewcommand\given{\SetBar[\delimsize]}
+  #1
+}
 \let\Pr\relax
-\newcommand{\Pr}[1]{{\mathbb P} \SetBracketBar{#1}}
-\newcommand{\E}[1]{{\mathbb E} \SetBracketBar{#1}}
-\newcommand{\Esub}[2]{{\underset{#2}{\mathbb E}} \SetBracketBar{#1}}
-\WithSuffix\newcommand\Pr*[1]{{\mathbb P}\SetBracketBarBig{#1}}
-\WithSuffix\newcommand\E*[1]{{\mathbb E}\SetBracketBarBig{#1}}
-\WithSuffix\newcommand\Esub*[2]{{\underset{#2}{\mathbb E}}
-\SetBracketBarBig{#1}}
-
+\DeclarePairedDelimiterXPP\Pr[1]{\mathbb{P}}[]{}{%
+  \renewcommand\given{\SetBar[\delimsize]}
+  #1
+}
+\DeclarePairedDelimiterXPP\E[1]{\mathbb{E}}[]{}{%
+  \renewcommand\given{\SetBar[\delimsize]}
+  #1
+}
+\DeclarePairedDelimiterXPP\Esub[2]{\underset{#1}{\mathbb{E}}}[]{}{%
+  \renewcommand\given{\SetBar[\delimsize]}
+  #2
+}
 
 % misc operators
 \newcommand{\equid}{\overset{\mathrm{d}}{\equiv}}
@@ -216,6 +200,7 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand{\Symm}{\operatorname{sym}} 
 \newcommand{\Skew}{\operatorname{skew}} 
 \newcommand{\rank}{\operatorname{rank}}
+\newcommand{\krank}{\operatorname{krank}}
 \newcommand{\sign}{\operatorname{sign}}
 \newcommand{\sgn}{\operatorname{sgn}}
 \newcommand{\supp}{\operatorname{supp}}
@@ -228,6 +213,19 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand*{\One}{\mathbf{1}}
 \newcommand*{\Zero}{\mathbf{0}}
 \newcommand*{\Id}{\operatorname{\mathrm{Id}}}
+
+% Trig stuff
+\newcommand{\sech}{\operatorname{sech}}
+\newcommand{\csch}{\operatorname{csch}}
+\newcommand{\arcsec}{\operatorname{arcsec}}
+\newcommand{\arccot}{\operatorname{arcCot}}
+\newcommand{\arccsc}{\operatorname{arcCsc}}
+\newcommand{\arccosh}{\operatorname{arcCosh}}
+\newcommand{\arcsinh}{\operatorname{arcsinh}}
+\newcommand{\arctanh}{\operatorname{arctanh}}
+\newcommand{\arcsech}{\operatorname{arcsech}}
+\newcommand{\arccsch}{\operatorname{arcCsch}}
+\newcommand{\arccoth}{\operatorname{arcCoth}}
 
 % Sets
 \newcommand{\M}{\mathrm{M}}
@@ -251,8 +249,10 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand{\Div}{\operatorname{div}}
 \newcommand{\curl}{\operatorname{curl}}
 \newcommand{\imult}{\mathop{\lrcorner}}
-\newcommand{\downto}{\downarrow}
-\newcommand{\upto}{\uparrow}
+%\newcommand{\downto}{\downarrow}
+%\newcommand{\upto}{\uparrow}
+\newcommand{\downto}{\searrow}
+\newcommand{\upto}{\nearrow}
 \newcommand{\VF}{\mathfrak{X}}
 
 % CS operators
@@ -283,19 +283,6 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand{\Exp}{\operatorname{Exp}}
 \newcommand\indep{\protect\mathpalette{\protect\independenT}{\perp}}
 \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
-
-% Trig stuff
-\newcommand{\sech}{\operatorname{sech}}
-\newcommand{\csch}{\operatorname{csch}}
-\newcommand{\arcsec}{\operatorname{arcsec}}
-\newcommand{\arccot}{\operatorname{arcCot}}
-\newcommand{\arccsc}{\operatorname{arcCsc}}
-\newcommand{\arccosh}{\operatorname{arcCosh}}
-\newcommand{\arcsinh}{\operatorname{arcsinh}}
-\newcommand{\arctanh}{\operatorname{arctanh}}
-\newcommand{\arcsech}{\operatorname{arcsech}}
-\newcommand{\arccsch}{\operatorname{arcCsch}}
-\newcommand{\arccoth}{\operatorname{arcCoth}}
 
 % Topology / set operators
 \let\bd\relax
