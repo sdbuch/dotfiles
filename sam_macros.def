@@ -94,37 +94,30 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 
 
 % general pairing commands
-\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
-\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
-\DeclarePairedDelimiter\nnorm{\vert\kern-0.25ex\vert\kern-0.25ex\vert}{\vert\kern-0.25ex\vert\kern-0.25ex\vert}%
-\DeclarePairedDelimiter\ip{\langle}{\rangle}%
-\DeclarePairedDelimiter\iip{\llangle}{\rrangle}%
+\DeclarePairedDelimiterX\abs[1]\lvert\rvert{
+  \ifblank{#1}{\:\cdot\:}{#1}
+}
+\DeclarePairedDelimiterX\norm[1]\lVert\rVert{
+  \ifblank{#1}{\:\cdot\:}{#1}
+}
+\DeclarePairedDelimiterX\nnorm[1]{\vert\kern-0.25ex\vert\kern-0.25ex\vert}{\vert\kern-0.25ex\vert\kern-0.25ex\vert}{
+  \ifblank{#1}{\:\cdot\:}{#1}
+}
+\DeclarePairedDelimiterX\ip[2]{\langle}{\rangle}{
+  \ifblank{#1}{\:\cdot\:}{#1}, \ifblank{#2}{\:\cdot\:}{#2}
+}
+\DeclarePairedDelimiterX\iip[2]{\llangle}{\rrangle}{
+  \ifblank{#1}{\:\cdot\:}{#1}, \ifblank{#2}{\:\cdot\:}{#2}
+}
 \let\ceil\relax
-\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiterX\ceil[1]{\lceil}{\rceil}{
+  \ifblank{#1}{\:\cdot\:}{#1}
+}
 \let\floor\relax
-\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
-% Swap the definition of \abs* and \norm*, so that \abs
-% and \norm resizes the size of the brackets, and the 
-% starred version does not.
-%\makeatletter
-%\let\oldabs\abs
-%\def\abs{\@ifstar{\oldabs}{\oldabs*}}
-%
-%\let\oldnorm\norm
-%\def\norm{\@ifstar{\oldnorm}{\oldnorm*}}
-%%
-%\let\oldip\ip
-%\def\ip{\@ifstar{\oldip}{\oldip*}}
-%\makeatother
-%
-%\let\oldceil\ceil
-%\def\ceil{\@ifstar{\oldceil}{\oldceil*}}
-%\makeatother
-%
-%\let\oldfloor\floor
-%\def\floor{\@ifstar{\oldfloor}{\oldfloor*}}
-%\makeatother
-%
+\DeclarePairedDelimiterX\floor[1]{\lfloor}{\rfloor}{
+  \ifblank{#1}{\:\cdot\:}{#1}
+}
+
 %\newcommand{\iu}{\hat{\mathfrak{i}}}
 \newcommand{\iu}{\mathfrak{i}}
 \newcommand\labelthis{\addtocounter{equation}{1}\tag{\theequation}}
@@ -178,7 +171,7 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand{\simiid}{\sim_{\iid}}
 \newcommand{\st}{\operatorname{subject\,to}}
 \newcommand{\defn}{\overset{\text{def}}{=}}
-\newcommand{\normsubdiff}[1]{\partial\norm{\,\cdot\,}_{#1}}
+\newcommand{\normsubdiff}[1]{\partial\norm{}_{#1}}
 \newcommand{\iter}[2]{#1^{(#2)}}
 \newcommand{\prox}[1]{{\operatorname{prox}}_{#1}}
 \newcommand\restr[2]{{
