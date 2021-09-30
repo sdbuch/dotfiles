@@ -1,0 +1,16 @@
+\begin{figure}[!htb]
+  \centering
+  %\fbox{\includegraphics[width=2.75in, trim={0.7in 2.35in 0.85in,2.7in}, clip]{}}
+  \begin{subfigure}[t]{0.45\textwidth}
+    \includegraphics[width=\textwidth]{}
+    \caption{}
+    \label{}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.45\textwidth}
+    \includegraphics[width=\textwidth]{}
+    \caption{}
+    \label{}
+  \end{subfigure}
+  \caption{}
+  \label{}
+\end{figure}
