@@ -7,6 +7,9 @@
         }
 \endgroup
 
+\definecolor{forestgreen(traditional)}{rgb}{0.0, 0.27, 0.13}
+\definecolor{forestgreen(web)}{rgb}{0.13, 0.55, 0.13}
+
 % MACROS
 \makeatletter
 \def\BState{\State\hskip-\ALG@thistlm}
@@ -57,12 +60,14 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand\vSig{\ensuremath{\vvarSigma}}
 \newcommand\veps{\ensuremath{\varepsilon}}
 \newcommand\vveps{\ensuremath{\vvarepsilon}}
+\newcommand\Beta{\mathrm{B}}
 \let\eps\relax
 \newcommand\eps{\ensuremath{\epsilon}}
 \newcommand{\Diff}{\mathop{}\!\mathrm{D}}
 \newcommand{\diff}{\mathop{}\!\mathrm{d}}
-\newcommand{\Partial}[2]{{\frac{\partial #2}{\partial #1}}}
-\newcommand{\dPartial}[2]{{\dfrac{\partial #2}{\partial #1}}}
+\newcommand{\Partial}[2]{{\frac{\partial #1}{\partial #2}}}
+\newcommand{\PartialN}[3]{{\frac{\partial^{#3} #1}{\partial {#2}^{#3}}}}
+\newcommand{\dPartial}[2]{{\dfrac{\partial #1}{\partial #2}}}
 \newcommand{\PPartial}[1]{{\tfrac{\partial}{\partial #1}}}
 \newcommand{\dac}{\restr{\frac{\partial}{\partial t}}{t=0}}
 %\newcommand{\ddiff}[2]{\mathop{\frac{\diff #1}{\diff #2}}}
@@ -92,6 +97,10 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand{\dsum}{\oplus}
 \newcommand{\spcdot}{\,\cdot\,}
 
+\newcommand{\iu}{{\mathfrak{i}}}
+%\newcommand{\iu}{{{\i}}}
+\newcommand\labelthis{\addtocounter{equation}{1}\tag{\theequation}}
+
 
 % general pairing commands
 \DeclarePairedDelimiterX\abs[1]\lvert\rvert{
@@ -118,9 +127,6 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
   \ifblank{#1}{\:\cdot\:}{#1}
 }
 
-%\newcommand{\iu}{\hat{\mathfrak{i}}}
-\newcommand{\iu}{\mathfrak{i}}
-\newcommand\labelthis{\addtocounter{equation}{1}\tag{\theequation}}
 
 % set commands
 % source: mathtools documentation
@@ -142,17 +148,35 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
   \renewcommand\given{\SetBar[\delimsize]}
   #1
 }
+\DeclarePairedDelimiterXPP\Prsub[2]{\mathop{\mathbb{P}}_{#1}}[]{}{%
+  \renewcommand\given{\SetBar[\delimsize]}
+  #2
+}
 \DeclarePairedDelimiterXPP\E[1]{\mathbb{E}}[]{}{%
   \renewcommand\given{\SetBar[\delimsize]}
   #1
 }
-\DeclarePairedDelimiterXPP\Esub[2]{\underset{#1}{\mathbb{E}}}[]{}{%
+%\DeclarePairedDelimiterXPP\Esub[2]{\underset{#1}{\mathbb{E}}}[]{}{%
+%  \renewcommand\given{\SetBar[\delimsize]}
+%  #2
+%}
+\DeclarePairedDelimiterXPP\Esub[2]{\mathop{\mathbb{E}}_{#1}}[]{}{%
   \renewcommand\given{\SetBar[\delimsize]}
   #2
 }
+\DeclarePairedDelimiterXPP\Var[1]{\mathrm{Var}}[]{}{%
+  \renewcommand\given{\SetBar[\delimsize]}
+  #1
+}
+\let\cov\relax
+\DeclarePairedDelimiterXPP\cov[1]{\mathrm{cov}}[]{}{%
+  \renewcommand\given{\SetBar[\delimsize]}
+  #1
+}
 
 % misc operators
-\newcommand{\equid}{\overset{\mathrm{d}}{\equiv}}
+%\newcommand{\equid}{\overset{\mathrm{d}}{\equiv}}
+\newcommand{\equid}{\overset{d}{=}}
 \newcommand{\xor}{\oplus}
 \newcommand{\bigxor}{\bigoplus}
 %\let\max\relax
@@ -166,12 +190,22 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand{\argmin}{\mathop{\mathrm{arg\,min}}}
 \newcommand{\argmax}{\mathop{\mathrm{arg\,max}}}
 \newcommand{\orth}{\operatorname{orth}}
-\newcommand{\ow}{\operatorname{otherwise}}
-\newcommand{\iid}{\operatorname{i.i.d.}}
+\newcommand{\ow}{\mathrm{otherwise}}
+\newcommand{\iid}{\mathrm{i.i.d.}}
+\newcommand{\as}{\mathrm{a.s.}}
+\newcommand{\whp}{\mathrm{w.h.p.}}
 \newcommand{\simiid}{\sim_{\iid}}
+\newcommand{\ltsim}{\lesssim}
+\newcommand{\gtsim}{\gtrsim}
+\newcommand{\ltsimwhp}{\underset{\whp}{\lesssim}}
+\newcommand{\gtsimwhp}{\underset{\whp}{\gtrsim}}
+\newcommand{\psdgeq}{\succcurlyeq}
+\newcommand{\psdleq}{\preccurlyeq}
 \newcommand{\st}{\operatorname{subject\,to}}
 \newcommand{\defn}{\overset{\text{def}}{=}}
 \newcommand{\normsubdiff}[1]{\partial\norm{}_{#1}}
+\newcommand{\normalize}[1]{\frac{#1}{\norm*{#1}_2}}
+\newcommand{\normalizeabs}[1]{\frac{#1}{\abs*{#1}}}
 \newcommand{\iter}[2]{#1^{(#2)}}
 \newcommand{\prox}[1]{{\operatorname{prox}}_{#1}}
 \newcommand\restr[2]{{
@@ -181,6 +215,11 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
   \right|_{#2}
 }}
 \newcommand\IF{\text{ if }}
+\newcommand\Res{\operatorname{Res}}
+\newcommand{\Lip}{\mathrm{Lip}}
+\DeclarePairedDelimiterXPP\relu[1]{}[]{_+}{
+  \ifblank{#1}{\:\cdot\:}{#1}
+}
 
 % Vector operators
 \newcommand{\tr}{\operatorname{tr}}
@@ -197,7 +236,9 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand{\sign}{\operatorname{sign}}
 \newcommand{\sgn}{\operatorname{sgn}}
 \newcommand{\supp}{\operatorname{supp}}
+\newcommand{\esssup}{\mathop{\operatorname{ess\,sup}}}
 \newcommand{\vol}{\operatorname{vol}}
+\newcommand{\Vol}{\operatorname{Vol}}
 %\newcommand*{\tp}{^{\mkern+2mu T}}
 \newcommand*{\tp}{^{\mathrm{T}}}
 \let\adj\relax
@@ -206,19 +247,14 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand*{\One}{\mathbf{1}}
 \newcommand*{\Zero}{\mathbf{0}}
 \newcommand*{\Id}{\operatorname{\mathrm{Id}}}
+\newcommand*{\cconv}{\mathbin{\circledast}}
 
 % Trig stuff
+\newcommand{\acos}{\operatorname{\cos\inv}}
+\newcommand{\asin}{\operatorname{\sin\inv}}
+\newcommand{\atan}{\operatorname{\tan\inv}}
 \newcommand{\sech}{\operatorname{sech}}
 \newcommand{\csch}{\operatorname{csch}}
-\newcommand{\arcsec}{\operatorname{arcsec}}
-\newcommand{\arccot}{\operatorname{arcCot}}
-\newcommand{\arccsc}{\operatorname{arcCsc}}
-\newcommand{\arccosh}{\operatorname{arcCosh}}
-\newcommand{\arcsinh}{\operatorname{arcsinh}}
-\newcommand{\arctanh}{\operatorname{arctanh}}
-\newcommand{\arcsech}{\operatorname{arcsech}}
-\newcommand{\arccsch}{\operatorname{arcCsch}}
-\newcommand{\arccoth}{\operatorname{arcCoth}}
 
 % Sets
 \newcommand{\M}{\mathrm{M}}
@@ -226,11 +262,12 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand{\SL}{\mathrm{SL}}
 \newcommand{\T}{\mathbb{T}}
 \newcommand{\Sph}{\mathbb{S}}
+\newcommand{\Ball}{\mathbb{B}}
 \newcommand{\St}{\mathrm{St}}
 \let\O\relax
-\newcommand{\O}{\mathrm{O}}
+\newcommand{\Orth}{\mathrm{O}}
 \newcommand{\SO}{\mathrm{SO}}
-\newcommand{\U}{\mathrm{U}}
+\newcommand{\Unitary}{\mathrm{U}}
 \newcommand{\SU}{\mathrm{SU}}
 \newcommand{\SP}{\mathrm{SP}}
 \newcommand{\emb}{\mathbin{\subset_{\mathrm{emb}}}}
@@ -261,12 +298,10 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand{\sos}{\operatorname{sos}}
 
 % Stats operators
-% \newcommand{\E}{\operatorname{\mathbb{E}}}
-% \newcommand{\Pr}{\operatorname{\mathbb P}}
-\newcommand{\Ind}[1]{\operatorname{\mathds{1}}_{#1}}
-\newcommand{\Var}{\operatorname{Var}}
+%\newcommand{\Ind}[1]{\operatorname{\mathds{1}}_{#1}}
+\newcommand{\Ind}[1]{{\mathds{1}}_{#1}}
 \newcommand{\stddev}{\operatorname{stddev}}
-\newcommand{\cov}{\operatorname{cov}}
+%\newcommand{\cov}{\operatorname{cov}}
 \newcommand{\leb}{\operatorname{\mu}}
 \newcommand{\Pound}{\operatorname{\#}}
 \newcommand{\Unif}[1]{\operatorname{Unif}(#1)}
@@ -278,6 +313,7 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
 
 % Topology / set operators
+\newcommand{\compl}{\mathsf{c}}
 \let\bd\relax
 \newcommand{\bd}{\operatorname{bd}}
 \newcommand{\relbd}{\operatorname{relbd}}
@@ -302,6 +338,7 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand{\range}{\operatorname{range}}
 \newcommand{\Ran}{\operatorname{ran}}
 \newcommand{\diam}{\operatorname{diam}}
+\newcommand{\len}{\operatorname{len}}
 \newcommand{\dist}{\operatorname{dist}}
 \newcommand{\nnz}{\operatorname{nnz}}
 \newcommand{\RE}{\operatorname{RE}}
@@ -314,38 +351,38 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 
 % NTK stuff
 % note that \adj doesnt seem to work
-\newcommand{\pvw}[1]{\Partial{\iter{\vW}{#1}}{}}
-\newcommand{\Weight}[1]{\iter{\vW}{#1}}
-\newcommand{\Weightadj}[1]{{\iter{\vW}{#1}}{}^*}
-\newcommand{\Weightfix}[1]{\iter{\tilde{\vW}}{#1}}
-\newcommand{\Weightfixadj}[1]{{\iter{\tilde{\vW}}{#1}}{}^*}
-\newcommand{\Alpha}[1]{\iter{\valpha}{#1}}
-\newcommand{\Alphaadj}[1]{{\iter{\valpha}{#1}}{}^*}
-\newcommand{\Dsigma}[2]{\iter{\vD_{#2}}{#1}}
-\newcommand{\Beta}[1]{\iter{\vbeta}{#1}}
-\newcommand{\UBeta}[1]{\iter{\vu}{#1}}
-\newcommand{\Palphapos}[2]{\vP_{\set{\Alpha{#1}#2 > 0}}}
-\newcommand{\Palphazero}[2]{\vP_{\set{\Alpha{#1}#2 = 0}}}
-\newcommand{\Palpha}[2]{\vP_{\Alpha{#1}#2}}
-\newcommand{\Palphaperp}[2]{\vP_{\Alpha{#1}{#2}^{\perp}}}
-\newcommand{\Gpeel}[1]{\iter{\vG}{#1}}
-\newcommand{\Gpeeladj}[1]{{\iter{\vG}{#1}}{}^*}
-\newcommand{\Gpeelsqrt}[1]{\bigl( \Gpeel{#1} \bigr)^{\half}}
-\newcommand{\Fpeel}[1]{\iter{\vF}{#1}}
-\newcommand{\Fpeeladj}[1]{{\iter{\vF}{#1}}{}^*}
-\newcommand{\Tpeel}[1]{\iter{\vT}{#1}}
-\newcommand{\Tpeeladj}[1]{{\iter{\vT}{#1}}{}^*}
-\newcommand{\Hpeel}[1]{\iter{\vH}{#1}}
-\newcommand{\Hpeeladj}[1]{{\iter{\vH}{#1}}{}^*}
-\newcommand{\Upeel}[1]{\iter{\vU}{#1}}
-\newcommand{\Upeeladj}[1]{{\iter{\vU}{#1}}{}^*}
-\newcommand{\Upeelperp}[1]{\iter{\vU_{\perp}}{#1}}
-\newcommand{\Upeelperpadj}[1]{{\iter{\vU_{\perp}}{#1}}{}^*}
-\newcommand{\Hpeelfix}[1]{\iter{\tilde{\vH}}{#1}}
-\newcommand{\Hpeelfixadj}[1]{{\iter{{\tilde{\vH}}}{#1}}{}^*}
+%\newcommand{\pvw}[1]{\Partial{\iter{\vW}{}}{#1}}
+%\newcommand{\Weight}[1]{\iter{\vW}{#1}}
+%\newcommand{\Weightadj}[1]{{\iter{\vW}{#1}}{}^*}
+%\newcommand{\Weightfix}[1]{\iter{\tilde{\vW}}{#1}}
+%\newcommand{\Weightfixadj}[1]{{\iter{\tilde{\vW}}{#1}}{}^*}
+%\newcommand{\Alpha}[1]{\iter{\valpha}{#1}}
+%\newcommand{\Alphaadj}[1]{{\iter{\valpha}{#1}}{}^*}
+%\newcommand{\Dsigma}[2]{\iter{\vD_{#2}}{#1}}
+%\newcommand{\BBeta}[1]{\iter{\vbeta}{#1}}
+%\newcommand{\UBeta}[1]{\iter{\vu}{#1}}
+%\newcommand{\Palphapos}[2]{\vP_{\set{\Alpha{#1}#2 > 0}}}
+%\newcommand{\Palphazero}[2]{\vP_{\set{\Alpha{#1}#2 = 0}}}
+%\newcommand{\Palpha}[2]{\vP_{\Alpha{#1}#2}}
+%\newcommand{\Palphaperp}[2]{\vP_{\Alpha{#1}{#2}^{\perp}}}
+%\newcommand{\Gpeel}[1]{\iter{\vG}{#1}}
+%\newcommand{\Gpeeladj}[1]{{\iter{\vG}{#1}}{}^*}
+%\newcommand{\Gpeelsqrt}[1]{\bigl( \Gpeel{#1} \bigr)^{\half}}
+%\newcommand{\Fpeel}[1]{\iter{\vF}{#1}}
+%\newcommand{\Fpeeladj}[1]{{\iter{\vF}{#1}}{}^*}
+%\newcommand{\Tpeel}[1]{\iter{\vT}{#1}}
+%\newcommand{\Tpeeladj}[1]{{\iter{\vT}{#1}}{}^*}
+%\newcommand{\Hpeel}[1]{\iter{\vH}{#1}}
+%\newcommand{\Hpeeladj}[1]{{\iter{\vH}{#1}}{}^*}
+%\newcommand{\Upeel}[1]{\iter{\vU}{#1}}
+%\newcommand{\Upeeladj}[1]{{\iter{\vU}{#1}}{}^*}
+%\newcommand{\Upeelperp}[1]{\iter{\vU_{\perp}}{#1}}
+%\newcommand{\Upeelperpadj}[1]{{\iter{\vU_{\perp}}{#1}}{}^*}
+%\newcommand{\Hpeelfix}[1]{\iter{\tilde{\vH}}{#1}}
+%\newcommand{\Hpeelfixadj}[1]{{\iter{{\tilde{\vH}}}{#1}}{}^*}
 
 \newcommand\memosb[1]{{\color{blue}\{\emph{SB}:} #1{\color{blue}\}}}
-\newcommand{\sdb}[1]{{\color{red} \textbf{SB: #1}}}
+\newcommand{\sdb}[1]{{\color{forestgreen(web)} \textbf{SB: #1}}}
 % \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
 
 % hyphenation

@@ -1,3 +1,12 @@
+" export a PYTHONHOME environment variable
+" vim seems to need this to run python... but other python software doesn't
+" interact properly
+" so after this is set here, probably can't run many other programs in this
+" session
+let $PYTHONHOME = "/Users/sadboys/anaconda3"
+" set python 3 dll
+set pythonthreedll=/Users/sadboys/anaconda3/bin/python
+
 " set leader character
 let mapleader = ","
 
@@ -6,42 +15,49 @@ let mapleader = ","
 packadd! matchit
 " packadd! onedark.vim
 packloadall
+
+" TAGS
+" let g:gutentags_trace=1 " this is a debug command
+let g:gutentags_resolve_symlinks=0
 silent! helptags ALL
 
-" ALE integration with lightline
-" Taken from https://github.com/maximbaz/lightline-ale
+" vim-indent-guides package settings
+let g:indent_guides_auto_colors = 0
+
+"" ALE integration with lightline
+"" Taken from https://github.com/maximbaz/lightline-ale
 let g:lightline = {}
+"
+"let g:lightline.component_expand = {
+"      \  'linter_checking': 'lightline#ale#checking',
+"      \  'linter_warnings': 'lightline#ale#warnings',
+"      \  'linter_errors': 'lightline#ale#errors',
+"      \  'linter_ok': 'lightline#ale#ok',
+"      \ }
+"
+"let g:lightline.component_type = {
+"      \     'linter_checking': 'left',
+"      \     'linter_warnings': 'warning',
+"      \     'linter_errors': 'error',
+"      \     'linter_ok': 'left',
+"      \ }
+"
+"let g:lightline.active = { 'right': [ 
+"      \ [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ],
+"      \ [ 'percent' ],
+"      \ [ 'filetype', 'fileformat', 'fileencoding'] ]
+"      \ }
+"
+"" Custom symbols for lightline-ALE
+"let g:lightline#ale#indicator_warnings = "(!) "
+"let g:lightline#ale#indicator_errors = "(✗) "
+"let g:lightline#ale#indicator_ok = "(✓)"
 
-let g:lightline.component_expand = {
-      \  'linter_checking': 'lightline#ale#checking',
-      \  'linter_warnings': 'lightline#ale#warnings',
-      \  'linter_errors': 'lightline#ale#errors',
-      \  'linter_ok': 'lightline#ale#ok',
-      \ }
-
-let g:lightline.component_type = {
-      \     'linter_checking': 'left',
-      \     'linter_warnings': 'warning',
-      \     'linter_errors': 'error',
-      \     'linter_ok': 'left',
-      \ }
-
-let g:lightline.active = { 'right': [ 
-      \ [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ],
-      \ [ 'percent' ],
-      \ [ 'filetype', 'fileformat', 'fileencoding'] ]
-      \ }
-
-" Custom symbols for lightline-ALE
-let g:lightline#ale#indicator_warnings = "(!) "
-let g:lightline#ale#indicator_errors = "(✗) "
-let g:lightline#ale#indicator_ok = "(✓)"
-
-" ALE settings
-let g:ale_lint_on_text_changed = 'never' " don't auto-update
-let g:ale_lint_on_enter = 0 " update after writing file
-let g:ale_set_balloons = 1 " add hover information using mouse
-let g:ale_pattern_options = {'\.tex$': {'ale_enabled': 0}}
+"" ALE settings
+"let g:ale_lint_on_text_changed = 'never' " don't auto-update
+"let g:ale_lint_on_enter = 0 " update after writing file
+"let g:ale_set_balloons = 1 " add hover information using mouse
+"let g:ale_pattern_options = {'\.tex$': {'ale_enabled': 0}}
 
 " set up alternate line breaking with gq to operate on lines in
 " range individually
@@ -65,18 +81,15 @@ set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_python_checkers = ['flake8']
-let g:syntastic_tex_checkers = ['']
-let g:syntastic_python_flake8_args='--ignore=E501,E225,W503'
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+"let g:syntastic_check_on_open = 1
+"" let g:syntastic_check_on_wq = 0
+" let g:syntastic_python_checkers = ['flake8']
+" let g:syntastic_tex_checkers = ['']
+" let g:syntastic_python_flake8_args='--ignore=E501,E225,W503'
 "let g:syntastic_python_pylint_args = "--indent-string='\t'"
 
-
-" python syntax
-let python_highlight_all=1
 
 " lightline settings / colors
 set laststatus=2
@@ -98,9 +111,14 @@ nnoremap <silent> <Leader>p :r !pbpaste<CR>
 " Turn on spellchecking
 nnoremap <silent> <F7> :setlocal spell! spelllang=en_us<CR>
 
+" Tagbar Commands
+nmap <F8> :TagbarToggle<CR>
+
 "set up vimtex shortcuts
+let g:vimtex_syntax_nospell_comments = 1
 let g:tex_flavor = 'latex'
 let g:vimtex_motion_matchparen = 0
+"let g:vimtex_fold_enabled = 1
 let g:vimtex_imaps_leader = '`'
 let g:vimtex_imaps_enabled = 0
 "let g:vimtex_view_general_viewer = '/Applications/Preview.app/Contents/MacOS/Preview'
@@ -109,13 +127,8 @@ let g:vimtex_view_general_options = '-a Preview -g @pdf'
 let g:vimtex_view_general_options_latexmk = '-a Preview -g @pdf'
 let g:vimtex_disable_version_warning = 1
 let g:vimtex_echo_ignore_wait = 1
-"let g:vimtex_indent_enabled = 0
 let g:vimtex_indent_on_ampersands = 0
-"let g:vimtex_view_enabled = 0
-"let g:vimtex_view_automatic = 0
-"let g:vimtex_view_enabled = 0
 let g:vimtex_matchparen_enabled = 0
-let g:vimtex_index_split_pos = 'vert belowright'
 let g:vimtex_indent_ignored_envs = [
       \ 'document',
       \ 'theorem',
@@ -126,6 +139,16 @@ let g:vimtex_indent_ignored_envs = [
       \ 'claim',
       \]
 let g:vimtex_indent_ignored_envs = ['document']
+let g:vimtex_toc_config = {}
+let g:vimtex_toc_config['layer_status'] = {
+      \ 'content': 1,
+      \ 'label': 0,
+      \ 'todo': 1,
+      \ 'include': 0,
+      \}
+let g:vimtex_toc_config['split_pos'] = 'vert belowright'
+let g:vimtex_toc_config['split_width'] = 52
+let g:vimtex_toc_config['tocdepth'] = 5
 " comment the above for compiling documents without proofs
 
 " Set up tex spellchecking options
@@ -219,7 +242,8 @@ set tabstop=2 softtabstop=0 expandtab shiftwidth=2 smarttab
 set autoindent
 
 " change hl settings
-set nohlsearch
+set hlsearch
+nnoremap <silent> <F9> :noh<CR>
 hi Search ctermbg=DarkRed
 hi Search ctermfg=Black
 
@@ -243,105 +267,57 @@ hi SpellLocal ctermbg=None
 hi SpellLocal ctermfg=14
 hi SpellLocal cterm=underline
 
-"Add some shortcut commands
+" Add some shortcut commands for templates
 command! Makegcc :r ~/.vim/gcc_makefile.txt
 command! Maketex :r ~/.vim/tex_makefile.txt
 command! Memoir :r ~/.vim/memoir_base.txt
 command! Article :r ~/.vim/article_base.txt
 command! Chapter :r ~/.vim/chapter_base.txt
 command! Figure :r ~/.vim/figure_base.txt
+command! Subfigure :r ~/.vim/subfigure_base.txt
 command! Beamer :r ~/.vim/beamer_base.txt
+command! Poster :r ~/.vim/poster_base.txt
 command! Tikz :r ~/.vim/tikz_base.txt
-command! Python :r ~/.vim/python_imports.txt
+command! Python :r ~/.vim/python_skeleton.py
 command! Listings :r ~/.vim/listings_base.txt
-" Edit files remotely on john-vision ssh server. Requires full
-" path (~/my_file for home, or /home/user/my_file otherwise) as
-" argument
-" Also need this set up in .ssh/config
-"command! -nargs=1 Ejv :e scp://sam@john-vision/<args>
 
-" add a shortcut to ;t for toggling tagbar
-" nmap <localleader>t  :TagbarToggle<CR> 
+" New file templates
+au BufNewFile *.py 0r ~/.vim/python_skeleton.py
 
-" add a shortcut with pyclewn to place a breakpoint at current line
-" map ;b :exe "Cbreak " . expand("%:p") . ":" . line(".")<CR>
+" A shortcut for quickfix windows
+nnoremap <Leader>c :cclose<CR>
 
-" add a shortcut with pyclewn to show value of variable at current line
-" map ;v :exe "Cprint " . expand("<cword>") <CR>
+" Format with yapf
+" autocmd FileType python nnoremap <Leader>= :0,$!yapf<CR>
 
-" add a shortcut with pyclewn to clear all breakpoints at current line
-" map ;c :exe "Cclear " . line(".")<CR>
+" NERDTree Configuration
+nmap <F6> :NERDTreeToggle<CR>
+let g:NERDTreeGitStatusIndicatorMapCustom = {
+                \ 'Modified'  :'✹',
+                \ 'Staged'    :'✚',
+                \ 'Untracked' :'✭',
+                \ 'Renamed'   :'➜',
+                \ 'Unmerged'  :'═',
+                \ 'Deleted'   :'✖',
+                \ 'Dirty'     :'✗',
+                \ 'Ignored'   :'☒',
+                \ 'Clean'     :'✔︎',
+                \ 'Unknown'   :'?',
+                \ }
 
-" add a shortcut with pyclewn to step to next line
-nmap <F8> :exe "Cstep"<CR>
+" jedi-vim settings
+set noshowmode
+let g:jedi#goto_assignments_command = "<leader>a"
+let g:jedi#popup_on_dot = 0
+"let g:jedi#force_py_version=3.8
+let g:jedi#show_call_signatures = "2"
+let g:jedi#show_call_signatures_delay = 0
 
-" add a custom command for editing remote files
-"command! -nargs=1 Ejv :exec "call EditRemoteJV(\""fnameescape(expand("<args>"))"\")"
-command! -nargs=1 Ejv :call EditRemoteJV(fnameescape("<args>"))
-command! Wjv :call WriteRemoteJV()
-
-function! EditRemoteJV(path)
-  " Potential problems with this function:
-  " 1. issues with symlinks. Current workaround: ignore them
-  " 2. Since we are using rsync, you can specify a directory
-  "    accidentally and the whole thing will get downloaded. Not
-  "    sure how to work around this right now...
-
-  " Check input
-  if empty(a:path)
-    echoerr "Need to provide argument: filepath on john-vision machine to open"
-    return
-  endif
-  
-  " Set up variables
-  let l:path = a:path
-  let l:filename = fnamemodify(path, ":t")
-  let l:local_tmp_dir="~/tmp/jv_remote_vim_files"
-  let l:edit_local_jv_path = local_tmp_dir . "/" . filename
-  let l:edit_remote_jv_path = l:path
-  " Rsync the remote file
-  " NOTE: dealing with symlinks causes a lot of trouble. So we
-  " just ignore unsafe symlinks (those that don't have a
-  " corresponding thing to point to locally), and give an error
-  " if nothing is copied
-  let l:cmd_str = "!rsync -ar --safe-links sam@john-vision:" . l:edit_remote_jv_path 
-        \ . " " . l:edit_local_jv_path
-  exec "new | 0read " . l:cmd_str
-  exec "bdelete!"
-  if empty(glob(l:edit_local_jv_path))
-    " Give an error for symlink
-    echoerr "Could not find file on remote server, or it was a symlink."
-    return
-  endif
-  " Start editing the synced file
-  exec "edit " . l:edit_local_jv_path
-
-  " Assume success: put paths in buffer variables
-  " nb: these go with the newly-created buffer.
-  let b:edit_local_jv_path = l:edit_local_jv_path
-  let b:edit_remote_jv_path = l:edit_remote_jv_path
-endfunction
-
-function! WriteRemoteJV()
-  " Check that a valid EditRemoteJV occurred before this call
-  if !exists("b:edit_remote_jv_path") || empty(b:edit_remote_jv_path)
-    echoerr "There is no remote read present in this buffer (nothing to write)."
-    return
-  endif
-  " Write the current file to disk (supercede :w functionality)
-  exec 'write'
-
-  " Bring path variables into locals
-  let l:remote_path = b:edit_remote_jv_path
-  let l:local_path = b:edit_local_jv_path
-
-  " Build the rsync command
-  let l:cmd_str = "!rsync -ar " . l:local_path . " sam@john-vision:"
-        \ . l:remote_path
-  echo l:cmd_str
-
-  " Run the command to copy the file to the remote server
-  "exec l:cmd_str
-  exec 'new | 0read ' . l:cmd_str
-  exec 'bdelete!'
-endfunction
+" Hack to get the correct versions of jedi and parso on path
+" seems there is a conflict with the versions anaconda wants for other packages
+python3 << EOF
+import sys
+#sys.path.insert(-1, "~/.vim/pack/git-plugins/start/jedi-vim/pythonx")
+sys.path.insert(0, "/Users/sadboys/.vim/pack/git-plugins/start/jedi-vim/pythonx/jedi")
+sys.path.insert(0, "/Users/sadboys/.vim/pack/git-plugins/start/jedi-vim/pythonx/parso")
+EOF

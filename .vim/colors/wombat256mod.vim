@@ -49,6 +49,10 @@ hi DiffDelete	ctermfg=234		ctermbg=60		cterm=none		guifg=#242424	guibg=#3e3969	g
 hi DiffText						ctermbg=53		cterm=none						guibg=#73186e	gui=none
 hi DiffChange					ctermbg=237										guibg=#382a37
 
+" Line highlighting for indentations
+hi IndentGuidesOdd ctermbg=235
+hi IndentGuidesEven ctermbg=234
+
 "hi CursorIM
 "hi Directory
 "hi IncSearch

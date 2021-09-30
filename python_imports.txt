@@ -1,2 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+# imports
+import numpy as np
+import numpy.linalg as npla
+from numpy.random import default_rng
+import scipy as sp
+import scipy.io as sio
+import matplotlib.pyplot as plt
+
+# top-level call
+if __name__ == "__main__":
+    pass

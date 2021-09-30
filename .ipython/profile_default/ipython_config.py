@@ -36,7 +36,10 @@ c.InteractiveShellApp.exec_lines = [
     'import numpy.linalg as npla',
     'import scipy as sp',
     'import scipy.io as sio',
-    'import matplotlib.pyplot as plt'
+    'import matplotlib.pyplot as plt',
+    'from matplotlib import cm',
+    '%load_ext autoreload',
+    '%autoreload 2'
 ]
 
 ## A list of dotted module names of IPython extensions to load.

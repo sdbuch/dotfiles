@@ -10,6 +10,7 @@ alias ll='ls -FlasG'
 alias lt='ls -FlasGrt'
 alias mex='/Applications/MATLAB.app/bin/mex'
 alias rpi='arp -a -n | grep b8:27:eb:'
+alias qtconsole='jupyter qtconsole'
 
 #alias vim='vim --servername VIM'
 
@@ -28,17 +29,25 @@ export CLASSPATH=.:/Users/sadboys/algs4/algs4.jar:/Users/sadboys/algs4/stdlib.ja
 export PROJECTDIR=.:/Users/sadboys/projects/:/Users/sadboys/algs4/projects
 export EDITOR=/usr/local/bin/vim
 export PATH=$PATH:/usr/local/opt/go/libexec/bin
-export PATH=${PATH}:$HOME/gsutil
 export PATH=${PATH}:/usr/texbin
 export PATH=${PATH}:/usr/local/lib
 export PATH=${PATH}:/opt/bin
 export PATH=${PATH}:~/mosek/mosek/8/tools/platform/osx64x86/bin
 export PATH=${PATH}:~/projects/github/math-with-slack
 export PATH=${PATH}:~/projects/github/keychain
+export PATH=${PATH}:/usr/local/sbin/
+export GEM_HOME="$HOME/.gem"
 #export PATH=${PATH}:~/projects/verilog/esn_v/util
 #export PATH=${PATH}:/usr/local/lib/python2.7/site-packages/
 #export PYTHONPATH=/usr/local/lib/python2.7/site-packages/
 #export PYTHONPATH=$PYTHONPATH:~/projects/verilog/esn_v/util
+
+# These are set for interactions with conda + vim (python integration)
+# These have bad interactions with other python programs though.
+# Good idea to only set them when needed (in vimrc...)
+#export PYTHONPATH=$PYTHONPATH:~/anaconda3/bin/python
+# export PYTHONHOME=$HOME/anaconda3
+# export PYTHONPATH=$HOME/.vim/pack/git-plugins/start/jedi-vim/pythonx/parso
 
 export PATHO=$PATH
 
@@ -124,3 +133,11 @@ export OPENBLAS_NUM_THREADS=1
 
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
 
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/sadboys/google-cloud-sdk/path.bash.inc' ]; then . '/Users/sadboys/google-cloud-sdk/path.bash.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/sadboys/google-cloud-sdk/completion.bash.inc' ]; then . '/Users/sadboys/google-cloud-sdk/completion.bash.inc'; fi
+
+export HOMEBREW_GITHUB_API_TOKEN=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

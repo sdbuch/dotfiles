@@ -1,7 +1,7 @@
 \begin{figure}[!htb]
   \centering
-  %\fbox{\includegraphics[width=2.75in, trim={0.7in 2.35in 0.85in,2.7in}, clip]{}}
-  \includegraphics[width=2.75in, trim={0.7in 2.35in 0.85in, 2.7in}, clip]{}
+  %\fbox{\includegraphics[width=\textwidth, trim={0.7in 2.35in 0.85in,2.7in}, clip]{}}
+  \includegraphics[width=\textwidth]{}
   \caption{}
   \label{}
 \end{figure}
