@@ -139,5 +139,3 @@ if [ -f '/Users/sadboys/google-cloud-sdk/path.bash.inc' ]; then . '/Users/sadboy
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/sadboys/google-cloud-sdk/completion.bash.inc' ]; then . '/Users/sadboys/google-cloud-sdk/completion.bash.inc'; fi
-
-export HOMEBREW_GITHUB_API_TOKEN=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
