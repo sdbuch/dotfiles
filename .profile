@@ -11,6 +11,7 @@ alias lt='ls -FlasGrt'
 alias mex='/Applications/MATLAB.app/bin/mex'
 alias rpi='arp -a -n | grep b8:27:eb:'
 alias qtconsole='jupyter qtconsole'
+alias qtconsole_remote='qtconsole-remote.sh'
 
 #alias vim='vim --servername VIM'
 
@@ -28,7 +29,8 @@ fi
 export CLASSPATH=.:/Users/sadboys/algs4/algs4.jar:/Users/sadboys/algs4/stdlib.jar
 export PROJECTDIR=.:/Users/sadboys/projects/:/Users/sadboys/algs4/projects
 export EDITOR=/usr/local/bin/vim
-export PATH=$PATH:/usr/local/opt/go/libexec/bin
+export PATH=${PATH}:~/scripts/
+export PATH=${PATH}:/usr/local/opt/go/libexec/bin
 export PATH=${PATH}:/usr/texbin
 export PATH=${PATH}:/usr/local/lib
 export PATH=${PATH}:/opt/bin
