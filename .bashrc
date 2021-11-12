@@ -92,6 +92,7 @@ alias ll='ls -FHlasG'
 alias la='ls -A'
 alias l='ls -CF'
 alias lt='ls -FlasGrt'
+alias rm='rm -i'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -140,4 +141,27 @@ export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda
 
 # added by Anaconda3 installer (OLD)
 # export PATH="/home/sam/anaconda3/bin:$PATH"
-. /home/sam/anaconda3/etc/profile.d/conda.sh
+# . /home/sam/anaconda3/etc/profile.d/conda.sh  # commented out by conda initialize
+
+# Put Conda on PATH FIRST
+export PATH=/home/sam/miniconda3/bin:$PATH
+
+# Do ssh agent
+# eval "$(ssh-agent -s)"
+# eval "ssh-add ~/.ssh/id_rsa_github"
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/sam/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/sam/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/sam/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/sam/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
