@@ -1,40 +1,35 @@
 \documentclass[10pt]{article}
 \usepackage[letterpaper,margin=1in]{geometry}
-\usepackage[T1]{fontenc}
-\usepackage{amsmath,amsbsy,amsfonts,amssymb,amsthm,color,dsfont,mleftright}
-\usepackage{tikz-cd}
-\tikzcdset{arrow style=tikz, diagrams = {>=stealth}}
-\usepackage{thmtools}
-\usepackage{mathtools}
-\usepackage{suffix}
-\usepackage[english]{babel}
-\usepackage{tikz}
-\usetikzlibrary{bayesnet}
-\usetikzlibrary{arrows}
-\usepackage{scalerel,stackengine} % For wide check
 
-\usepackage{textcomp}
+%\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsmath,amsbsy,amsfonts,amssymb,amsthm,color,dsfont,mleftright}
+
+%\usepackage{textcomp}
 \usepackage[theoremfont]{newpxtext}
 \usepackage{cabin}
-\usepackage[varqu,varl]{inconsolata}
+%\usepackage[varqu,varl]{inconsolata}
 \usepackage[bigdelims,vvarbb]{newpxmath}
-\usepackage[scr=boondoxo]{mathalfa}
+%\usepackage[scr=boondoxo]{mathalfa}
+\newcommand\hmmax{0}
+\newcommand\bmmax{0}
 \usepackage{bm}
-\usepackage[linktoc=all]{hyperref}
-\linespread{1.05}
-\frenchspacing
+\usepackage{mathrsfs}
 
-\usepackage{listings}
-\usepackage{comment}
-\usepackage{url}
-% \urlstyle{sf}
-\usepackage{nameref,cleveref}
-\usepackage{multirow}
-\usepackage{enumitem}
-\usepackage{floatrow}
+%\usepackage{lineno}
+%\linenumbers
+
+\allowdisplaybreaks
+\usepackage[toc,page]{appendix}
+
+\usepackage{thmtools}
+\usepackage{mathtools}
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{graphicx}
-\usepackage{csquotes}
-\usepackage[font=small,labelfont=bf]{caption}
 \usepackage[
 backend=biber,
 style=alphabetic,
@@ -50,60 +45,92 @@ maxbibnames=99
 \AtEveryBibitem{%
   \clearlist{language}%
 }
-\usepackage{algpseudocode}
-\usepackage{algorithm}
+\usepackage{hyperref}       % hyperlinks
+\usepackage{nameref}
+\usepackage[capitalise]{cleveref}
+\usepackage{enumitem}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{wrapfig}
+\usepackage[normalem]{ulem}
+\usepackage[bf,small]{caption}
+\usepackage{subcaption}
+\usepackage{overpic}
+
+\newcommand{\mycolor}{RoyalBlue}
+\newcommand{\mycitecolor}{Red}
+\definecolor{lava}{rgb}{1, 1, 1}
+\definecolor{purple}{rgb}{1, 1, 1}
+\definecolor{red}{rgb}{1, 1, 1}
+
 \hypersetup{
-colorlinks = true,
-urlcolor = blue,
-linkcolor = blue,
-citecolor = red
+  linkcolor = \mycolor,
+  citecolor = \mycitecolor,
+  urlcolor = \mycitecolor,
+  colorlinks = true,
+  linktocpage = true,
 }
 
-%subsubsubsection
-%\setcounter{tocdepth}{4}
-%\setcounter{secnumdepth}{4}
+%\crefrangeformat{equation}{(#3#1#4) to~(#5#2#6)} % get rid of eqs.
+\crefname{equation}{}{}
+\numberwithin{equation}{section} % Set up to label eqns by section...
 
-% Macros
-\input{sam_preamble.def}
-\input{sam_macros.def}
+%\usepackage{xr}
+%\externaldocument{}
 
-% Theorems settings
-\newtheorem{theorem}{Theorem}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{claim}[theorem]{Claim}
+%Set up theorems
+\newtheorem{theoreminformal}{Theorem}
+\newtheorem{theorembody}{Theorem}
+\newtheorem{propositionbody}{Proposition}
+\newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{fact}[theorem]{Fact}
 \newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{assumption}[theorem]{Assumption}
-\newtheorem{observation}[theorem]{Observation}
+\newtheorem{corollary}[theorem]{Corollary}
 
 \theoremstyle{remark}
 \newtheorem{remark}[theorem]{Remark}
 
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}
-\newtheorem{example}{Example}
-\newtheorem{exercise}{Exercise} % number exercises separately
-\newtheorem{conjecture}{Conjecture}
-\newtheorem{notation}{Notation}
+\newtheorem{definition}{Definition}[section]
 
-% Compilation without certain environments
-% Lets you hide proofs from a document, for example
-% \excludecomment{proof}
-% \excludecomment{remark}
+% Sam's macros
+\input{sam_macros.def}
 
-
+%\usepackage{etoolbox} %% <- for \pretocmd and \apptocmd
+%\makeatletter %% <- make @ usable in macro names
+%\newcommand*\linenomathpatch{\@ifstar{\linenomathpatch@AMS}{\linenomathpatch@}}
+%\newcommand*\linenomathpatch@[1]{
+%  \expandafter\pretocmd\csname #1\endcsname {\linenomathWithnumbers}{}{}
+%  \expandafter\pretocmd\csname #1*\endcsname{\linenomathWithnumbers}{}{}
+%  \expandafter\apptocmd\csname end#1\endcsname {\endlinenomath}{}{}
+%  \expandafter\apptocmd\csname end#1*\endcsname{\endlinenomath}{}{}
+%}
+%\newcommand*\linenomathpatch@AMS[1]{
+%  \expandafter\pretocmd\csname #1\endcsname {\linenomathWithnumbersAMS}{}{}
+%  \expandafter\pretocmd\csname #1*\endcsname{\linenomathWithnumbersAMS}{}{}
+%  \expandafter\apptocmd\csname end#1\endcsname {\endlinenomath}{}{}
+%  \expandafter\apptocmd\csname end#1*\endcsname{\endlinenomath}{}{}
+%}
+%\let\linenomathWithnumbersAMS\linenomathWithnumbers
+%\patchcmd\linenomathWithnumbersAMS{\advance\postdisplaypenalty\linenopenalty}{}{}{}
+%\makeatother %% revert @
+%
+%\linenomathpatch{equation}
+%\linenomathpatch*{gather}
+%\linenomathpatch*{multline}
+%\linenomathpatch*{align}
+%\linenomathpatch*{alignat}
+%\linenomathpatch*{flalign}
 
 \title{}
-\author{Sam Buchanan}
+
+\author{
+  Sam Buchanan
+}
 
 \begin{document}
 
 \maketitle
 
-\begin{abstract}
-
-\end{abstract}
 
 \printbibliography
 

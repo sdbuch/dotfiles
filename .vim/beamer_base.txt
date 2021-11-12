@@ -1,149 +1,110 @@
-\documentclass{beamer}
-\usepackage{url}
-\urlstyle{sf}
-\usepackage{amsmath,amsbsy,amsfonts,amssymb,dsfont,mleftright}
-\usepackage{mathtools}
-\usepackage{algorithm, algorithmic}
+\documentclass[18pt,hyperref={pdfpagelabels=false}]{beamer}
+\usetheme{metropolis}
+\usepackage{fontspec}
+\setmainfont{Latin Modern Roman}
+\setsansfont{Latin Modern Sans}
+\setmonofont{Latin Modern Mono}
+\renewcommand\rmdefault{pplx}
+\renewcommand\mathfamilydefault{cmr}
+\usepackage[
+backend=biber,
+%style=numeric-comp,
+style=authoryear,
+sorting=nyt,
+doi=false,
+hyperref=true,
+isbn=false,
+uniquename=init,
+url=false
+]{biblatex}
+\addbibresource{refs.bib}
+%\renewcommand*{\bibfont}{\tiny}
+\setbeamertemplate{bibliography item}[text]
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry location}{}
+\setbeamertemplate{bibliography entry note}{}
+\setbeamertemplate{headline}{}
+\usepackage{amsmath,amsbsy,amsfonts,amssymb,amsthm,color,dsfont,mleftright}
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{bm}
+\usepackage{mathrsfs}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage[percent]{overpic}
+\usepackage[export]{adjustbox}
+\usepackage{framed}
+\usepackage{verbatim}
+\usepackage{varwidth}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{shapes.misc, shapes.geometric, arrows,
+positioning, decorations.pathreplacing,calc,shadings}
+\tikzstyle{line} = [draw, -latex']
+\usepackage{shadow}
+\usepackage{microtype}
+\usepackage{empheq}
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
+\renewcommand{\mathbf}{\boldsymbol} 
 
-% General operators
-\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
-\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
-\DeclarePairedDelimiter\ip{\langle}{\rangle}%
-%\input{mymacros.def}
-% Swap the definition of \abs* and \norm*, so that \abs
-% and \norm resizes the size of the brackets, and the 
-% starred version does not.
-\makeatletter
-\let\oldabs\abs
-\def\abs{\@ifstar{\oldabs}{\oldabs*}}
+
+\setbeamertemplate{footline}[frame number]{}
+\setbeamertemplate{navigation symbols}{}
+%\setbeamertemplate{footline}{}
+\setbeamercolor{background canvas}{bg=white}
+
+
+% Citations https://tex.stackexchange.com/a/16792
+%\makeatletter
 %
-\let\oldnorm\norm
-\def\norm{\@ifstar{\oldnorm}{\oldnorm*}}
-\makeatother
-
-\newcommand\V[1]{\ensuremath{\mathbf{#1}}}
-\newcommand*{\tp}{^{\mkern+2mu T}}
-\newcommand{\tr}{\operatorname{\text{tr}}}
-
-% Beamer settings
-\bibliographystyle{amsalpha}
-\mode<presentation>{\usetheme{Darmstadt}}
-\setbeamertemplate{frametitle continuation}[from second]
-\setbeamercolor*{bibliography entry title}{fg=black}
-\setbeamercolor*{bibliography entry author}{fg=black}
-\setbeamercolor*{bibliography entry location}{fg=black}
-\setbeamercolor*{bibliography entry note}{fg=black}
-\setbeamerfont{caption}{size=\scriptsize}
-\setbeamertemplate{caption}[numbered]
-\setbeamertemplate{bibliography item}{\insertbiblabel}
-\setbeamertemplate{itemize items}[circle]
-\setbeamertemplate{enumerate items}[default]
-\setbeamertemplate{section in toc}[sections numbered]
-\setbeamertemplate{subsection in toc}[subsections numbered]
-\setbeamerfont{bibliography item}{size=\footnotesize}
-\setbeamerfont{bibliography entry author}{size=\footnotesize}
-\setbeamerfont{bibliography entry title}{size=\footnotesize}
-\setbeamerfont{bibliography entry location}{size=\footnotesize}
-\setbeamerfont{bibliography entry note}{size=\footnotesize}
-\usefonttheme[onlymath]{serif}
-\beamertemplatenavigationsymbolsempty
+%\newrobustcmd*{\parentexttrack}[1]{%
+%  \begingroup
+%  \blx@blxinit
+%  \blx@setsfcodes
+%  \blx@bibopenparen#1\blx@bibcloseparen
+%  \endgroup}
+%
+%\AtEveryCite{%
+%  \let\parentext=\parentexttrack%
+%  \let\bibopenparen=\bibopenbracket%
+%  \let\bibcloseparen=\bibclosebracket}
+%
+%\makeatother
 
 
+\input{sam_macros.def}
 
-\title{}
-\author{Sam Buchanan}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+
+\usepackage{hyperref}
+%\usepackage{pgfpages}
+%\input{fixstuff}
+%\setbeameroption{show notes on second screen=right}
+
+
+\title{\texorpdfstring{
+  \LARGE {Deep Networks and the \\ Multiple Manifold Problem}}
+  {Deep Networks and the Multiple Manifold Problem}
+}
+\author{ Sam Buchanan } 
+\date[]{}
+
+%\AtBeginSection[]
+%{
+%    \begin{frame}{Outline}
+%        \tableofcontents[currentsection]
+%    \end{frame}
+%} 
+%
+%\AtBeginSubsection[]
+%{
+%    \begin{frame}{Outline}
+%        \tableofcontents[currentsection, currentsubsection]
+%    \end{frame}
+%} 
+
 \begin{document}
 
-\begin{frame}
-  \titlepage
-\end{frame}
-
-\begin{frame}{Agenda}
-  \begin{itemize}
-    \item A
-    \item B
-    \item C
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Uniform Sparsest Cut Problem}
-\hbox{}
-  {\small
-  \begin{columns}
-    \begin{column}{.45\textwidth}
-      \begin{equation*}
-        \begin{aligned}
-          & \underset{d \in
-          \mathbb R^{\binom{n}{2}}}{\text{minimize}} && e^T d \\
-          & \text{subject to} && d \geq 0 \\
-                                                &&& d_{ij} +
-          d_{jk} \geq d_{ik}, \enspace \forall i,j,k \\
-          &&& \sum_{i < j} d_{ij} = 1
-        \end{aligned}
-      \end{equation*}
-    \end{column}
-    \begin{column}{.45\textwidth}
-      \begin{equation*}
-        \begin{aligned}
-          & \text{minimize} && \sum_{(i,j) \in E} \norm{v_i -
-          v_j}_2^2 \\
-          & \text{subject to} && \norm{v_i - v_j}_2^2 +
-          \norm{v_j - v_k}_2^2\\
-          &&& \hphantom{\norm{v_i - v_j}_2^2  }\geq \norm{v_i -
-          v_k}_2^2,\\
-          &&& \hphantom{\norm{v_i - v_j}_2^2  }\forall i,j,k\\
-          &&& \sum_{(i, j) \in V^2} \norm{v_i - v_j}_2^2 = 1
-        \end{aligned}
-      \end{equation*}
-    \end{column}
-  \end{columns}
-}
-\end{frame}
-
-\begin{frame}{Nonconvex Optimization Model Problem:\\ Dictionary Learning}
-
-  \begin{columns}
-    \begin{column}{.25\textwidth}
-      \begin{center}
-        %\includegraphics[scale=0.3, trim={2.0in 3.5in 2.0in
-        %3.5in}, clip]{figs/dl_l1_population.pdf}
-      \end{center}
-      \vspace{-0.5in}
-      \begin{center}
-        %\includegraphics[scale=0.3]{figs/sphere_retraction.png}\\
-        {\tiny Optimization on the sphere} %CITE QING}
-      \end{center}
-    \end{column}
-    \begin{column}{.70\textwidth}
-  {\footnotesize
-    \begin{itemize}
-      \item Goal: factor data matrix $Y \in \mathbb R^{n \times p}$ as
-        $AX$, with $A$ structured, $X$ sparse
-      \item $A \in \text{GL}(n) \implies \text{row}(Y) = \text{row}(X)$,
-        then solve
-        \begin{equation*}
-          \underset{q \neq 0,\, x \in \mathbb
-          R^p}{\text{minimize}}\enspace
-          \tfrac{1}{2} \norm{Y\tp q - x}_2^2 + \lambda \norm{x}_1
-        \end{equation*}
-      \item Relaxing constraint, simplifies to $$ \underset{q
-        \in S^{n-1}}{\text{min}}\: \sum_{i=1}^p h_{\lambda}(y_i\tp
-          q)$$
-          % CITE Wright works
-        \item \textbf{Upshot:} $\mathcal O(n)$ sparsity \textit{works}
-          for nonconvex, but natural convex relaxation cannot
-          surpass $\mathcal O(\sqrt{n})$
-        \item Challenge: Extend this to $Q \in O(n)$ (one-shot
-          approach)?
-    \end{itemize}
-  }
-\end{column}
-\end{columns}
-\end{frame}
-
-% The references slide
-\section{References}
-\begin{frame}[t, allowframebreaks]
-  \frametitle{References}
-  \printbibliography
-\end{frame}
+\end{document}
