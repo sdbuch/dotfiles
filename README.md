@@ -19,6 +19,7 @@ Dependencies:
   - widgets for the above theme
     (https://github.com/odedlaz/tmux-status-variables)
   - powerline fonts (https://github.com/powerline/fonts)
+  - https://github.com/NHDaly/tmux-better-mouse-mode
 
 - pip stuff
   - python linting: mypy, pylint, flake8 (all through pip)
@@ -27,6 +28,9 @@ Dependencies:
   - mosek, MATLAB
   - conda
   - cuda (https://developer.nvidia.com/cuda-downloads)
+
+- scripts directory
+  - symlink into `/usr/local/bin/` to get to work
 
 - Notes
   - change .gitconfig if on linux
