@@ -39,7 +39,10 @@ c.InteractiveShellApp.exec_lines = [
     'import matplotlib.pyplot as plt',
     'from matplotlib import cm',
     '%load_ext autoreload',
-    '%autoreload 2'
+    '%autoreload 2',
+    'import matplotlib as mpl',
+    "mpl.rcParams['figure.facecolor'] = (1, 1, 1, 1)"
+    "mpl.rcParams['figure.figsize'] = [9.6, 7.2]"
 ]
 
 ## A list of dotted module names of IPython extensions to load.
