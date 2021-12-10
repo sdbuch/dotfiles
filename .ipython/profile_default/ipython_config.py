@@ -41,7 +41,7 @@ c.InteractiveShellApp.exec_lines = [
     '%load_ext autoreload',
     '%autoreload 2',
     'import matplotlib as mpl',
-    "mpl.rcParams['figure.facecolor'] = (1, 1, 1, 1)"
+    "mpl.rcParams['figure.facecolor'] = (1, 1, 1, 1)",
     "mpl.rcParams['figure.figsize'] = [9.6, 7.2]"
 ]
 
