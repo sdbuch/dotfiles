@@ -58,9 +58,6 @@ maxbibnames=99
 
 \newcommand{\mycolor}{RoyalBlue}
 \newcommand{\mycitecolor}{Red}
-\definecolor{lava}{rgb}{1, 1, 1}
-\definecolor{purple}{rgb}{1, 1, 1}
-\definecolor{red}{rgb}{1, 1, 1}
 
 \hypersetup{
   linkcolor = \mycolor,
