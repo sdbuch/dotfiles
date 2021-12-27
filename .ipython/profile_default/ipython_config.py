@@ -37,12 +37,15 @@ c.InteractiveShellApp.exec_lines = [
     'import scipy as sp',
     'import scipy.io as sio',
     'import matplotlib.pyplot as plt',
+    'import matplotlib as mpl',
     'from matplotlib import cm',
+    'import sys',
+    'from IPython.core.debugger import set_trace',
     '%load_ext autoreload',
     '%autoreload 2',
-    'import matplotlib as mpl',
     "mpl.rcParams['figure.facecolor'] = (1, 1, 1, 1)",
-    "mpl.rcParams['figure.figsize'] = [9.6, 7.2]"
+    "mpl.rcParams['figure.figsize'] = [9.6, 7.2]",
+    'sys.breakpointhook = set_trace'
 ]
 
 ## A list of dotted module names of IPython extensions to load.
