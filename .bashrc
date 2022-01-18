@@ -123,6 +123,13 @@ if ! shopt -oq posix; then
 fi
 
 ## CUSTOM STUFF
+
+# function to fix ssh stuff in tmux after reconnecting
+fixssh() {
+  eval $(tmux show-env    \
+    |sed -n 's/^\(SSH_[^=]*\)=\(.*\)/export \1="\2"/p')
+}
+
 # Path adds
 export PATH=$PATH:/home/sam/mosek/8/tools/platform/linux64x86/bin
 export PATH=$PATH:/home/sam/bin
