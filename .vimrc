@@ -118,7 +118,7 @@ nmap <F8> :TagbarToggle<CR>
 let g:vimtex_syntax_nospell_comments = 1
 let g:tex_flavor = 'latex'
 let g:vimtex_motion_matchparen = 0
-"let g:vimtex_fold_enabled = 1
+let g:vimtex_fold_enabled = 1
 let g:vimtex_imaps_leader = '`'
 let g:vimtex_imaps_enabled = 0
 "let g:vimtex_view_general_viewer = '/Applications/Preview.app/Contents/MacOS/Preview'
@@ -312,6 +312,12 @@ let g:jedi#popup_on_dot = 0
 "let g:jedi#force_py_version=3.8
 let g:jedi#show_call_signatures = "2"
 let g:jedi#show_call_signatures_delay = 0
+
+" fastfold settings
+let g:fastfold_savehook = 0
+
+" SympylFold options
+let g:SimpylFold_docstring_preview = 1
 
 " Hack to get the correct versions of jedi and parso on path
 " seems there is a conflict with the versions anaconda wants for other packages

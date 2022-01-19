@@ -38,6 +38,7 @@ c.InteractiveShellApp.exec_lines = [
     'import scipy.io as sio',
     'import matplotlib.pyplot as plt',
     'import matplotlib as mpl',
+    'from numpy.random import default_rng',
     'from matplotlib import cm',
     'import sys',
     'from IPython.core.debugger import set_trace',
