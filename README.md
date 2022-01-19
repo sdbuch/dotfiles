@@ -11,6 +11,10 @@ Dependencies:
   - FastFold (https://github.com/Konfekt/FastFold)
   - jedi-vim (https://github.com/davidhalter/jedi-vim)
   - SimpylFold (https://github.com/tmhedberg/SimpylFold)
+  - tagbar (https://github.com/preservim/tagbar)
+  - nerdtree (https://github.com/preservim/nerdtree)
+  - python-syntax (https://github.com/vim-python/python-syntax)
+  - vim-gutentags (https://github.com/ludovicchabant/vim-gutentags)
 
 - vim setup
   - tweak paths in .vimrc for python lib locations (comment pythonpath with
