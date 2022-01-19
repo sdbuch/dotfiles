@@ -37,6 +37,7 @@ Dependencies:
   - mosek, MATLAB
   - conda
   - cuda (https://developer.nvidia.com/cuda-downloads)
+  - universal-ctags (https://github.com/universal-ctags/ctags)
 
 - scripts directory
   - symlink into `/usr/local/bin/` to get to work
