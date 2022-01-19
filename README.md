@@ -7,9 +7,14 @@ Dependencies:
 
 - vim plugins (VIM 8)
   - lightline (https://github.com/itchyny/lightline.vim)
-  - ale (https://github.com/w0rp/ale)
-  - lightline-ale (https://github.com/maximbaz/lightline-ale)
   - vimtex (https://github.com/lervag/vimtex)
+  - FastFold (https://github.com/Konfekt/FastFold)
+  - jedi-vim (https://github.com/davidhalter/jedi-vim)
+  - SimpylFold (https://github.com/tmhedberg/SimpylFold)
+
+- vim setup
+  - tweak paths in .vimrc for python lib locations (comment pythonpath with
+    vim-nox? comment final path modification script?)
 
 - ls colors
   - solarized lscolors (https://github.com/seebi/dircolors-solarized)
