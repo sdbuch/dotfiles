@@ -20,6 +20,9 @@ Dependencies:
   - tweak paths in .vimrc for python lib locations (comment pythonpath with
     vim-nox? comment final path modification script?)
 
+- using qtconsole across ssh
+  - as of jan 2022, better install `jupyter_client v6.1.12` instead of latest
+
 - ls colors
   - solarized lscolors (https://github.com/seebi/dircolors-solarized)
 
@@ -37,6 +40,7 @@ Dependencies:
   - mosek, MATLAB
   - conda
   - cuda (https://developer.nvidia.com/cuda-downloads)
+  - universal-ctags (https://github.com/universal-ctags/ctags)
 
 - scripts directory
   - symlink into `/usr/local/bin/` to get to work
