@@ -1,7 +1,10 @@
 [user]
-	name = hwagyesa
-	email = hwagyesa@users.noreply.github.com
+	name = sdbuch
+  email = 19997120+sdbuch@users.noreply.github.com
 [credential]
 	helper = osxkeychain
 [core]
 	excludesFile = /Users/sadboys/.gitignore_global
+[credential "https://git.overleaf.com"]
+	username = sambuchanan6@gmail.com
+	helper = cache

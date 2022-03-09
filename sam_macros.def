@@ -247,6 +247,7 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand*{\One}{\mathbf{1}}
 \newcommand*{\Zero}{\mathbf{0}}
 \newcommand*{\Id}{\operatorname{\mathrm{Id}}}
+\newcommand*{\conv}{\mathbin{\ast}}
 \newcommand*{\cconv}{\mathbin{\circledast}}
 
 % Trig stuff
@@ -318,7 +319,7 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand{\bd}{\operatorname{bd}}
 \newcommand{\relbd}{\operatorname{relbd}}
 \newcommand{\cl}{\operatorname{cl}}
-\newcommand{\conv}{\operatorname{conv}}
+\newcommand{\Conv}{\operatorname{conv}}
 \newcommand{\dom}{\operatorname{dom}}
 \newcommand{\epi}{\operatorname{epi}}
 \newcommand{\aff}{\operatorname{aff}}

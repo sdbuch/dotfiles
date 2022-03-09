@@ -37,8 +37,11 @@ sorting=ynt,
 doi=false,
 hyperref=true,
 isbn=false,
+sortcites,
 url=false,
-maxbibnames=99
+maxbibnames=99,
+maxalphanames=3,
+minalphanames=3
 ]{biblatex}
 \addbibresource{refs.bib}
 \renewbibmacro{in:}{}
@@ -47,7 +50,7 @@ maxbibnames=99
 }
 \usepackage{hyperref}       % hyperlinks
 \usepackage{nameref}
-\usepackage[capitalise]{cleveref}
+\usepackage[capitalise,noabbrev,sort]{cleveref}
 \usepackage{enumitem}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{wrapfig}
