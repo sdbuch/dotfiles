@@ -11,8 +11,6 @@
 \definecolor{forestgreen(web)}{rgb}{0.13, 0.55, 0.13}
 
 % MACROS
-\makeatletter
-\def\BState{\State\hskip-\ALG@thistlm}
 \makeatother
 
 % shortcuts for vectors
@@ -265,9 +263,10 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand{\Sph}{\mathbb{S}}
 \newcommand{\Ball}{\mathbb{B}}
 \newcommand{\St}{\mathrm{St}}
-\let\O\relax
 \newcommand{\Orth}{\mathrm{O}}
-\newcommand{\SO}{\mathrm{SO}}
+% Some environments (my thesis) seem to have trouble with \SO??
+%\newcommand{\SOrth}{\mathrm{SO}}
+\newcommand{\SE}{\mathrm{SE}}
 \newcommand{\Unitary}{\mathrm{U}}
 \newcommand{\SU}{\mathrm{SU}}
 \newcommand{\SP}{\mathrm{SP}}

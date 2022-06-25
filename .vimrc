@@ -115,6 +115,7 @@ nnoremap <silent> <F7> :setlocal spell! spelllang=en_us<CR>
 nmap <F8> :TagbarToggle<CR>
 
 "set up vimtex shortcuts
+let g:vimtex_quickfix_mode = 0
 let g:vimtex_syntax_nospell_comments = 1
 let g:tex_flavor = 'latex'
 let g:vimtex_motion_matchparen = 0
@@ -124,7 +125,6 @@ let g:vimtex_imaps_enabled = 0
 "let g:vimtex_view_general_viewer = '/Applications/Preview.app/Contents/MacOS/Preview'
 let g:vimtex_view_general_viewer = 'open'
 let g:vimtex_view_general_options = '-a Preview -g @pdf'
-let g:vimtex_view_general_options_latexmk = '-a Preview -g @pdf'
 let g:vimtex_disable_version_warning = 1
 let g:vimtex_echo_ignore_wait = 1
 let g:vimtex_indent_on_ampersands = 0
@@ -138,6 +138,26 @@ let g:vimtex_indent_ignored_envs = [
       \ 'proof',
       \ 'claim',
       \]
+let g:vimtex_fold_types = {
+      \ 'sections': {
+        \ 'parse_levels' : 0,
+        \ 'sections' : [
+          \ '%(add)?part',
+          \ '%(chapter|addchap)',
+          \ '%(section|addsec)',
+          \ 'subsection',
+          \ 'subsubsection',
+          \ 'paragraph',
+          \ 'subparagraph',
+        \ ],
+        \ 'parts' : [
+          \ 'appendix',
+          \ 'frontmatter',
+          \ 'mainmatter',
+          \ 'backmatter',
+        \ ],
+      \ },
+    \ }
 let g:vimtex_indent_ignored_envs = ['document']
 let g:vimtex_toc_config = {}
 let g:vimtex_toc_config['layer_status'] = {
@@ -280,6 +300,9 @@ command! Poster :r ~/.vim/poster_base.txt
 command! Tikz :r ~/.vim/tikz_base.txt
 command! Python :r ~/.vim/python_skeleton.py
 command! Listings :r ~/.vim/listings_base.txt
+
+" Add a shortcut command for git pushing to overleaf
+command! Overleaf :Git add * | Git commit -m asdf | Git push
 
 " New file templates
 au BufNewFile *.py 0r ~/.vim/python_skeleton.py
