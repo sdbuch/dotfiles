@@ -1,0 +1,32 @@
+cdir=$(pwd)
+
+# config files
+ln -s $cdir/.gitconfig ~/.gitconfig
+ln -s $cdir/.gitignore_global ~/.gitignore_global
+ln -s $cdir/.latexmkrc ~/.latexmkrc
+ln -s $cdir/.profile ~/.profile
+ln -s $cdir/.vimrc ~/.vimrc
+ln -s $cdir/.vim/python_imports.txt ~/.vim/python_skeleton.py
+
+# these directories might need to be adjusted based on
+# texmf installation
+ln -s $cdir/sam_macros.def ~/Library/texmf/tex/latex/local/sam_macros.def
+ln -s $cdir/sam_preamble.def ~/Library/texmf/tex/latex/local/sam_preamble.def
+ln -s $cdir/beamercolorthemegemini.sty ~/Library/texmf/tex/latex/local/beamercolorthemegemini.sty
+ln -s $cdir/beamerthemegemini.sty ~/Library/texmf/tex/latex/local/beamerthemegemini.sty
+
+# for vim
+ln -s $cdir/.vim/article_base.txt ~/.vim/article_base.txt
+ln -s $cdir/.vim/beamer_base.txt ~/.vim/beamer_base.txt
+ln -s $cdir/.vim/figure_base.txt ~/.vim/figure_base.txt
+ln -s $cdir/.vim/listings_base.txt ~/.vim/listings_base.txt
+ln -s $cdir/.vim/poster_base.txt ~/.vim/poster_base.txt
+ln -s $cdir/.vim/subfigure_base.txt ~/.vim/subfigure_base.txt
+ln -s $cdir/.vim/tikz_base.txt ~/.vim/tikz_base.txt
+ln -s $cdir/.vim/colors/wombat256mod.vim ~/.vim/colors/wombat256mod.vim
+
+# for ipython / jupyter
+ln -s $cdir/.jupyter/jupyter_qtconsole_config.py ~/.jupyter/jupyter_qtconsole_config.py
+ln -s $cdir/.ipython/sam_utility.py ~/.ipython/sam_utility.py
+ln -s $cdir/.ipython/profile_default/ipython_config.py ~/.ipython/profile_default/ipython_config.py
+ln -s $cdir/.ipython/profile_default/ipython_kernel_config.py ~/.ipython/profile_default/ipython_kernel_config.py

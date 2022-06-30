@@ -327,6 +327,7 @@ let g:NERDTreeGitStatusIndicatorMapCustom = {
                 \ 'Clean'     :'✔︎',
                 \ 'Unknown'   :'?',
                 \ }
+let g:NERDTreeShowHidden=1
 
 " jedi-vim settings
 set noshowmode
