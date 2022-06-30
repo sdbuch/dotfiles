@@ -25,18 +25,44 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
+
+# Path specs
+export EDITOR=/usr/local/bin/vim
+export PATH=${PATH}:/usr/local/lib
+export PATH=${PATH}:~/projects/github/keychain
+export GEM_HOME="$HOME/.gem"
+
+
+#colors
+export CLICOLOR=1
+#export LSCOLORS='GxFxCxDxBxegedabagaced'
+#export LSCOLORS='BxBxhxDxfxhxhxhxhxcxcx'
+
+# PATH management with anaconda, for brew
+brew () {
+  export PATH="$PATHO"
+  echo "Anaconda removed from path"
+  command brew "$@"
+  export PATH="/Users/sadboys/anaconda3/bin:$PATHO"
+  echo "Anaconda restored to path"
+}
+
+test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+
+# History file parameters
+HISTSIZ=10000
+HISTFILESIZE=200000
+
+
+# Following is nonessential
 export CLASSPATH=.:/Users/sadboys/algs4/algs4.jar:/Users/sadboys/algs4/stdlib.jar
 export PROJECTDIR=.:/Users/sadboys/projects/:/Users/sadboys/algs4/projects
-export EDITOR=/usr/local/bin/vim
 export PATH=${PATH}:/usr/local/opt/go/libexec/bin
 export PATH=${PATH}:/usr/texbin
-export PATH=${PATH}:/usr/local/lib
 export PATH=${PATH}:/opt/bin
 export PATH=${PATH}:~/mosek/mosek/8/tools/platform/osx64x86/bin
 export PATH=${PATH}:~/projects/github/math-with-slack
-export PATH=${PATH}:~/projects/github/keychain
 export PATH=${PATH}:/usr/local/sbin/
-export GEM_HOME="$HOME/.gem"
 #export PATH=${PATH}:~/projects/verilog/esn_v/util
 #export PATH=${PATH}:/usr/local/lib/python2.7/site-packages/
 #export PYTHONPATH=/usr/local/lib/python2.7/site-packages/
@@ -64,11 +90,6 @@ fi
 #launchctl setenv DYLD_LIBRARY_PATH /usr/local/kde4/lib:$DYLD_LIBRARY_PATH
 #export XDG_DATA_HOME=$HOME/Library/Preferences/KDE/share
 #export XDG_DATA_DIRS=/usr/local/kde4/share:/usr/local/share:/usr/share
-
-#colors
-export CLICOLOR=1
-#export LSCOLORS='GxFxCxDxBxegedabagaced'
-#export LSCOLORS='BxBxhxDxfxhxhxhxhxcxcx'
 
 
  #Includes for CLANG / G++
@@ -98,9 +119,6 @@ fi
 # Start ssh-agent using keychain
 eval `keychain --eval --agents ssh --inherit any id_rsa id_rsa_b id_rsa_johnvision`
 
-# History file parameters
-HISTSIZ=10000
-HISTFILESIZE=200000
 # added by Anaconda3 2018.12 installer
 # >>> conda init >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -118,20 +136,9 @@ fi
 unset __conda_setup
 # <<< conda init <<<
 
-# PATH management with anaconda, for brew
-brew () {
-  export PATH="$PATHO"
-  echo "Anaconda removed from path"
-  command brew "$@"
-  export PATH="/Users/sadboys/anaconda3/bin:$PATHO"
-  echo "Anaconda restored to path"
-}
-
 # Things for CaImAn (Spyder settings)
 export MKL_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
-
-test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
 
 
 # The next line updates PATH for the Google Cloud SDK.
