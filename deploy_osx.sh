@@ -30,3 +30,7 @@ ln -s $cdir/.jupyter/jupyter_qtconsole_config.py ~/.jupyter/jupyter_qtconsole_co
 ln -s $cdir/.ipython/sam_utility.py ~/.ipython/sam_utility.py
 ln -s $cdir/.ipython/profile_default/ipython_config.py ~/.ipython/profile_default/ipython_config.py
 ln -s $cdir/.ipython/profile_default/ipython_kernel_config.py ~/.ipython/profile_default/ipython_kernel_config.py
+
+# for keyboard remapping
+ln -s $cdir/keyremap_windowskb.sh ~/keyremap_windowskb.sh
+sudo ln -s $cdir/com.user.keyboardmapping.plist /Library/LaunchDaemons/com.user.keyboardmapping.plist
