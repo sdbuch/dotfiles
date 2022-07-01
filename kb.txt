@@ -1,0 +1,78 @@
+hidutil property --set '{"UserKeyMapping":
+    [{"HIDKeyboardModifierMappingSrc":0x7000000e6,
+      "HIDKeyboardModifierMappingDst":0x7000000e4}]
+}'
+
+NOTE:
+Source is the key that you want to press.
+Dest is the target function of the key.
+
+EG in the example above, when the Rt Alt key is pressed, it will have the
+function of Rt Ctrl after running the command.
+
+Mine: Want to press Scroll Lock, and have it behave as Fn.
+
+For print screen -> mute:
+For scroll lock -> volume down:
+For pause -> volume up:
+
+hidutil property --set '{"UserKeyMapping":
+  [{"HIDKeyboardModifierMappingSrc":0x700000046,
+    "HIDKeyboardModifierMappingDst":0x70000007F},
+   {"HIDKeyboardModifierMappingSrc":0x700000047,
+      "HIDKeyboardModifierMappingDst":0x700000081},
+   {"HIDKeyboardModifierMappingSrc":0x700000048,
+      "HIDKeyboardModifierMappingDst":0x700000080}]
+}'
+
+
+hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000046,"HIDKeyboardModifierMappingDst":0x70000007F},{"HIDKeyboardModifierMappingSrc":0x700000047,"HIDKeyboardModifierMappingDst":0x700000081},{"HIDKeyboardModifierMappingSrc":0x700000048,"HIDKeyboardModifierMappingDst":0x700000080}]}'
+
+mkdir -p "$HOME"/bin
+printf '%s\n' '#!/bin/sh' \
+    'hidutil property --set
+    '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000046,"HIDKeyboardModifierMappingDst":0x70000007F},{"HIDKeyboardModifierMappingSrc":0x700000047,"HIDKeyboardModifierMappingDst":0x700000081},{"HIDKeyboardModifierMappingSrc":0x700000048,"HIDKeyboardModifierMappingDst":0x700000080}]}''\
+    >"$HOME"/bin/userkeymapping
+chmod 755 "$HOME"/bin/userkeymapping
+cat<<: >"$HOME"/Library/LaunchAgents/userkeymapping.plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>userkeymapping</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>$HOME/bin/userkeymapping</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>
+:
+launchctl load "$HOME"/Library/LaunchAgents/userkeymapping.plist
+
+
+mkdir -p "$HOME"/bin
+printf '%s\n' '#!/bin/sh' \
+    'hidutil property --set
+    '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000064,"HIDKeyboardModifierMappingDst":0x700000029}]}'' \
+    >"$HOME"/bin/userkeymapping
+chmod 755 "$HOME"/bin/userkeymapping
+cat<<: >"$HOME"/Library/LaunchAgents/userkeymapping.plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>userkeymapping</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>$HOME/bin/userkeymapping</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>
+:
+launchctl load "$HOME"/Library/LaunchAgents/userkeymapping.plist
