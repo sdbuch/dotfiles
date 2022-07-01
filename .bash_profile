@@ -13,9 +13,6 @@ alias rpi='arp -a -n | grep b8:27:eb:'
 alias qtconsole='jupyter qtconsole'
 
 #alias vim='vim --servername VIM'
-
-# Start keychain
-eval `keychain --eval --agents ssh --inherit any id_ed25519`
  
 
 # User functions
@@ -36,6 +33,9 @@ export PATH=${PATH}:/usr/local/lib
 export PATH=${PATH}:~/projects/github/keychain
 export GEM_HOME="$HOME/.gem"
 
+
+# Start keychain
+eval `keychain --eval --agents ssh --inherit any id_ed25519`
 
 #colors
 export CLICOLOR=1
