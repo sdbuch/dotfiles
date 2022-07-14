@@ -3,9 +3,9 @@
 " interact properly
 " so after this is set here, probably can't run many other programs in this
 " session
-let $PYTHONHOME = "/Users/sadboys/anaconda3"
+let $PYTHONHOME = "/Users/sdbuch/anaconda3"
 " set python 3 dll
-set pythonthreedll=/Users/sadboys/anaconda3/bin/python
+set pythonthreedll=/Users/sdbuch/anaconda3/bin/python
 
 " set leader character
 let mapleader = ","
