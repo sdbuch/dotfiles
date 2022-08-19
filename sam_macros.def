@@ -265,7 +265,7 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand{\St}{\mathrm{St}}
 \newcommand{\Orth}{\mathrm{O}}
 % Some environments (my thesis) seem to have trouble with \SO??
-%\newcommand{\SOrth}{\mathrm{SO}}
+\newcommand{\SOrth}{\mathrm{SO}}
 \newcommand{\SE}{\mathrm{SE}}
 \newcommand{\Unitary}{\mathrm{U}}
 \newcommand{\SU}{\mathrm{SU}}
@@ -342,7 +342,6 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand{\dist}{\operatorname{dist}}
 \newcommand{\nnz}{\operatorname{nnz}}
 \newcommand{\RE}{\operatorname{RE}}
-\newcommand{\err}{\operatorname{err}}
 \newcommand{\circulant}{\operatorname{circ}}
 \newcommand{\tre}{\operatorname{tre}}
 \newcommand{\etr}{\operatorname{etr}}

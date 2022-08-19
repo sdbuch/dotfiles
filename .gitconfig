@@ -8,3 +8,5 @@
 [credential "https://git.overleaf.com"]
 	username = sambuchanan6@gmail.com
 	helper = cache
+[init]
+	defaultBranch = main

@@ -30,9 +30,16 @@ fi
 # Path specs
 export EDITOR=/usr/local/bin/vim
 export PATH=${PATH}:/usr/local/lib
+export PATH=${PATH}:/opt/homebrew/lib
 export PATH=${PATH}:~/projects/github/keychain
 export GEM_HOME="$HOME/.gem"
 
+# Lua spec
+# This is for a homebrew install as of 8/18/2022...
+export LUA_PREFIX="/opt/homebrew/Cellar/lua/5.4.4_1"
+
+# Mypy path for stubs
+export MYPYPATH=~/.vim/vim-lsp-settings/stubs
 
 # Start keychain
 eval `keychain --eval --agents ssh --inherit any id_ed25519`
@@ -71,9 +78,19 @@ unset __conda_setup
 export PATHO=$PATH
 brew () {
   export PATH="$PATHO"
-  echo "Anaconda removed from path"
+  # echo "Anaconda removed from path"
   command brew "$@"
   export PATH="/Users/sdbuch/anaconda3/bin:$PATHO"
-  echo "Anaconda restored to path"
+  # echo "Anaconda restored to path"
 }
 
+# config for ruby
+source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
+source /opt/homebrew/opt/chruby/share/chruby/auto.sh
+chruby ruby-3.1.2
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/sdbuch/google-cloud-sdk/path.bash.inc' ]; then . '/Users/sdbuch/google-cloud-sdk/path.bash.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/sdbuch/google-cloud-sdk/completion.bash.inc' ]; then . '/Users/sdbuch/google-cloud-sdk/completion.bash.inc'; fi

@@ -6,18 +6,7 @@ Dependencies:
   - keychain (https://www.funtoo.org/Keychain)
 
 - vim plugins 
-  - lightline (https://github.com/itchyny/lightline.vim)
-  - vimtex (https://github.com/lervag/vimtex)
-  - FastFold (https://github.com/Konfekt/FastFold)
-  - jedi-vim (https://github.com/davidhalter/jedi-vim)
-  - SimpylFold (https://github.com/tmhedberg/SimpylFold)
-  - tagbar (https://github.com/preservim/tagbar)
-  - nerdtree (https://github.com/preservim/nerdtree)
-  - python-syntax (https://github.com/vim-python/python-syntax)
-  - vim-gutentags (https://github.com/ludovicchabant/vim-gutentags)
-  - vim-indent-guides (https://github.com/nathanaelkane/vim-indent-guides)
-  - vim fugitive (https://github.com/tpope/vim-fugitive)
-  - nerdtree git plugin (https://github.com/Xuyuanp/nerdtree-git-plugin)
+  - Use vim-plug now, see `.vimrc`
 
 - vim setup
   - tweak paths in .vimrc for python lib locations (comment pythonpath with
