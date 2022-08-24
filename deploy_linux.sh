@@ -18,8 +18,13 @@
 
 cdir=$(pwd)
 
-# clean setup
+# clean setup: software
 sudo apt-get install vim-nox
+sudo apt-get install xauth
+sudo apt-get install eog
+sudo apt-get install ctags
+
+# clean setup: dirs
 mkdir ~/.vim
 mkdir ~/.vim/colors
 mkdir ~/scripts
