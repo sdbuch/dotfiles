@@ -262,7 +262,7 @@ Plug 'mattn/vim-lsp-settings'
 
     " Global LSP config
     function! s:on_lsp_buffer_enabled() abort
-        setlocal omnifunc=lsp#complete
+        " setlocal omnifunc=lsp#complete
         if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
         nmap <buffer> <Leader>gd <plug>(lsp-definition)
         nmap <buffer> <Leader>gr <plug>(lsp-references)
@@ -273,6 +273,7 @@ Plug 'mattn/vim-lsp-settings'
         nmap <buffer> <Leader>[g <Plug>(lsp-previous-diagnostic)
         nmap <buffer> <Leader>]g <Plug>(lsp-next-diagnostic)
         nmap <buffer> <Leader>le <Plug>(lsp-document-diagnostics)
+        nmap <buffer> <Leader>sh <Plug>(lsp-signature-help)
         nmap <buffer> K <plug>(lsp-hover)
     endfunction
 
@@ -312,6 +313,9 @@ Plug 'mattn/vim-lsp-settings'
     let g:lsp_diagnostics_signs_information = {'text': '▴'}
     let g:lsp_diagnostics_signs_hint = {'text': '▴'}
     let g:lsp_diagnostics_signs_priority = 10
+    
+    " Set some semantic highlighting
+    let g:lsp_semantic_enabled = 1
 
     " Jump through some hoops to auto-install pylsp-mypy whenever we call :LspInstallServer
     function! s:check_for_pylsp_mypy()
@@ -362,6 +366,7 @@ Plug 'mattn/vim-lsp-settings'
     let g:lsp_diagnostics_echo_cursor = 1
 
     " Binding for showing loclist with all errors
+    " set this to <leader>le above for sam familiarity...
     nnoremap <Leader><Tab> :LspDocumentDiagnostics<CR>
 
     " Disable tex.vim errors; texlab is far more useful
@@ -406,7 +411,6 @@ Plug 'thecontinium/asyncomplete-buffer.vim'
     endfunction
 
     " Jump forward or backward
-    " Note: inoremap will not work here, since we need to call vsnip-jump-*
     imap <expr> <TAB>
         \ pumvisible() ? "\<C-n>" :
         \ <SID>check_back_space() ? "\<TAB>" :
@@ -453,7 +457,8 @@ Plug 'thecontinium/asyncomplete-buffer.vim'
 " }}
 
 " Automated docstrings
-Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
+" Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
+Plug 'kkoomen/vim-doge', { 'do': 'npm i --no-save && npm run build:binary:unix' }
 " {{
     let g:doge_doc_standard_python = 'google'
 
