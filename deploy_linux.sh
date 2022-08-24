@@ -29,6 +29,7 @@ ln -s $cdir/.gitconfig_linux ~/.gitconfig
 ln -s $cdir/.gitignore_global ~/.gitignore_global
 ln -s $cdir/.vimrc ~/.vimrc
 # ln -s $cdir/.bashrc ~/.bashrc
+ln -s $cdir/.bash_aliases ~/.bash_aliases
 ln -s $cdir/.dircolors ~/.dircolors
 ln -s $cdir/.tmux.conf ~/.tmux.conf
 
