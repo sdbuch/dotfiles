@@ -16,6 +16,25 @@
 # - https://github.com/odedlaz/tmux-onedark-theme
 # - https://github.com/odedlaz/tmux-status-variables
 
-SCRIPT=$(readlink -f "$0")
-SCRIPTPATH=$(dirname "$SCRIPT")
-echo $SCRIPTPATH
+cdir=$(pwd)
+
+# clean setup
+sudo apt-get install vim-nox
+mkdir ~/.vim
+mkdir ~/.vim/colors
+mkdir ~/scripts
+
+# config files
+ln -s $cdir/.gitconfig_linux ~/.gitconfig
+ln -s $cdir/.gitignore_global ~/.gitignore_global
+ln -s $cdir/.vimrc ~/.vimrc
+# ln -s $cdir/.bashrc ~/.bashrc
+ln -s $cdir/.dircolors ~/.dircolors
+ln -s $cdir/.tmux.conf ~/.tmux.conf
+
+# etc
+ln -s $cdir/.vim/python_imports.txt ~/.vim/python_skeleton.py
+ln -s $cdir/.vim/colors/wombat256mod.vim ~/.vim/colors/wombat256mod.vim
+ln -s $cdir/scripts/dev-tmux ~/scripts/dev-tmux
+
+
