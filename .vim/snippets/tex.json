@@ -1,0 +1,33 @@
+{
+  "Figure": {
+    "prefix": ["figure", "fig"],
+    "body": [
+      "\\begin{figure}[!htb]",
+      "\t\\centering",
+      "\t${1|\\fbox{,{|}\\includegraphics[${2|width=\\textwidth\\,trim={0.5in\\,0.5in\\,0.5in\\,0.5in}\\,clip,width=\\textwidth, |}]{$3}}",
+      "\t\\caption{$4}",
+      "\t\\label{fig:$5}",
+      "\\end{figure}"
+    ],
+    "description": "Graphicx/subcaption figure skeleton"
+  },
+  "Subfigure": {
+    "prefix": ["subfigure", "subfig"],
+    "body": [
+      "\\begin{figure}[!htb]",
+      "\t\\centering",
+      "\t\\begin{subfigure}[t]{0.45\\textwidth}",
+      "\t\t${1|\\fbox{,{|}\\includegraphics[${2|width=\\textwidth\\,trim={0.5in\\,0.5in\\,0.5in\\,0.5in}\\,clip,width=\\textwidth, |}]{$3}}",
+      "\t\t\\caption{$4}",
+      "\t\t\\label{fig:$5}",
+      "\\end{subfigure}",
+      "\t\\begin{subfigure}[t]{0.45\\textwidth}",
+      "\t\t${6|\\fbox{,{|}\\includegraphics[${7|width=\\textwidth\\,trim={0.5in\\,0.5in\\,0.5in\\,0.5in}\\,clip,width=\\textwidth, |}]{$8}}",
+      "\t\t\\caption{$9}",
+      "\t\t\\label{fig:$0}",
+      "\\end{subfigure}",
+      "\\end{figure}"
+    ],
+    "description": "Graphicx/subcaption subfigure skeleton"
+  }
+}

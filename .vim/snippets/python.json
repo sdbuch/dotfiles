@@ -1,0 +1,32 @@
+{
+  "Timer": {
+    "prefix": ["timer"],
+    "body": [
+      "class Timer(object):",
+      "\tdef __init__(self, name=None):",
+      "\t\tself.name = name",
+      "",
+      "\tdef __enter__(self):",
+      "\t\tself.tstart = time.time()",
+      "",
+      "\tdef __exit__(self, type, value, traceback):",
+      "\t\tif self.name:",
+      "\t\t\tprint('[%s]' % self.name,)",
+      "\t\tprint('Elapsed: %s' % (time.time() - self.tstart))"
+    ],
+    "description": "Eli Bendersky's simple timer snippet"
+  },
+  "Matplotlib 3D surface": {
+    "prefix": ["surface", "meshgrid", "3d"],
+    "body": [
+      "from matplotlib import cm",
+      "${1:fig} = plt.figure()",
+      "${2:ax} = $1.add_subplot(111, projection='3d')",
+      "surf = $2.plot_surface(${3:X}, ${4:Y}, ${5:Z}, cmap=cm.plasma)",
+      "fig.colorbar(surf)",
+      "plt.show()",
+      "$0"
+    ],
+    "description": "Plot a 3D surface in matplotlib"
+  }
+}

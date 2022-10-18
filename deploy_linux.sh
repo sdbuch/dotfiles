@@ -27,6 +27,7 @@ sudo apt-get install ctags
 # clean setup: dirs
 mkdir ~/.vim
 mkdir ~/.vim/colors
+mkdir ~/.vim/snippets
 mkdir ~/scripts
 
 # config files
@@ -41,6 +42,7 @@ ln -s $cdir/.tmux.conf ~/.tmux.conf
 # etc
 ln -s $cdir/.vim/python_imports.txt ~/.vim/python_skeleton.py
 ln -s $cdir/.vim/colors/wombat256mod.vim ~/.vim/colors/wombat256mod.vim
+ln -s $cdir/.vim/snippets/python.json ~/.vim/snippets/python.json
 ln -s $cdir/scripts/dev-tmux ~/scripts/dev-tmux
 
 

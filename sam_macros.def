@@ -11,6 +11,8 @@
 \definecolor{forestgreen(web)}{rgb}{0.13, 0.55, 0.13}
 
 % MACROS
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
 \makeatother
 
 % shortcuts for vectors
@@ -246,6 +248,7 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand*{\Zero}{\mathbf{0}}
 \newcommand*{\Id}{\operatorname{\mathrm{Id}}}
 \newcommand*{\conv}{\mathbin{\ast}}
+\newcommand*{\xcorr}{\mathbin{\star}}
 \newcommand*{\cconv}{\mathbin{\circledast}}
 
 % Trig stuff
@@ -342,6 +345,7 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand{\dist}{\operatorname{dist}}
 \newcommand{\nnz}{\operatorname{nnz}}
 \newcommand{\RE}{\operatorname{RE}}
+\newcommand{\err}{\operatorname{err}}
 \newcommand{\circulant}{\operatorname{circ}}
 \newcommand{\tre}{\operatorname{tre}}
 \newcommand{\etr}{\operatorname{etr}}

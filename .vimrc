@@ -365,10 +365,6 @@ Plug 'mattn/vim-lsp-settings'
     " Show error messages below statusbar
     let g:lsp_diagnostics_echo_cursor = 1
 
-    " Binding for showing loclist with all errors
-    " set this to <leader>le above for sam familiarity...
-    nnoremap <Leader><Tab> :LspDocumentDiagnostics<CR>
-
     " Disable tex.vim errors; texlab is far more useful
     let g:tex_no_error=1
 " }}
@@ -411,12 +407,17 @@ Plug 'thecontinium/asyncomplete-buffer.vim'
     endfunction
 
     " Jump forward or backward
+    " Adding some vsnip integrations here
     imap <expr> <TAB>
+        \ vsnip#jumpable(1) ? '<Plug>(vsnip-jump-next)' :
         \ pumvisible() ? "\<C-n>" :
         \ <SID>check_back_space() ? "\<TAB>" :
         \ asyncomplete#force_refresh()
     imap <expr><S-TAB>
+        \ vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' :
         \ pumvisible() ? "\<C-p>" : "\<C-h>"
+    smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+    smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 
     " Register path completer
     function! s:register_asyncomplete_sources() abort
@@ -454,6 +455,22 @@ Plug 'thecontinium/asyncomplete-buffer.vim'
     endfunction
 
     autocmd User asyncomplete_setup call s:register_asyncomplete_sources()
+" }}
+
+" https://raw.githubusercontent.com/junegunn/vim-plug/master/doc/plug.txtSnippet support
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
+" {{
+    let g:vsnip_snippet_dir = expand(s:vim_plug_folder . "../snippets/")
+
+    " <Tab>/<S-Tab> are bound under asyncomplete
+    
+    " Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
+    " See https://github.com/hrsh7th/vim-vsnip/pull/50
+    nmap <Leader>s <Plug>(vsnip-select-text)
+    xmap <Leader>s <Plug>(vsnip-select-text)
+    nmap <Leader>S <Plug>(vsnip-cut-text)
+    xmap <Leader>S <Plug>(vsnip-cut-text)
 " }}
 
 " Automated docstrings
@@ -529,10 +546,10 @@ if !s:fresh_install
 
   " set path searching
   set path=.,**
-  nnoremap <Leader>f :find *
-  nnoremap <Leader>s :sfind *
-  nnoremap <leader>v :vert sfind *
-  nnoremap <Leader>t :tabfind *
+  nnoremap <Leader>ff :find *
+  nnoremap <Leader>sf :sfind *
+  nnoremap <leader>vf :vert sfind *
+  nnoremap <Leader>tf :tabfind *
 
   " set buffer manipulation
   set wildcharm=<C-z>

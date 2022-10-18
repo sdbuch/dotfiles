@@ -24,6 +24,8 @@ ln -s $cdir/.vim/poster_base.txt ~/.vim/poster_base.txt
 ln -s $cdir/.vim/subfigure_base.txt ~/.vim/subfigure_base.txt
 ln -s $cdir/.vim/tikz_base.txt ~/.vim/tikz_base.txt
 ln -s $cdir/.vim/colors/wombat256mod.vim ~/.vim/colors/wombat256mod.vim
+ln -s $cdir/.vim/snippets/tex.json ~/.vim/snippets/tex.json
+ln -s $cdir/.vim/snippets/python.json ~/.vim/snippets/python.json
 
 # for ipython / jupyter
 ln -s $cdir/.jupyter/jupyter_qtconsole_config.py ~/.jupyter/jupyter_qtconsole_config.py
