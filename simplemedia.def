@@ -1,0 +1,58 @@
+\RequirePackage{xkeyval}
+\RequirePackage{zref-abspage}
+\RequirePackage[bigfiles]{pdfbase}
+
+% Written by Fritz -- https://tex.stackexchange.com/a/592827-- using Adobe PDF Reference, sixth edition, Nov. 2006
+% Usage: \simplemedia[<options>]{<poster or text>}{<media file>}{MIME type}
+% Sam: this works in pympress 1.7.2 with lualatex, info taken from
+% https://github.com/Cimbali/pympress/discussions/258
+\makeatletter
+\define@boolkey{simplemedia}{autoplay}{\def\simplemediaautoplay{#1}}
+\define@boolkey{simplemedia}{showGUI}{\def\simplemediashowGUI{#1}}
+\define@choicekey*{simplemedia}{loop}[\val\nr]{true,false}{%
+  \ifcase\nr\relax
+    \def\simplemediarepeat{0}
+  \or
+    \def\simplemediarepeat{1}
+  \fi
+}
+\presetkeys{simplemedia}{autoplay=false,showGUI=false,loop=true}{}
+\ExplSyntaxOn
+
+\newcommand\simplemedia[4][]{%
+  \def\placeholderbox{%
+    \vbox to #3 {\vfil%
+      \hbox to #2{\hfil#4\hfil}%
+      \vfil%
+    }%
+  }
+  \setkeys{simplemedia}{#1}\leavevmode
+  \pbs_pdfobj:nnn{}{fstream}{{}{#4}} % EmbeddedFiles stream
+  \pbs_pdfobj:nnn{}{dict}{/Type/Filespec/F~(#4)/UF~(#4)/EF~<</F~\pbs_pdflastobj:>>} % File specification dictionary
+  \pbs_pdfobj:nnn{}{dict}{/D~\pbs_pdflastobj:/N~(Media~clip~from~#4)/P~<</TF (TEMPACCESS)>>/S~/MCD} % Content type dictionary
+  % XXX: /A below is incorrectly interpreted by Pympress as autoplay instead of play-on-activate and using the Additional Actions (AA) dictionary for autoplay
+  \pbs_pdfobj:nnn{}{dict}{/C~\pbs_pdflastobj:/N~(Rendition~from~#4)/P~<</BE~<</C~\simplemediashowGUI~/A~\simplemediaautoplay~/RC~\simplemediarepeat>>~>>/S~/MR} % media clip dictionary
+  \tl_set:Nx\mediarendition{\pbs_pdflastobj:}% Save ID of Rendition annotation
+  \pbs_pdfobj:nnn{}{dict}{}\tl_set:Nx\renditionactionplay{\pbs_pdflastobj:}% Reserve ID for Play Rendition action
+  \pbs_pdfobj:nnn{}{dict}{}\tl_set:Nx\renditionactionstop{\pbs_pdflastobj:}% Reserve ID for Stop Rendition action
+  \hbox_set:Nn\l_tmpa_box{\placeholderbox}% Compute size of poster
+  \tl_set:Nx\l_box_wd_tl{\dim_use:N\box_wd:N\l_tmpa_box}
+  \tl_set:Nx\l_box_ht_tl{\dim_use:N\box_ht:N\l_tmpa_box}
+  \tl_set:Nx\l_box_dp_tl{\dim_use:N\box_dp:N\l_tmpa_box}
+  \pbs_pdfxform:nnnnn{1}{1}{}{}{\l_tmpa_box}
+  \tl_set:Nx\l_simplem_current_page_tl{\zref@extract{simplem@\int_use:N\g_simplem_id_int}{abspage}}
+  \pbs_pdfannot:nnnn{\l_box_wd_tl}{\l_box_ht_tl}{\l_box_dp_tl}{
+      /T~(Annotation~from~#4)~/Subtype~/Screen~/BS~<</W~1/S/S>>/C~[0.039216~0.039216~0.039216]/CA~1/F~4~%
+      /Contents~(Embedded~media~file~#4)/NM~(simplemediascreenannot:#4)/AP~<</N~\pbs_pdflastxform:>>%
+      /A~\renditionactionplay~/AA~<<\ifKV@simplemedia@autoplay~/PO~\renditionactionplay~\fi~/PC~\renditionactionstop~>>~%
+      \int_compare:nT{\l_simplem_current_page_tl>0}{/P~\exp_args:Ne\pdf_pageobject_ref:n{\l_simplem_current_page_tl}}%
+  }
+  \pbs_pdfobj:nnn{\renditionactionplay}{dict}{/R~\mediarendition/S~/Rendition/OP~4/AN~\pbs_pdflastann:} % Rendition Action: "Play Rendition"
+  \pbs_pdfobj:nnn{\renditionactionstop}{dict}{/R~\mediarendition/S~/Rendition/OP~1/AN~\pbs_pdflastann:} % Rendition Action: "Stop Rendition"
+  \phantom{\placeholderbox} % Display the poster
+  \zref@labelbyprops{simplem@\int_use:N\g_simplem_id_int}{abspage}\int_gincr:N\g_simplem_id_int
+}%
+\int_new:N\g_simplem_id_int
+
+\ExplSyntaxOff
+\makeatother

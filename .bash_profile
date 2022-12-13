@@ -59,6 +59,9 @@ HISTFILESIZE=200000
 # Brew thing
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
+# Gstreamer setup...
+export GST_PLUGIN_PATH="/opt/homebrew/lib/gstreamer-1.0"
+
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('/Users/sdbuch/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"

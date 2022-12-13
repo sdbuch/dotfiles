@@ -11,6 +11,13 @@
     ],
     "description": "Graphicx/subcaption figure skeleton"
   },
+  "Includegraphics": {
+    "prefix": ["includegraphics"],
+    "body": [
+      "\t${1|\\fbox{,{|}\\includegraphics[${2|width=\\textwidth\\,trim={0.5in\\,0.5in\\,0.5in\\,0.5in}\\,clip,width=\\textwidth, |}]{$3}}"
+    ],
+    "description": "Graphicx includegraphics command"
+  },
   "Subfigure": {
     "prefix": ["subfigure", "subfig"],
     "body": [
@@ -29,5 +36,76 @@
       "\\end{figure}"
     ],
     "description": "Graphicx/subcaption subfigure skeleton"
+  },
+  "Movie": {
+    "prefix": ["movie", "video", "mp4", "simplemedia"],
+    "body": [
+      "\\simplemedia[autoplay=${1|true,false|},loop=${2|false,true|}]{${3:width}}{${4:height}}{${0:filename.extension}}"
+    ],
+    "description": "Fritz's simplemedia command to embed a video as a screen annotation in a pdf"
+  },
+  "Columns": {
+    "prefix": ["columns", "cols"],
+    "body": [
+      "\\begin{columns}",
+      "\t\\begin{column}{${1:0.46\\textwidth}}",
+      "\t\t${2:content}",
+      "\t\\end{column}",
+      "\t\\begin{column}{${3:0.46\\textwidth}}",
+      "\t\t${0:content}",
+      "\t\\end{column}",
+      "\\end{columns}"
+    ],
+    "description": "Empty Beamer columns environment with two columns"
+  },
+  "tcolorbox": {
+    "prefix": ["tcolorbox"],
+    "body": [
+      "\\begin{tcolorbox}{\\bf{${1:box title}}}",
+      "\t\\renewcommand{\\thempfootnote}{\\arabic{mpfootnote}}",
+      "\t${2:box content}",
+      "\t${0:\\footnote[1]{optional footnote}}",
+      "\\end{tcolorbox}"
+    ]
+  },
+  "beamer title": {
+    "prefix": ["beamer title"],
+    "body": [
+      "\\title{${1:title line 1 \\\\\\ title line 2}}",
+      "\\author{",
+      "\t\\texorpdfstring{",
+      "\t\\textbf{Sam Buchanan} \\\\\\",
+      "\tTTIC",
+      "\t\\vspace{.1in} \\\\\\ ",
+      "\t{\\footnotesize Joint with:} \\vspace{0.1in} \\\\\\",
+      "\t\\includegraphics[height=1in]{${2:1st collab img}}",
+      "\t\\hspace{0.25in}",
+      "\t\\includegraphics[height=1in]{${3:2nd collab img}}",
+      "\t\\hspace{0.25in}",
+      "\t\\includegraphics[height=1in]{${4:3rd collab img}} \\\\\\",
+      "\t{\\hphantom{}} \\hspace{0.1in} ${5:1st collab name} ",
+      "\t\\hspace{0.4in}",
+      "\t${6:2nd collab name}",
+      "\t\\hspace{0.3in}",
+      "\t${7:3rd collab name}\\\\\\",
+      "\t{\\hphantom{}} \\hspace{0.18in} ${8:1st collab affil} ",
+      "\t\\hspace{0.6in}",
+      "\t${9:2nd collab affil}",
+      "\t\\hspace{0.38in}",
+      "\t${0:3rd collab affil}",
+      "}{Sam Buchanan}",
+      "} ",
+      "\\date[]{}"
+    ]
+  },
+  "beamer footer frame": {
+    "prefix": ["beamer footer frame"],
+    "body": [
+      "\\addtobeamertemplate{footline}{\\hskip1em ${1:\\url{\\},\\url{\\},\\url{\\}}}{}",
+      "\\begin{frame}{${2:frame title}}",
+      "\t${0:content}",
+      "\\end{frame}",
+      "\\setbeamertemplate{footline}[frame number]{}"
+    ]
   }
 }

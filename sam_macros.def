@@ -1,3 +1,14 @@
+\RequirePackage{amsmath}
+\RequirePackage{amsbsy}
+\RequirePackage{amsfonts}
+\RequirePackage{amssymb}
+\RequirePackage{amsthm}
+\RequirePackage{dsfont}
+\RequirePackage{mleftright}
+\RequirePackage{thmtools}
+\RequirePackage{mathtools}
+\RequirePackage{ulem}
+
 \begingroup
     \makeatletter
     \@for\theoremstyle:=definition,remark,plain\do{%

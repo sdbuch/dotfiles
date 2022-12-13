@@ -4,6 +4,13 @@
 \setmainfont{Latin Modern Roman}
 \setsansfont{Latin Modern Sans}
 \setmonofont{Latin Modern Mono}
+%\usecolortheme{beaver}
+%\usepackage{fontspec}
+%\setsansfont[Mapping=tex-text]{Ubuntu}
+%\usefonttheme[stillsansseriftext]{Ubuntu}
+%\usepackage{pxfonts} % Or mathpazo
+%\usepackage{mathpazo}
+%\usepackage{eulervm} 
 \renewcommand\rmdefault{pplx}
 \renewcommand\mathfamilydefault{cmr}
 \usepackage[
@@ -15,11 +22,15 @@ doi=false,
 hyperref=true,
 isbn=false,
 uniquename=init,
-url=false
+url=false,
+maxbibnames=99
 ]{biblatex}
 \addbibresource{refs.bib}
 %\renewcommand*{\bibfont}{\tiny}
-\setbeamertemplate{bibliography item}[text]
+\input{simplemedia.def} % Modified defs for working LuaLatex movie embedding in
+                        % pympress
+%\setbeamertemplate{bibliography item}[text]
+\setbeamertemplate{bibliography item}{}
 \setbeamertemplate{bibliography entry title}{}
 \setbeamertemplate{bibliography entry location}{}
 \setbeamertemplate{bibliography entry note}{}
@@ -27,7 +38,10 @@ url=false
 \usepackage{amsmath,amsbsy,amsfonts,amssymb,amsthm,color,dsfont,mleftright}
 \usepackage[skins,breakable]{tcolorbox}
 \usepackage{bm}
+\usepackage{ulem}
 \usepackage{mathrsfs}
+\usepackage{algorithm}
+\usepackage[noend]{algorithmic}
 \usepackage{color}
 \usepackage{xcolor}
 \usepackage{graphicx}
@@ -37,6 +51,8 @@ url=false
 \usepackage{verbatim}
 \usepackage{varwidth}
 \usepackage{pgfplots}
+\usepackage{nicefrac}
+\usepackage{subcaption}
 \pgfplotsset{compat=newest}
 \usepgfplotslibrary{fillbetween}
 \usetikzlibrary{shapes.misc, shapes.geometric, arrows,
@@ -48,63 +64,93 @@ positioning, decorations.pathreplacing,calc,shadings}
 \newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
 \renewcommand{\mathbf}{\boldsymbol} 
 
-
 \setbeamertemplate{footline}[frame number]{}
+%\setbeamertempalte{page number in head/foot}{}
 \setbeamertemplate{navigation symbols}{}
 %\setbeamertemplate{footline}{}
 \setbeamercolor{background canvas}{bg=white}
 
+\definecolor{cssgreen}{rgb}{0,0.5,0}
+\definecolor{skyblue}{HTML}{00BFFF}
 
-% Citations https://tex.stackexchange.com/a/16792
-%\makeatletter
-%
-%\newrobustcmd*{\parentexttrack}[1]{%
-%  \begingroup
-%  \blx@blxinit
-%  \blx@setsfcodes
-%  \blx@bibopenparen#1\blx@bibcloseparen
-%  \endgroup}
-%
-%\AtEveryCite{%
-%  \let\parentext=\parentexttrack%
-%  \let\bibopenparen=\bibopenbracket%
-%  \let\bibcloseparen=\bibclosebracket}
-%
-%\makeatother
-
+\newcommand\widthcolor{orange}
+\newcommand\depthcolor{purple}
+\newcommand\datacolor{cssgreen}
+\newcommand\frameoptions{noframenumbering,plain}
 
 \input{sam_macros.def}
+\usepackage{bbding}
+\newcommand{\fco}{\text{\FourClowerOpen}}
+\newcommand{\adim}{n_0}
+\newcommand{\mdim}{d_0}
 
+%\setcounter{tocdepth}{2}
 \usepackage[english]{babel}
 \usepackage{csquotes}
+%\usepackage{hyperref}
 
 \usepackage{hyperref}
 %\usepackage{pgfpages}
 %\input{fixstuff}
 %\setbeameroption{show notes on second screen=right}
 
-
-\title{\texorpdfstring{
-  \LARGE {Deep Networks and the \\ Multiple Manifold Problem}}
-  {Deep Networks and the Multiple Manifold Problem}
-}
-\author{ Sam Buchanan } 
+\title{{Deep Networks and the \\ Multiple Manifold Problem}}
+\author{
+  \texorpdfstring{
+  \textbf{Sam Buchanan} \\
+  TTIC
+  \vspace{.1in} \\ 
+  {\footnotesize Joint with:} \vspace{0.1in} \\
+  \includegraphics[height=1in]{figs/dg.png}
+  \hspace{0.25in}
+  \includegraphics[height=1in]{figs/tw.jpg}
+  \hspace{0.25in}
+  \includegraphics[height=1in]{figs/JW.jpg} \\
+  {\hphantom{}} \hspace{0.1in} Dar Gilboa 
+  \hspace{0.4in}
+  Tingran Wang
+  \hspace{0.3in}
+  John Wright \\
+  {\hphantom{}} \hspace{0.18in} Google
+  \hspace{0.6in}
+  Columbia U.
+  \hspace{0.38in}
+  Columbia U.
+}{Sam Buchanan}
+} 
 \date[]{}
 
-%\AtBeginSection[]
-%{
-%    \begin{frame}{Outline}
-%        \tableofcontents[currentsection]
-%    \end{frame}
-%} 
-%
-%\AtBeginSubsection[]
-%{
-%    \begin{frame}{Outline}
-%        \tableofcontents[currentsection, currentsubsection]
-%    \end{frame}
-%} 
+\AtBeginSection[]
+{
+  \begin{frame}[noframenumbering,plain]{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+} 
 
+\AtBeginSubsection[]
+{
+  \begin{frame}{Outline}
+    \tableofcontents[currentsection, currentsubsection]
+  \end{frame}
+} 
+
+\newcommand{\mc}{\mathcal}
+\newcommand{\mb}{\boldsymbol}
 \begin{document}
+
+\begin{frame}[noframenumbering,plain]
+  \titlepage
+\end{frame}
+
+\begin{frame}[standout]
+  Backup Slides
+\end{frame}
+
+\setbeamertemplate{footline}{}
+\begin{frame}[t, allowframebreaks, noframenumbering]
+  \nocite{*}
+  \frametitle{References}
+  \printbibliography[heading=none]
+\end{frame}
 
 \end{document}

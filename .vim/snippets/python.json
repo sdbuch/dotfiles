@@ -22,11 +22,78 @@
       "from matplotlib import cm",
       "${1:fig} = plt.figure()",
       "${2:ax} = $1.add_subplot(111, projection='3d')",
-      "surf = $2.plot_surface(${3:X}, ${4:Y}, ${5:Z}, cmap=cm.plasma)",
+      "surf = $2.plot_surface(${3:data}[0, :], $3[1, :], $3[2, :], cmap=cm.plasma)",
       "fig.colorbar(surf)",
       "plt.show()",
       "$0"
     ],
     "description": "Plot a 3D surface in matplotlib"
+  },
+  "Matplotlib 3D scatter": {
+    "prefix": ["scatter3d", "3dscatter"],
+    "body": [
+        "${1:fig} = plt.figure()",
+        "${2:ax} = $1.add_subplot(projection='3d')",
+        "$2.scatter(${3:data}[:, 0], $3[:, 1], $3[:, 2], s=${4:20})",
+        "plt.show()"
+    ],
+    "description": "Plot a 3D scatter plot in matplotlib"
+  },
+  "Torch Imagesc dropin": {
+    "prefix": ["imagesc_torch", "torch_imagesc", "pytorch_imagesc"],
+    "body": [
+      "def imagesc(X, ax=None):",
+      "\timg = torch.moveaxis(X, 0, -1).detach().to('cpu').numpy()",
+      "\tif ax is None:",
+      "\t\tpos = plt.imshow(img, cmap='gray', vmin=X.min(), vmax=X.max(), interpolation='none')",
+      "\t\tplt.show()",
+      "\telse:",
+      "\t\tax.imshow(img, cmap='gray', vmin=X.min(), vmax=X.max(), interpolation='none')"
+    ],
+    "description": "Matlab Imagesc function with pytorch axis moving"
+  },
+  "Numpy Imagesc dropin": {
+    "prefix": ["imagesc_numpy", "numpy_imagesc", "np_imagesc", "imagesc_np"],
+    "body": [
+      "def imagesc(X, ax=None):",
+      "\tif ax is None:",
+      "\t\tpos = plt.imshow(X, cmap='gray', vmin=X.min(), vmax=X.max(), interpolation='none')",
+      "\t\tplt.show()",
+      "\telse:",
+      "\t\tax.imshow(X, cmap='gray', vmin=X.min(), vmax=X.max(), interpolation='none')"
+    ],
+    "description": "Matlab Imagesc function with pytorch axis moving"
+  },
+  "circulant_projection": {
+    "prefix": ["circulant_projection"],
+    "body": [
+      "def circulant_projection(M):",
+      "    \"\"\"Orthogonal projection onto circulant matrices",
+      "",
+      "    Computes the orthogonal projection of square matrix M onto subspace of",
+      "    circulant matrices (constant diagonals, with wrapping)",
+      "",
+      "    Args:",
+      "        M: square matrix (numpy)",
+      "",
+      "    Raises:",
+      "        TypeError: If argument passed is nonsquare",
+      "    \"\"\"",
+      "",
+      "    n = M.shape[0]",
+      "    if np.any([M.shape[i] != n for i in range(len(M.shape))]):",
+      "        raise TypeError('circulant projection only works for square matrices')",
+      "    ",
+      "    C = np.zeros((n, n))",
+      "    for idx_diag in range(n):",
+      "        projection = 1/n * (np.sum(np.diag(M, idx_diag))",
+      "                            + np.sum(np.diag(M, -(n-idx_diag))))",
+      "        C += projection * (np.diag(np.ones(n - idx_diag), idx_diag)",
+      "                           + np.diag(np.ones(idx_diag), -(n-idx_diag)))",
+      "",
+      "    return C"
+    ],
+    "description": "Numpy function to project onto subspace of circulant matrices"
   }
+
 }

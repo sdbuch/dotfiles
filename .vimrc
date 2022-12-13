@@ -462,6 +462,8 @@ Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/vim-vsnip-integ'
 " {{
     let g:vsnip_snippet_dir = expand(s:vim_plug_folder . "../snippets/")
+    " Shorten the delay time for choices
+    let g:vsnip_choice_delay = 100
 
     " <Tab>/<S-Tab> are bound under asyncomplete
     
