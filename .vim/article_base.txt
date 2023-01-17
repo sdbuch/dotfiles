@@ -2,23 +2,30 @@
 \usepackage[letterpaper,margin=1in]{geometry}
 
 %\usepackage[utf8]{inputenc} % allow utf-8 input
-\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
-\usepackage[english]{babel}
+%\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+%\usepackage[english]{babel}
 \usepackage{csquotes}
 \usepackage{url}            % simple URL typesetting
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{amsmath,amsbsy,amsfonts,amssymb,amsthm,color,dsfont,mleftright}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setdefaultlanguage{english}
 
-%\usepackage{textcomp}
-\usepackage[theoremfont]{newpxtext}
-\usepackage{cabin}
-%\usepackage[varqu,varl]{inconsolata}
+\setmainfont{TeX Gyre Pagella}
+\setsansfont{DejaVu Sans}
+\setmonofont{Source Code Pro}
 \usepackage[bigdelims,vvarbb]{newpxmath}
-%\usepackage[scr=boondoxo]{mathalfa}
-\newcommand\hmmax{0}
-\newcommand\bmmax{0}
 \usepackage{bm}
 \usepackage{mathrsfs}
+
+%\usepackage{textcomp}
+%\usepackage[theoremfont]{newpxtext}
+%\usepackage{cabin}
+%%\usepackage[varqu,varl]{inconsolata}
+%%\usepackage[scr=boondoxo]{mathalfa}
+%\newcommand\hmmax{0}
+%\newcommand\bmmax{0}
 
 %\usepackage{lineno}
 %\linenumbers
