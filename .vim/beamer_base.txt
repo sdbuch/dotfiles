@@ -15,17 +15,22 @@
 \renewcommand\mathfamilydefault{cmr}
 \usepackage[
 backend=biber,
-%style=numeric-comp,
-style=authoryear,
-sorting=nyt,
+style=alphabetic,
+sorting=ynt,
 doi=false,
 hyperref=true,
 isbn=false,
-uniquename=init,
+sortcites,
 url=false,
-maxbibnames=99
+maxbibnames=99,
+maxalphanames=3,
+minalphanames=3,
+maxcitenames=2,
+mincitenames=1,
+backref=true
 ]{biblatex}
 \addbibresource{refs.bib}
+\renewbibmacro{in:}{}
 %\renewcommand*{\bibfont}{\tiny}
 \input{simplemedia.def} % Modified defs for working LuaLatex movie embedding in
                         % pympress

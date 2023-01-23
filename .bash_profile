@@ -12,6 +12,7 @@ alias mex='/Applications/MATLAB.app/bin/mex'
 alias rpi='arp -a -n | grep b8:27:eb:'
 alias qtconsole='jupyter qtconsole'
 
+
 #alias vim='vim --servername VIM'
  
 
@@ -19,6 +20,15 @@ alias qtconsole='jupyter qtconsole'
 function cdl() { 
   cd "$@"
   ll
+}
+function gif2mp4() {
+  local first_arg=$1 \
+        second_arg=$2
+
+  shift 2
+
+  magick "$first_arg" -layers coalesce "$second_arg" "$@"
+
 }
 
 # Source global definitions

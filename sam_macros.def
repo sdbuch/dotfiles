@@ -7,7 +7,6 @@
 \RequirePackage{mleftright}
 \RequirePackage{thmtools}
 \RequirePackage{mathtools}
-\RequirePackage{ulem}
 \RequirePackage{xcolor}
 
 \begingroup

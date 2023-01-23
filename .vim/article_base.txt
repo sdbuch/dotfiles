@@ -48,13 +48,21 @@ sortcites,
 url=false,
 maxbibnames=99,
 maxalphanames=3,
-minalphanames=3
+minalphanames=3,
+maxcitenames=2,
+mincitenames=1,
+backref=true
 ]{biblatex}
 \addbibresource{refs.bib}
 \renewbibmacro{in:}{}
 \AtEveryBibitem{%
   \clearlist{language}%
 }
+% Backref in biblatex
+\renewbibmacro*{pageref}{. \iflistundef{pageref}{}{{\printlist[pageref][-\value{listtotal}]{pageref}}}}
+
+
+
 \usepackage{hyperref}       % hyperlinks
 \usepackage{nameref}
 \usepackage[capitalise,noabbrev,sort]{cleveref}
