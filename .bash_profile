@@ -42,6 +42,7 @@ export EDITOR=/usr/local/bin/vim
 export PATH=${PATH}:/usr/local/lib
 export PATH=${PATH}:/opt/homebrew/lib
 export PATH=${PATH}:~/projects/github/keychain
+export PATH=${PATH}:~/bin
 export GEM_HOME="$HOME/.gem"
 
 # Lua spec

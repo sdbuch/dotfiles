@@ -18,6 +18,8 @@ tags
 *.aux
 *.bbl
 *.bcf
+*.brf
+*.pdf
 *.blg
 *.fdb_latexmk
 *.fls

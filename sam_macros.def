@@ -18,8 +18,6 @@
         }
 \endgroup
 
-\definecolor{forestgreen(traditional)}{rgb}{0.0, 0.27, 0.13}
-\definecolor{forestgreen(web)}{rgb}{0.13, 0.55, 0.13}
 
 % MACROS
 \makeatletter
@@ -184,6 +182,10 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
   \renewcommand\given{\SetBar[\delimsize]}
   #1
 }
+\DeclarePairedDelimiterXPP\Ent[2]{\mathop{\mathrm{Ent}}_{#1}}[]{}{%
+  \renewcommand\given{\SetBar[\delimsize]}
+  #2
+}
 
 % misc operators
 %\newcommand{\equid}{\overset{\mathrm{d}}{\equiv}}
@@ -261,6 +263,7 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand*{\conv}{\mathbin{\ast}}
 \newcommand*{\xcorr}{\mathbin{\star}}
 \newcommand*{\cconv}{\mathbin{\circledast}}
+\newcommand{\frob}{\mathrm{F}}
 
 % Trig stuff
 \newcommand{\acos}{\operatorname{\cos\inv}}
@@ -281,6 +284,7 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 % Some environments (my thesis) seem to have trouble with \SO??
 \newcommand{\SOrth}{\mathrm{SO}}
 \newcommand{\SE}{\mathrm{SE}}
+\newcommand{\Ad}{\mathrm{Ad}}
 \newcommand{\Unitary}{\mathrm{U}}
 \newcommand{\SU}{\mathrm{SU}}
 \newcommand{\SP}{\mathrm{SP}}
@@ -395,10 +399,12 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 %\newcommand{\Hpeelfix}[1]{\iter{\tilde{\vH}}{#1}}
 %\newcommand{\Hpeelfixadj}[1]{{\iter{{\tilde{\vH}}}{#1}}{}^*}
 
-\newcommand\memosb[1]{{\color{blue}\{\emph{SB}:} #1{\color{blue}\}}}
+\definecolor{forestgreen(traditional)}{rgb}{0.0, 0.27, 0.13}
+\definecolor{forestgreen(web)}{rgb}{0.13, 0.55, 0.13}
 \newcommand{\sdb}[1]{{\color{forestgreen(web)} \textbf{SB: #1}}}
 % \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
 
 % hyphenation
 \hyphenation{homeo-mor-phism}
 \hyphenation{homeo-mor-phic}
+\hyphenation{inform-ative-ness}

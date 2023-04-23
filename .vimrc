@@ -118,6 +118,10 @@ Plug 'lervag/vimtex'
   let g:vimtex_fold_types = {
         \ 'sections': {
         \ 'parse_levels' : 0,
+        \ 'envs' : {
+        \   'blacklist' : [],
+        \   'whitelist' : ['figure', 'subfigure', 'table', 'theorem', 'lemma', 'proposition', 'corollary', 'definition', 'proof'],
+        \ },
         \ 'sections' : [
         \ '%(add)?part',
         \ '%(chapter|addchap)',
@@ -633,7 +637,7 @@ if !s:fresh_install
   command! Listings :r ~/.vim/listings_base.txt
 
   " Add a shortcut command for git pushing to overleaf
-  command! Overleaf :Git add * | Git commit -m asdf | Git push
+  command! Overleaf :Git add . | Git commit -m asdf | Git push
 
   " New file templates
   au BufNewFile *.py 0r ~/.vim/python_skeleton.py
