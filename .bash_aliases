@@ -7,3 +7,4 @@ alias rm='rm -i'
 
 # tmux
 alias tmuxa='tmux attach-session -t'
+
