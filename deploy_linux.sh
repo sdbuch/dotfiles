@@ -18,11 +18,11 @@
 
 cdir=$(pwd)
 
-# clean setup: software
-sudo apt-get install vim-nox
-sudo apt-get install xauth
-sudo apt-get install eog
-sudo apt-get install ctags
+# # clean setup: software
+# sudo apt-get install vim-nox
+# sudo apt-get install xauth
+# sudo apt-get install eog
+# sudo apt-get install ctags
 
 # clean setup: dirs
 mkdir ~/.vim
@@ -39,11 +39,13 @@ ln -s $cdir/.vimrc ~/.vimrc
 ln -s $cdir/.bash_aliases ~/.bash_aliases
 ln -s $cdir/.dircolors ~/.dircolors
 ln -s $cdir/.tmux.conf ~/.tmux.conf
+ln -s $cdir/.inputrc ~/.inputrc
+
+# cat .bashrc
+cat $cdir/.bashrc >> ~/.bashrc
 
 # etc
 ln -s $cdir/.vim/python_imports.txt ~/.vim/python_skeleton.py
 ln -s $cdir/.vim/colors/wombat256mod.vim ~/.vim/colors/wombat256mod.vim
 ln -s $cdir/.vim/snippets/python.json ~/.vim/snippets/python.json
 ln -s $cdir/scripts/dev-tmux ~/scripts/dev-tmux
-
-

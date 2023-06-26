@@ -6,6 +6,7 @@ ln -s $cdir/.gitignore_global ~/.gitignore_global
 ln -s $cdir/.latexmkrc ~/.latexmkrc
 ln -s $cdir/.profile ~/.profile
 ln -s $cdir/.vimrc ~/.vimrc
+ln -s $cdir/.inputrc ~/.inputrc
 ln -s $cdir/.vim/python_imports.txt ~/.vim/python_skeleton.py
 
 # these directories might need to be adjusted based on
