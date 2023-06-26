@@ -135,6 +135,9 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \DeclarePairedDelimiterX\floor[1]{\lfloor}{\rfloor}{
   \ifblank{#1}{\:\cdot\:}{#1}
 }
+\DeclarePairedDelimiterXPP\KL[2]{\mathop{\mathrm{KL}}}(){}{
+  \ifblank{#1}{\:\cdot\:}{#1} \:\|\: \ifblank{#2}{\:\cdot\:}{#2}
+}
 
 
 % set commands
@@ -306,7 +309,6 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 % CS operators
 \newcommand{\polylog}{\operatorname{polylog}}
 \newcommand{\poly}{\operatorname{poly}}
-\providecommand{\kl}[2]{\operatorname{\mathsf{D}}\left(\begin{array}{c} #1 \\ \hline  \hline  #2\end{array} \right)} 
 \newcommand{\Disc}[3]{\operatorname{\mathsf{Disc}_{#1}^{#2}}\left( #3 \right)}
 \newcommand{\IC}[3]{\operatorname{\mathsf{IC}_{#1}^{#2}}\left( #3 \right)}
 \newcommand{\RCC}[3]{\operatorname{\mathsf{R}_{#1}^{#2}}\left( #3 \right)}
@@ -327,6 +329,8 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand{\Pois}[1]{\operatorname{Pois}(#1)}
 \newcommand{\Binom}[2]{\operatorname{Binom}(#1, #2)}
 \newcommand{\Exp}{\operatorname{Exp}}
+\newcommand{\BG}{\operatorname{BG}}
+\newcommand{\Law}{\mathrm{Law}}
 \newcommand\indep{\protect\mathpalette{\protect\independenT}{\perp}}
 \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
 

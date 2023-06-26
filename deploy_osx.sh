@@ -36,3 +36,6 @@ ln -s $cdir/.ipython/profile_default/ipython_kernel_config.py ~/.ipython/profile
 # for keyboard remapping
 cp $cdir/keyremap_windowskb.sh ~/keyremap_windowskb.sh
 sudo cp $cdir/com.user.keyboardmapping.plist /Library/LaunchDaemons/com.user.keyboardmapping.plist
+
+# for gitignore
+git config --global core.excludesfile ~/.gitignore_global

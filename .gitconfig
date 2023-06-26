@@ -4,7 +4,7 @@
 [credential]
 	helper = osxkeychain
 [core]
-	excludesFile = /Users/sadboys/.gitignore_global
+	excludesfile = /Users/sdbuch/.gitignore_global
 [credential "https://git.overleaf.com"]
 	username = sambuchanan6@gmail.com
 	helper = cache

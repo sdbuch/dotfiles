@@ -33,6 +33,7 @@ mkdir ~/scripts
 # config files
 ln -s $cdir/.gitconfig_linux ~/.gitconfig
 ln -s $cdir/.gitignore_global ~/.gitignore_global
+git config --global core.excludesfile ~/.gitignore_global
 ln -s $cdir/.vimrc ~/.vimrc
 # ln -s $cdir/.bashrc ~/.bashrc
 ln -s $cdir/.bash_aliases ~/.bash_aliases
