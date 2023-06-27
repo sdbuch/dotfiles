@@ -30,3 +30,6 @@ Icon*
 *.pyc
 __pycache__*
 *.fig
+*.nav
+*.snm
+*.toc
