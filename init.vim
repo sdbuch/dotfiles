@@ -34,14 +34,14 @@ if empty(glob(s:vim_plug_path))
   if executable('curl')
     execute 'silent !curl -fLo ' . s:vim_plug_path . ' --create-dirs '
           \ . 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-    execute 'git clone --depth 1 https://github.com/wbthomason/packer.nvim '
-                \ . s:vim_plug_folder . 'pack/packer/start/packer.nvim'
+    execute 'silent !git clone --depth 1 https://github.com/wbthomason/packer.nvim '
+                \ . '$HOME/.config/nvim/pack/packer/start/packer.nvim'
 elseif executable('wget')
     execute 'silent !mkdir -p ' . s:vim_plug_folder
     execute 'silent !wget --output-document=' . s:vim_plug_path
           \ . ' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
     execute 'git clone --depth 1 https://github.com/wbthomason/packer.nvim '
-                \ . s:vim_plug_folder . 'pack/packer/start/packer.nvim'
+                \ . '$HOME/.config/nvim/pack/packer/start/packer.nvim'
   else
     echoerr 'Need curl or wget to download vim-plug!'
   endif
@@ -58,9 +58,9 @@ endif
 let s:bundle_path = (has('nvim') ? '~/.config/nvim' : '~/.vim') . '/bundle'
 execute 'call plug#begin("' . s:bundle_path . '")'
 
-
 " Lua plugins
 lua require('plugins')
+execute 'PackerInstall'
 
 " Shortcuts for manipulating quotes, brackets, parentheses, HTML tags
 " + vim-repeat for making '.' work for vim-surround
