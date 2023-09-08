@@ -39,6 +39,17 @@
     ],
     "description": "Plot a 3D scatter plot in matplotlib"
   },
+  "Matplotlib subplots": {
+    "prefix": ["subplot"],
+    "body": [
+        "${1:fig}, ${2:ax} = plt.subplots(nrows=${3:2}, ncols=${4:2})",
+        "$2[0, 0].plot($5)",
+        "$2[0, 0].set_title($6)",
+        "plt.tight_layout()",
+        "plt.show()"
+    ],
+    "description": "Make subplots in matplotlib"
+  },
   "Torch Imagesc dropin": {
     "prefix": ["imagesc_torch", "torch_imagesc", "pytorch_imagesc"],
     "body": [

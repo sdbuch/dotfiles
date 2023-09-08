@@ -72,6 +72,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # Gstreamer setup...
 export GST_PLUGIN_PATH="/opt/homebrew/lib/gstreamer-1.0"
+export LIBGS="/opt/homebrew/Cellar/ghostscript/10.01.2/lib/libgs.dylib"
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -98,10 +99,11 @@ brew () {
   # echo "Anaconda restored to path"
 }
 
-# config for ruby
-source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
-source /opt/homebrew/opt/chruby/share/chruby/auto.sh
-chruby ruby-3.1.2
+# # config for ruby
+# source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
+# source /opt/homebrew/opt/chruby/share/chruby/auto.sh
+# chruby ruby-3.1.2
+eval "$(rbenv init - bash)"
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/sdbuch/google-cloud-sdk/path.bash.inc' ]; then . '/Users/sdbuch/google-cloud-sdk/path.bash.inc'; fi

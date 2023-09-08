@@ -267,6 +267,7 @@ v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \newcommand*{\xcorr}{\mathbin{\star}}
 \newcommand*{\cconv}{\mathbin{\circledast}}
 \newcommand{\frob}{\mathrm{F}}
+\newcommand{\HS}{\mathrm{HS}}
 
 % Trig stuff
 \newcommand{\acos}{\operatorname{\cos\inv}}

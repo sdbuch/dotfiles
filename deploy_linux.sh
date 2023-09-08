@@ -34,6 +34,13 @@ mkdir ~/.vim
 mkdir ~/.vim/colors
 mkdir ~/.vim/snippets
 mkdir ~/scripts
+# below for neovim
+mkdir ~/.config
+mkdir ~/.config/nvim
+mkdir ~/.config/nvim/lua
+mkdir ~/.config/nvim/pack
+mkdir ~/.config/nvim/pack/packer
+mkdir ~/.config/nvim/pack/packer/start
 
 # config files
 ln -s $cdir/.gitconfig_linux ~/.gitconfig
@@ -45,6 +52,10 @@ ln -s $cdir/.bash_aliases ~/.bash_aliases
 ln -s $cdir/.dircolors ~/.dircolors
 ln -s $cdir/.tmux.conf ~/.tmux.conf
 ln -s $cdir/.inputrc ~/.inputrc
+
+# for neovim
+ln -s $cdir/init.vim ~/.config/nvim/init.vim
+ln -s $cdir/plugins.lua ~/.config/nvim/lua/plugins.lua
 
 # cat .bashrc
 cat $cdir/.bashrc >> ~/.bashrc

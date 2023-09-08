@@ -25,7 +25,6 @@ tags
 *.fls
 *.out
 *.run.xml
-Icon*
 *.mat
 *.pyc
 __pycache__*
