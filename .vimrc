@@ -54,6 +54,13 @@ Plug 'henrik/vim-indexed-search'
 " Git integration
 Plug 'tpope/vim-fugitive'
 
+" Copilot
+Plug 'github/copilot.vim'
+
+let g:copilot_filetypes = {
+      \ 'tex': v:false,
+      \ }
+
 " Folding
 Plug 'Konfekt/FastFold'
 Plug 'tmhedberg/SimpylFold'
@@ -317,6 +324,7 @@ Plug 'mattn/vim-lsp-settings'
     let g:lsp_diagnostics_signs_information = {'text': '▴'}
     let g:lsp_diagnostics_signs_hint = {'text': '▴'}
     let g:lsp_diagnostics_signs_priority = 10
+    let g:lsp_diagnostics_virtual_text_enabled = 0
     
     " Set some semantic highlighting
     let g:lsp_semantic_enabled = 1
@@ -331,7 +339,7 @@ Plug 'mattn/vim-lsp-settings'
             " flags that aren't available upstream.
             let l:cmd =  g:lsp_settings_servers_dir .
                 \ '/pylsp-all/venv/bin/pip3 install ' .
-                \ 'git+https://github.com/brentyi/pylsp-mypy.git'
+                \ 'git+https://github.com/python-lsp/pylsp-mypy.git'
 
             if has('nvim')
                 split new
@@ -354,20 +362,30 @@ Plug 'mattn/vim-lsp-settings'
         \         'configurationSources': ['flake8'],
         \         'plugins': {
         \             'pylsp_mypy': {
-        \                 'enabled': v:true,
         \                 'live_mode': v:false,
-        \                 'dmypy': v:false,
+        \                 'dmypy': v:true,
         \                 'strict': v:false,
-        \                 'prepend': ['--python-executable', s:trim(system('which python'))],
-        \                 'colocate_cache_with_config': v:true
+        \                 'overrides': ['--python-executable', s:trim(system('which python')), v:true],
+        \                 'report_progress': v:true
         \             }
         \         }
         \     }}
         \ }
     let g:lsp_settings['clangd'] = {'allowlist': ['c', 'cpp', 'objc', 'objcpp', 'cuda']}
 
+    " Debug
+    " let g:lsp_log_verbose = 1
+    " let g:lsp_log_file = expand('~/vim-lsp.log')
+
+    " " for asyncomplete.vim log
+    " let g:asyncomplete_log_file = expand('~/asyncomplete.log')
+    " End debug
+    if !has('nvim') | Plug 'rhysd/vim-healthcheck' | endif
+
+
     " Show error messages below statusbar
     let g:lsp_diagnostics_echo_cursor = 1
+    let g:lsp_diagnostics_echo_delay = 100
 
     " Disable tex.vim errors; texlab is far more useful
     let g:tex_no_error=1

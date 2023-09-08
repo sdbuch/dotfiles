@@ -20,9 +20,14 @@ cdir=$(pwd)
 
 # # clean setup: software
 # sudo apt-get install vim-nox
+# # or
+# sudo add-apt-repository ppa:jonathonf/vim
+# sudo apt update && sudo apt install vim
+# #
 # sudo apt-get install xauth
 # sudo apt-get install eog
 # sudo apt-get install ctags
+
 
 # clean setup: dirs
 mkdir ~/.vim
