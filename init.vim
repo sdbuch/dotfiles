@@ -6,6 +6,9 @@
 " Disable vi compatability
 set nocompatible
 
+" no mouse
+set mouse=
+
 if has('nvim') && has('termguicolors')
     set termguicolors
 endif
@@ -350,6 +353,7 @@ require'nvim-treesitter.configs'.setup {
     "css",
     "javascript",
     "markdown",
+    "markdown_inline",
   },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
@@ -1152,19 +1156,19 @@ if !s:fresh_install
   hi Search ctermfg=Black
 
   " Change hl settings for spell
-  hi clear SpellBad
-  hi SpellBad ctermbg=None
-  hi SpellBad ctermfg=196
-  hi SpellBad cterm=underline
-  hi SpellCap ctermbg=None
-  hi SpellCap ctermfg=12
-  hi SpellCap cterm=underline
-  hi SpellRare ctermbg=None
-  hi SpellRare ctermfg=13
-  hi SpellRare cterm=underline
-  hi SpellLocal ctermbg=None
-  hi SpellLocal ctermfg=14
-  hi SpellLocal cterm=underline
+  " hi clear SpellBad
+  " hi SpellBad ctermbg=None
+  " hi SpellBad ctermfg=196
+  " hi SpellBad cterm=underline
+  " hi SpellCap ctermbg=None
+  " hi SpellCap ctermfg=12
+  " hi SpellCap cterm=underline
+  " hi SpellRare ctermbg=None
+  " hi SpellRare ctermfg=13
+  " hi SpellRare cterm=underline
+  " hi SpellLocal ctermbg=None
+  " hi SpellLocal ctermfg=14
+  " hi SpellLocal cterm=underline
 
   " #############################################
   " > General behavior stuff <
