@@ -12,6 +12,8 @@ alias mex='/Applications/MATLAB.app/bin/mex'
 alias rpi='arp -a -n | grep b8:27:eb:'
 alias qtconsole='jupyter qtconsole'
 
+# nvim vs. vim
+alias vim='nvim'
 
 #alias vim='vim --servername VIM'
  
@@ -44,6 +46,7 @@ export PATH=${PATH}:/opt/homebrew/lib
 export PATH=${PATH}:~/projects/github/keychain
 export PATH=${PATH}:~/bin
 export GEM_HOME="$HOME/.gem"
+
 
 # Lua spec
 # This is for a homebrew install as of 8/18/2022...

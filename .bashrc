@@ -22,3 +22,6 @@ export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda
 
 # jupyter
 alias jupyter-ker="jupyter kernel --KernelManager.connection_file='/home/sam/.jupyter/kernel-config-sam.json'"
+
+# nvim
+alias vim='nvim'

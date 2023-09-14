@@ -1207,7 +1207,7 @@ if !s:fresh_install
   nnoremap <Leader>ot  :silent split term://bash<CR>
   
   " Use backslash to toggle folds
-  nnoremap <Bslash> za
+  nnoremap <Bslash><Bslash> za
 
   " set buffer manipulation
   set wildcharm=<C-z>
