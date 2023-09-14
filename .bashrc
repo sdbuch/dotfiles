@@ -9,7 +9,7 @@ fixssh() {
 # Path adds
 export PATH=$PATH:~/scripts
 # Vim as default editor
-export EDITOR=vim
+export EDITOR=nvim
 
 # tmux config
 export TERM="xterm-256color"

@@ -38,7 +38,7 @@ fi
 
 
 # Path specs
-export EDITOR=/usr/local/bin/vim
+export EDITOR=nvim
 export PATH=${PATH}:/usr/local/lib
 export PATH=${PATH}:/opt/homebrew/lib
 export PATH=${PATH}:~/projects/github/keychain
