@@ -1,5 +1,6 @@
 #!/bin/sh
-tmux new-session -d
-tmux split-window -l 15
-tmux split-window -h gpustat -cp --watch
+tmux new-session -d -x - -y - nvim
+tmux split-window -h
+tmux split-window -v
+tmux split-window -h -l 35% gpustat -cp --watch
 tmux -2 attach-session -d

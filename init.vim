@@ -457,8 +457,8 @@ if has('nvim')
 
     Plug 'tanvirtin/monokai.nvim'
 
-    Plug 'rktjmp/lush.nvim'
-    Plug 'ViViDboarder/wombat.nvim'
+    " Plug 'rktjmp/lush.nvim'
+    " Plug 'ViViDboarder/wombat.nvim'
 endif
 
 " Vim + tmux integration
@@ -862,6 +862,7 @@ Plug 'hrsh7th/vim-vsnip-integ'
     xmap <Leader>S <Plug>(vsnip-cut-text)
 " }}
 
+" we need isort and black from conda for this
 " Automated import sorting. isort is now also supported by vim-codefmt, but
 " our isort plugin has a few more features that we think are useful. (it runs
 " asynchronously, specifies the --project flag, lets us specify flags, etc).
@@ -1201,6 +1202,9 @@ if !s:fresh_install
   " #############################################
   " > Key mappings for usability <
   " #############################################
+  
+  " terminal shortcuts
+  nnoremap <Leader>ot  :silent split term://bash<CR>
   
   " Use backslash to toggle folds
   nnoremap <Bslash> za
