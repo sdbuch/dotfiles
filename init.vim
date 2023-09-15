@@ -354,6 +354,7 @@ require'nvim-treesitter.configs'.setup {
     "javascript",
     "markdown",
     "markdown_inline",
+    "rust",
   },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
@@ -569,7 +570,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('UserLspConfig', {}),
   callback = function(ev)
     -- Enable completion triggered by <c-x><c-o>
-    vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+    -- vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
     vim.api.nvim_create_autocmd("CursorHold", {
       buffer = bufnr,
@@ -754,8 +755,26 @@ lua << EOF
   })
 
   require("mason-lspconfig").setup {
-    ensure_installed = { "pyright", "tsserver", "eslint", "html", "cssls" },
+    ensure_installed = { "pyright", "tsserver", "eslint", "html", "cssls", "texlab", "rust_analyzer" },
   }
+
+  local util = require 'lspconfig.util'
+  -- Texlab supports a clean command.
+  -- Patch in a function that implements this, and add it to config below
+  local function buf_clean(bufnr)
+      bufnr = util.validate_bufnr(bufnr)
+      local texlab_client = util.get_active_client_by_name(bufnr, 'texlab')
+      local params = {
+          command = 'texlab.cleanArtifacts',
+          arguments = {{ uri = vim.uri_from_bufnr(bufnr)}, },
+      }
+      if texlab_client then
+          texlab_client.request('workspace/executeCommand', params)
+          print 'Clean Success'
+      else
+          print 'method textDocument/clean is not supported by any servers active on the current buffer'
+      end
+  end
 
   -- Set up lspconfig.
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -775,6 +794,39 @@ lua << EOF
     require("lspconfig").eslint.setup{
         capabilities = capabilities
     }
+    require("lspconfig").rust_analyzer.setup{
+        capabilities = capabilities
+    }
+    require("lspconfig").texlab.setup{
+        -- cmd = { 'texlab', '-vvvv', '--log-file', '/Users/sdbuch/.local/state/nvim/texlab.log' },
+        capabilities = capabilities,
+        settings = {
+            texlab = {
+                build = {
+                    args = { "-pdf", "-interaction=nonstopmode", "-synctex=1", "--shell-escape", "%f" },
+                    executable = "latexmk",
+                    forwardSearchAfter = false,
+                    onSave = true
+                },
+                chktex = {
+                    onEdit = false,
+                    onOpenAndSave = true
+                },
+                forwardSearch = {
+                    executable = '/Applications/Skim.app/Contents/SharedSupport/displayline',
+                    args = { "%l", "%p", "%f" },
+                }
+            }
+        },
+        commands = {
+            TexlabClean = {
+                function()
+                buf_clean(0)
+                end,
+                description = 'Clean files in project in current buffer',
+            },
+        },
+    }
 
     -- Copilot.
     require("copilot").setup({
@@ -782,11 +834,12 @@ lua << EOF
       panel = { enabled = false },
     })
     require("copilot_cmp").setup()
-    require("lspconfig").texlab.setup{
-        capabilities = capabilities
-    }
 EOF
 endfunction
+" Make some shortcuts for texlab to compile etc
+nnoremap <silent> <Leader>ll  :TexlabBuild<CR>
+nnoremap <silent> <Leader>lc  :TexlabClean<CR>
+nnoremap <silent> <Leader>lv  :TexlabForward<CR>
 
 " Trouble for quickfix.
 Plug 'folke/trouble.nvim'
@@ -821,6 +874,7 @@ lua << EOF
         hover = "K", -- opens a small popup with the full multiline message
         preview = "p", -- preview the diagnostic location
         close_folds = {"zM", "zm"}, -- close all folds
+        switch_severity = "s", -- switch "diagnostics" severity filter level to HINT / INFO / WARN / ERROR
         open_folds = {"zR", "zr"}, -- open all folds
         toggle_fold = {"zA", "za"}, -- toggle fold of current file
         previous = "k", -- previous item
@@ -1204,7 +1258,7 @@ if !s:fresh_install
   " #############################################
   
   " terminal shortcuts
-  nnoremap <Leader>ot  :silent split term://bash<CR>
+  nnoremap <silent> <Leader>ot :split term://bash<CR>
   
   " Use backslash to toggle folds
   nnoremap <Bslash><Bslash> za
