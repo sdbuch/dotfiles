@@ -73,7 +73,7 @@ Plug 'tpope/vim-repeat'
 " Search plugin
 " > Show instance # in statusline when we search
 Plug 'henrik/vim-indexed-search'
-Plug 'bronson/vim-visual-star-search'
+" Plug 'bronson/vim-visual-star-search'
 
 " Git integration
 Plug 'tpope/vim-fugitive'
@@ -194,7 +194,8 @@ endfunction
     let g:lightline = {}
 
     " Lightline colors
-    let g:lightline.colorscheme = 'wombat'
+    " let g:lightline.colorscheme = 'wombat'
+    let g:lightline.colorscheme = 'sonokai'
     let g:lightline.active = {
         \ 'left': [ [ 'mode', 'paste' ],
         \           [ 'readonly', 'filename', 'modified' ],
@@ -430,7 +431,7 @@ endif
 " }}
 
 " Fancy colors for CSS
-Plug 'ap/vim-css-color'
+" Plug 'ap/vim-css-color'
 
 " Rainbow highlighting + SQL-esque queries in CSV files
 Plug 'mechatroner/rainbow_csv'
@@ -454,9 +455,12 @@ if has('nvim')
     " - palenight
     " - snazzy (Based on hyper-snazzy by Sindre Sorhus)
     " - xoria (Based on xoria-256)
-    Plug 'ChristianChiarulli/nvcode-color-schemes.vim'
+    
+    " Plug 'ChristianChiarulli/nvcode-color-schemes.vim'
 
-    Plug 'tanvirtin/monokai.nvim'
+    " Plug 'tanvirtin/monokai.nvim'
+    " Plug 'tomasiser/vim-code-dark'
+    Plug 'sainnhe/sonokai'
 
     " Plug 'rktjmp/lush.nvim'
     " Plug 'ViViDboarder/wombat.nvim'
@@ -640,7 +644,7 @@ Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
 Plug 'hrsh7th/cmp-emoji'
 Plug 'zbirenbaum/copilot.lua'
-Plug 'zbirenbaum/copilot-cmp'
+" Plug 'zbirenbaum/copilot-cmp'
 
 " Bindings
 " Use <CR> for completion confirmation, <Tab> and <S-Tab> for selection
@@ -712,8 +716,13 @@ lua << EOF
       end
     }),
     sources = cmp.config.sources({
-      { name = 'copilot' },
-      { name = 'nvim_lsp' },
+      -- { name = 'copilot' },
+      { 
+          name = 'nvim_lsp',
+          entry_filter = function(entry, ctx)
+          return require('cmp.types').lsp.CompletionItemKind[entry:get_kind()] ~= 'Text'
+          end
+      },
       { name = 'nvim_lsp_signature_help' },
       { name = 'emoji' },
       { name = 'path' },
@@ -829,11 +838,12 @@ lua << EOF
     }
 
     -- Copilot.
-    require("copilot").setup({
-      suggestion = { enabled = false },
-      panel = { enabled = false },
-    })
-    require("copilot_cmp").setup()
+    -- require("copilot").setup({
+    --   suggestion = { enabled = false },
+    --   panel = { enabled = false },
+    -- })
+    require("copilot").setup()
+    -- require("copilot_cmp").setup()
 EOF
 endfunction
 " Make some shortcuts for texlab to compile etc
@@ -1176,14 +1186,12 @@ if !s:fresh_install
 
   if has('nvim')
     " Treesitter support.
-    let g:sam_colorscheme = get(g:, 'sam_colorscheme', 'monokai_ristretto')
+    " let g:sam_colorscheme = get(g:, 'sam_colorscheme', 'monokai_ristretto')
+    let g:sam_colorscheme = get(g:, 'sam_colorscheme', 'sonokai')
+    let g:sonokai_style = 'andromeda'
+    let g:sonokai_better_performance = 1
   else
     let g:sam_colorscheme = get(g:, 'sam_colorscheme', 'xoria256')
-  endif
-  if g:sam_colorscheme !=# 'legacy'
-    execute 'colorscheme ' . g:sam_colorscheme
-  else
-    execute 'colorscheme peachpuff'
   endif
 
   highlight MatchParen cterm=bold,underline ctermbg=none ctermfg=7
@@ -1207,8 +1215,8 @@ if !s:fresh_install
   " change hl settings
   set hlsearch
   nnoremap <silent> <F9> :noh<CR>
-  hi Search ctermbg=DarkRed
-  hi Search ctermfg=Black
+  " hi Search ctermbg=DarkRed
+  " hi Search ctermfg=Black
 
   " Change hl settings for spell
   " hi clear SpellBad
@@ -1328,11 +1336,11 @@ EOF
     " echom 'Adaptive motion: no target found'
     endfunction
   " We used to use <Tab> and <S-Tab> here, but <Tab> interferes with <C-i>
-  nnoremap <Leader>j :call <SID>adaptive_motion(1)<CR>
-  nnoremap <Leader>k :call <SID>adaptive_motion(0)<CR>
+  nnoremap <silent> <Leader>j :call <SID>adaptive_motion(1)<CR>
+  nnoremap <silent> <Leader>k :call <SID>adaptive_motion(0)<CR>
 
   " Close preview/quickfix/location list/help windows with <Leader>c
-  nnoremap <Leader>c :call <SID>window_cleanup()<CR>
+  nnoremap <silent> <Leader>c :call <SID>window_cleanup()<CR>
   function! s:window_cleanup()
     " Close preview windows
     execute 'pclose'
@@ -1504,5 +1512,12 @@ EOF
     " For init.vim->.vimrc symlinks in Neovim
     autocmd BufWritePost .vimrc source $MYVIMRC
   augroup END
+  
+
+  if g:sam_colorscheme !=# 'legacy'
+    execute 'colorscheme ' . g:sam_colorscheme
+  else
+    execute 'colorscheme peachpuff'
+  endif
 
 endif
