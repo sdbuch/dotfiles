@@ -102,7 +102,7 @@ Plug 'lervag/vimtex'
   let g:vimtex_quickfix_mode = 0
   let g:vimtex_syntax_nospell_comments = 1
   let g:tex_flavor = 'latex'
-  let g:vimtex_motion_matchparen = 0
+  let g:vimtex_motion_matchparen = 1
   let g:vimtex_fold_enabled = 1
   let g:vimtex_imaps_leader = '`'
   let g:vimtex_imaps_enabled = 0
@@ -112,7 +112,7 @@ Plug 'lervag/vimtex'
   let g:vimtex_disable_version_warning = 1
   let g:vimtex_echo_ignore_wait = 1
   let g:vimtex_indent_on_ampersands = 0
-  let g:vimtex_matchparen_enabled = 0
+  let g:vimtex_matchparen_enabled = 1
   let g:vimtex_indent_ignored_envs = [
         \ 'document',
         \ 'theorem',

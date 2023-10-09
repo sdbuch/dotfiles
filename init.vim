@@ -2,6 +2,7 @@
 " nvim config
 " many things borrwed from brent yi; merged
 "
+" let g:loaded_matchit = 1
 
 " Disable vi compatability
 set nocompatible
@@ -248,72 +249,6 @@ endfunction
 
 " }}
 
-" Vimtex
-Plug 'lervag/vimtex'
-" {{
-  "set up vimtex shortcuts
-  let g:vimtex_quickfix_mode = 0
-  let g:vimtex_syntax_nospell_comments = 1
-  let g:tex_flavor = 'latex'
-  let g:vimtex_motion_matchparen = 0
-  let g:vimtex_fold_enabled = 1
-  let g:vimtex_imaps_leader = '`'
-  let g:vimtex_imaps_enabled = 0
-  let g:vimtex_syntax_enabled = 0
-  let g:vimtex_syntax_conceal_disable = 1
-  "let g:vimtex_view_general_viewer = '/Applications/Preview.app/Contents/MacOS/Preview'
-  let g:vimtex_view_general_viewer = 'open'
-  let g:vimtex_view_general_options = '-a Preview -g @pdf'
-  let g:vimtex_disable_version_warning = 1
-  let g:vimtex_echo_ignore_wait = 1
-  let g:vimtex_indent_on_ampersands = 0
-  let g:vimtex_matchparen_enabled = 0
-  let g:vimtex_indent_ignored_envs = [
-        \ 'document',
-        \ 'theorem',
-        \ 'corollary',
-        \ 'proposition',
-        \ 'exercise',
-        \ 'proof',
-        \ 'claim',
-        \]
-  let g:vimtex_fold_types = {
-        \ 'sections': {
-        \ 'parse_levels' : 0,
-        \ 'envs' : {
-        \   'blacklist' : [],
-        \   'whitelist' : ['figure', 'subfigure', 'table', 'theorem', 'lemma', 'proposition', 'corollary', 'definition', 'proof'],
-        \ },
-        \ 'sections' : [
-        \ '%(add)?part',
-        \ '%(chapter|addchap)',
-        \ '%(section|addsec)',
-        \ 'subsection',
-        \ 'subsubsection',
-        \ 'paragraph',
-        \ 'subparagraph',
-        \ ],
-        \ 'parts' : [
-        \ 'appendix',
-        \ 'frontmatter',
-        \ 'mainmatter',
-        \ 'backmatter',
-        \ ],
-        \ },
-        \ }
-  let g:vimtex_indent_ignored_envs = ['document']
-  let g:vimtex_toc_config = {}
-  let g:vimtex_toc_config['layer_status'] = {
-        \ 'content': 1,
-        \ 'label': 0,
-        \ 'todo': 1,
-        \ 'include': 0,
-        \}
-  let g:vimtex_toc_config['split_pos'] = 'vert belowright'
-  let g:vimtex_toc_config['split_width'] = 52
-  let g:vimtex_toc_config['tocdepth'] = 5
-" }}
-
 
 " Tagbar
 Plug 'preservim/tagbar'
@@ -331,7 +266,7 @@ Plug 'ludovicchabant/vim-gutentags'
   " let g:gutentags_trace=1 " this is a debug command
   let g:gutentags_resolve_symlinks=0
 " }}
-
+"
 
 " Use treesitter in Neovim
 if has("nvim")
@@ -356,6 +291,13 @@ require'nvim-treesitter.configs'.setup {
     "markdown",
     "markdown_inline",
     "rust",
+    "latex",
+    "bibtex",
+  },
+  matchup = {
+      enable = true,              -- mandatory, false will disable the whole extension
+      disable = { "tex", "html", "c", "ruby", "config", "liquid", "lua", "make", "plaintex", "sh", "vim", "xml" },  -- optional, list of language that will be disabled
+    -- [options]
   },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
@@ -365,7 +307,7 @@ require'nvim-treesitter.configs'.setup {
   auto_install = true,
 
   -- List of parsers to ignore installing (for "all")
-  ignore_install = {},
+  ignore_install = { },
 
   ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
   -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
@@ -378,70 +320,33 @@ require'nvim-treesitter.configs'.setup {
     -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
     -- the name of the parser)
     -- list of language that will be disabled
-    disable = {},
+    disable = { },
 
     -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
     -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
     -- Using this option may slow down your editor, and you may see some duplicate highlights.
     -- Instead of true it can also be a list of languages
-    additional_vim_regex_highlighting = false,
+    -- sam: adding this for latex, since current latex grammar (or treesitter?)
+    -- causes issues with matching $ ... $ math environments...
+    additional_vim_regex_highlighting = { "latex" },
   },
 }
 EOF
 endfunction
 
-" Massive language pack for syntax highlighting, etc
-" We use treesitter in Neovim.
-if !has('nvim')
-    Plug 'sheerun/vim-polyglot'
-endif
-" {{
-    " Disable csv.vim: this overrides a bunch of default vim bindings with
-    " csv-specific ones that looks high-effort to get used to
-    "
-    " For highlighting etc, we use rainbow_csv (see below)
-    let g:polyglot_disabled = ['csv']
-
-    " Markdown configuration
-    let g:vim_markdown_conceal = 0
-    let g:vim_markdown_conceal_code_blocks = 0
-    let g:vim_markdown_auto_insert_bullets = 0
-    let g:vim_markdown_new_list_item_indent = 0
-    let g:vim_markdown_math = 1
-
-    augroup SyntaxSettings
-        autocmd!
-        function! s:HighlightPythonSpecial()
-            " For Python, bold TODO keyword in strings/docstrings
-            " Copy the docstring highlighting, then override (a bit superfluous)
-            syn keyword DocstringTodo TODO FIXME XXX containedin=pythonString,pythonRawString
-
-            redir => l:python_string_highlight
-            silent highlight Constant
-            redir END
-
-            let l:python_string_highlight = s:trim(split(l:python_string_highlight, 'xxx')[1])
-            highlight clear DocstringTodo
-            execute 'highlight DocstringTodo ' . l:python_string_highlight . ' cterm=bold'
-        endfunction
-
-        " Due to trigger ordering, `autocmd Filetype python` here doesn't work!
-        autocmd BufEnter,WinEnter *.py call s:HighlightPythonSpecial()
-    augroup END
-" }}
 
 " Fancy colors for CSS
 " Plug 'ap/vim-css-color'
 
 " Rainbow highlighting + SQL-esque queries in CSV files
-Plug 'mechatroner/rainbow_csv'
+" Plug 'mechatroner/rainbow_csv'
 
 " Tag matching for HTML
-Plug 'gregsexton/MatchTag'
+" Plug 'gregsexton/MatchTag'
 " {{
     " Use % to jump between matching tags
     " (this ships with Vim and is not part of MatchTag)
-    packadd matchit
+    " packadd matchit
 " }}
 
 if has('nvim')
@@ -465,6 +370,7 @@ if has('nvim')
     " Plug 'rktjmp/lush.nvim'
     " Plug 'ViViDboarder/wombat.nvim'
 endif
+
 
 " Vim + tmux integration
 Plug 'christoomey/vim-tmux-navigator'
@@ -643,7 +549,7 @@ Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
 Plug 'hrsh7th/cmp-emoji'
-Plug 'zbirenbaum/copilot.lua'
+" Plug 'zbirenbaum/copilot.lua'
 " Plug 'zbirenbaum/copilot-cmp'
 
 " Bindings
@@ -842,7 +748,7 @@ lua << EOF
     --   suggestion = { enabled = false },
     --   panel = { enabled = false },
     -- })
-    require("copilot").setup()
+    -- require("copilot").setup()
     -- require("copilot_cmp").setup()
 EOF
 endfunction
@@ -1029,6 +935,77 @@ Plug 'google/vim-codefmt'
     augroup END
 " }}
 
+" Vimtex
+"Plug 'lervag/vimtex'
+"" "" {{
+"" "  "set up vimtex shortcuts
+""   let g:vimtex_quickfix_mode = 0
+""   let g:vimtex_syntax_nospell_comments = 1
+"   let g:tex_flavor = 'latex'
+""   let g:vimtex_fold_enabled = 0
+"   let g:vimtex_imaps_leader = '`'
+"   let g:vimtex_imaps_enabled = 0
+"   let g:vimtex_syntax_enabled = 0
+"   let g:vimtex_syntax_conceal_disable = 1
+""   "let g:vimtex_view_general_viewer = '/Applications/Preview.app/Contents/MacOS/Preview'
+""   let g:vimtex_view_general_viewer = 'open'
+""   let g:vimtex_view_general_options = '-a Preview -g @pdf'
+"   let g:vimtex_disable_version_warning = 1
+"   let g:vimtex_echo_ignore_wait = 1
+"   let g:vimtex_indent_on_ampersands = 0
+"   let g:vimtex_matchparen_enabled = 0
+"   let g:vimtex_indent_ignored_envs = [
+"         \ 'document',
+"         \ 'theorem',
+"         \ 'corollary',
+"         \ 'proposition',
+"         \ 'exercise',
+"         \ 'proof',
+"         \ 'claim',
+"         \]
+"   let g:vimtex_fold_types = {
+"         \ 'sections': {
+"         \ 'parse_levels' : 0,
+"         \ 'envs' : {
+"         \   'blacklist' : [],
+"         \   'whitelist' : ['figure', 'subfigure', 'table', 'theorem', 'lemma', 'proposition', 'corollary', 'definition', 'proof'],
+"         \ },
+"         \ 'sections' : [
+"         \ '%(add)?part',
+"         \ '%(chapter|addchap)',
+"         \ '%(section|addsec)',
+"         \ 'subsection',
+"         \ 'subsubsection',
+"         \ 'paragraph',
+"         \ 'subparagraph',
+"         \ ],
+"         \ 'parts' : [
+"         \ 'appendix',
+"         \ 'frontmatter',
+"         \ 'mainmatter',
+"         \ 'backmatter',
+"         \ ],
+"         \ },
+"         \ }
+"   let g:vimtex_indent_ignored_envs = ['document']
+"   let g:vimtex_toc_config = {}
+"   let g:vimtex_toc_config['layer_status'] = {
+"         \ 'content': 1,
+"         \ 'label': 0,
+"         \ 'todo': 1,
+"         \ 'include': 0,
+"         \}
+"   let g:vimtex_toc_config['split_pos'] = 'vert belowright'
+"   let g:vimtex_toc_config['split_width'] = 52
+"   let g:vimtex_toc_config['tocdepth'] = 5
+" " }}
+"
+
+
+
+Plug 'andymass/vim-matchup'
+let g:matchup_surround_enabled = 1  " surround support (ds% and cs%)
+let g:matchup_transmute_enabled = 1  " change matching tags as one's edited
 
 call plug#end()
 
@@ -1044,9 +1021,11 @@ if !s:fresh_install
   call s:setup_nvim_cmp()
   call s:configure_trouble()
 
-  if has('nvim')
-    call s:treesitter_configure()
-  endif
+  " treesitter setup ...
+    if has('nvim')
+        call s:treesitter_configure()
+    endif
+
 
   " Automatically change working directory to current file's parent
   set autochdir
@@ -1078,7 +1057,6 @@ if !s:fresh_install
 
   " Set up tex spellchecking options
   let g:tex_comment_nospell = 1
-
 
 
   " set wildmenu
@@ -1188,7 +1166,7 @@ if !s:fresh_install
     " Treesitter support.
     " let g:sam_colorscheme = get(g:, 'sam_colorscheme', 'monokai_ristretto')
     let g:sam_colorscheme = get(g:, 'sam_colorscheme', 'sonokai')
-    let g:sonokai_style = 'andromeda'
+    let g:sonokai_style = 'espresso'
     let g:sonokai_better_performance = 1
   else
     let g:sam_colorscheme = get(g:, 'sam_colorscheme', 'xoria256')
@@ -1197,10 +1175,10 @@ if !s:fresh_install
   highlight MatchParen cterm=bold,underline ctermbg=none ctermfg=7
   highlight VertSplit ctermfg=0 ctermbg=0
 
-  augroup MatchTrailingWhitespace
-    autocmd!
-    autocmd VimEnter,BufEnter,WinEnter * call matchadd('TrailingWhitespace', '\s\+$')
-  augroup END
+  " augroup MatchTrailingWhitespace
+  "   autocmd!
+  "   autocmd VimEnter,BufEnter,WinEnter * call matchadd('TrailingWhitespace', '\s\+$')
+  " augroup END
 
   " Visually different markers for various types of whitespace
   " (for distinguishing tabs vs spaces)
@@ -1215,23 +1193,6 @@ if !s:fresh_install
   " change hl settings
   set hlsearch
   nnoremap <silent> <F9> :noh<CR>
-  " hi Search ctermbg=DarkRed
-  " hi Search ctermfg=Black
-
-  " Change hl settings for spell
-  " hi clear SpellBad
-  " hi SpellBad ctermbg=None
-  " hi SpellBad ctermfg=196
-  " hi SpellBad cterm=underline
-  " hi SpellCap ctermbg=None
-  " hi SpellCap ctermfg=12
-  " hi SpellCap cterm=underline
-  " hi SpellRare ctermbg=None
-  " hi SpellRare ctermfg=13
-  " hi SpellRare cterm=underline
-  " hi SpellLocal ctermbg=None
-  " hi SpellLocal ctermfg=14
-  " hi SpellLocal cterm=underline
 
   " #############################################
   " > General behavior stuff <
@@ -1406,27 +1367,6 @@ EOF
     " (TeX)
     autocmd FileType tex setlocal formatoptions+=t
 
-    " (Python/C++/Markdown/reST) Set textwidth + line overlength
-    " indicators: makes text wrap after we hit our length limit, and `gq`
-    " useful for formatting
-    "
-    " 88 for Python (to match black defaults)
-    " 80 for Markdown (to match prettier defaults)
-    " 80 for reStructuredText
-    " Autodetect via clang-format for C++
-    highlight OverLength ctermbg=236
-    " Getting this to work robustly with FileType autocommands is surprisingly
-    " difficult, so we just use BufEnter and WinEnter events
-    autocmd BufEnter,WinEnter *.py call matchadd('OverLength', '\%>88v.\+')
-          \ | setlocal textwidth=88
-    autocmd BufEnter,WinEnter *.md call matchadd('OverLength', '\%>80v.\+')
-          \ | setlocal textwidth=80
-    autocmd BufEnter,WinEnter *.rst call matchadd('OverLength', '\%>80v.\+')
-          \ | setlocal textwidth=80
-    autocmd BufEnter,WinEnter *.tex call matchadd('OverLength', '\%>80v.\+')
-          \ | setlocal textwidth=80
-    autocmd BufLeave,WinLeave * call clearmatches()
-
     " (Commits) Enable spellcheck
     autocmd FileType gitcommit,hgcommit setlocal spell
   augroup END
@@ -1497,6 +1437,12 @@ EOF
 
   " " SympylFold options
   " let g:SimpylFold_docstring_preview = 1
+  
+  if g:sam_colorscheme !=# 'legacy'
+    execute 'colorscheme ' . g:sam_colorscheme
+  else
+    execute 'colorscheme peachpuff'
+  endif
 
   "" #############################################
   " > Meta <
@@ -1514,10 +1460,5 @@ EOF
   augroup END
   
 
-  if g:sam_colorscheme !=# 'legacy'
-    execute 'colorscheme ' . g:sam_colorscheme
-  else
-    execute 'colorscheme peachpuff'
-  endif
 
 endif
