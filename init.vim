@@ -66,6 +66,10 @@ execute 'call plug#begin("' . s:bundle_path . '")'
 lua require('plugins')
 execute 'PackerInstall'
 
+" Closeb to close complex tags in latex
+" Our fork changes the key combos
+Plug 'sdbuch/closeb'
+
 " Shortcuts for manipulating quotes, brackets, parentheses, HTML tags
 " + vim-repeat for making '.' work for vim-surround
 Plug 'tpope/vim-surround'
@@ -330,6 +334,12 @@ require'nvim-treesitter.configs'.setup {
     -- causes issues with matching $ ... $ math environments...
     additional_vim_regex_highlighting = { "latex" },
   },
+
+  indent = {
+      enable = true,
+      -- disable = { "latex" },
+      disable = { },
+  },
 }
 EOF
 endfunction
@@ -385,17 +395,17 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
 
 
 " Super intelligent indentation level detection
-Plug 'tpope/vim-sleuth'
-" {{
-    " Default to 4 spaces
-    set shiftwidth=4
-    set tabstop=4
-    set expandtab
-    set smarttab
-
-    " Load plugin early so user-defined autocmds override it
-    runtime! plugin/sleuth.vim
-" }}
+" Plug 'tpope/vim-sleuth'
+" " {{
+"     " Default to 4 spaces
+set shiftwidth=4
+set tabstop=4
+set expandtab
+set smarttab
+" 
+"     " Load plugin early so user-defined autocmds override it
+"     runtime! plugin/sleuth.vim
+" " }}
 
 " Helpers for Markdown:
 " 1) Directly paste images
@@ -1211,8 +1221,10 @@ if !s:fresh_install
   set history=35
 
   " Fold behavior tweaks
-  set foldmethod=indent
-  set foldlevel=99
+  "set foldmethod=indent
+  set foldmethod=expr
+  set foldexpr=nvim_treesitter#foldexpr()
+  set foldlevelstart=99
 
   " Passive FTP mode for remote netrw
   let g:netrw_ftp_cmd = 'ftp -p'
@@ -1366,6 +1378,27 @@ EOF
 
     " (TeX)
     autocmd FileType tex setlocal formatoptions+=t
+
+    " (Python/C++/Markdown/reST) Set textwidth + line overlength
+    " indicators: makes text wrap after we hit our length limit, and `gq`
+    " useful for formatting
+    "
+    " 88 for Python (to match black defaults)
+    " 80 for Markdown (to match prettier defaults)
+    " 80 for reStructuredText
+    " Autodetect via clang-format for C++
+    " highlight OverLength ctermbg=236
+    " Getting this to work robustly with FileType autocommands is surprisingly
+    " difficult, so we just use BufEnter and WinEnter events
+    autocmd BufEnter,WinEnter *.py call matchadd('OverLength', '\%>88v.\+')
+          \ | setlocal textwidth=88
+    autocmd BufEnter,WinEnter *.md call matchadd('OverLength', '\%>80v.\+')
+          \ | setlocal textwidth=80
+    autocmd BufEnter,WinEnter *.rst call matchadd('OverLength', '\%>80v.\+')
+          \ | setlocal textwidth=80
+    autocmd BufEnter,WinEnter *.tex call matchadd('OverLength', '\%>80v.\+')
+          \ | setlocal textwidth=80
+    autocmd BufLeave,WinLeave * call clearmatches()
 
     " (Commits) Enable spellcheck
     autocmd FileType gitcommit,hgcommit setlocal spell
