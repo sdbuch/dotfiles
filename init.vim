@@ -336,9 +336,9 @@ require'nvim-treesitter.configs'.setup {
   },
 
   indent = {
-      enable = true,
-      -- disable = { "latex" },
-      disable = { },
+      enable = false,
+      disable = { "latex" },
+      -- disable = { },
   },
 }
 EOF
@@ -951,7 +951,7 @@ Plug 'google/vim-codefmt'
 "" "  "set up vimtex shortcuts
 ""   let g:vimtex_quickfix_mode = 0
 ""   let g:vimtex_syntax_nospell_comments = 1
-"   let g:tex_flavor = 'latex'
+let g:tex_flavor = 'latex'
 ""   let g:vimtex_fold_enabled = 0
 "   let g:vimtex_imaps_leader = '`'
 "   let g:vimtex_imaps_enabled = 0

@@ -10,3 +10,5 @@
 	helper = cache
 [init]
 	defaultBranch = main
+[diff]
+    tool = nvimdiff
