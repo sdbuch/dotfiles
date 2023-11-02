@@ -38,6 +38,7 @@ ln -s $cdir/.vim/snippets/python.json ~/.vim/snippets/python.json
 
 # for neovim
 ln -s $cdir/init.vim ~/.config/nvim/init.vim
+ln -s $cdir/latex_highlights.scm ~/.config/nvim/bundle/nvim-treesitter/queries/latex/highlights.scm
 ln -s $cdir/plugins.lua ~/.config/nvim/lua/plugins.lua
 
 # for ipython / jupyter

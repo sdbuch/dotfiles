@@ -1066,7 +1066,10 @@ if !s:fresh_install
   nmap <F8> :TagbarToggle<CR>
 
   " Set up tex spellchecking options
-  let g:tex_comment_nospell = 1
+  " let g:tex_comment_nospell = 1
+  " hi SpellBad cterm=underline ctermfg=red
+  " NOTE: For treesitter, need to set this differently
+  " try TSUpdateQuery highlights and change @comment with @nospell ...
 
 
   " set wildmenu
@@ -1178,6 +1181,7 @@ if !s:fresh_install
     let g:sam_colorscheme = get(g:, 'sam_colorscheme', 'sonokai')
     let g:sonokai_style = 'espresso'
     let g:sonokai_better_performance = 1
+    let g:sonokai_spell_foreground = 'colored'
   else
     let g:sam_colorscheme = get(g:, 'sam_colorscheme', 'xoria256')
   endif
