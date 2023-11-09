@@ -179,6 +179,9 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
   nmap <F6> :NERDTreeToggle<CR>
 " }}
 
+" fzf
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+
 " Lightline
 Plug 'itchyny/lightline.vim'
 Plug 'josa42/nvim-lightline-lsp'
@@ -273,8 +276,10 @@ Plug 'ludovicchabant/vim-gutentags'
 "
 
 " Use treesitter in Neovim
+" Use Sam's fork (it has edits to the latex highlights.scm file)
+" (right now, the override api for nvim-treesitter is not stable...)
 if has("nvim")
-    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    Plug 'sdbuch/nvim-treesitter', {'do': ':TSUpdate'}
 endif
 
 " Called after plug#end. Note that we can't indent the lua code.
@@ -442,7 +447,7 @@ Plug 'mzlogin/vim-markdown-toc'
 " Add syntax for liquid
 " This needs to happen _after_ all our markdown stuff in order to override
 " properly
-Plug 'tpope/vim-liquid'
+" Plug 'tpope/vim-liquid'
 
 " Display markers to signify different indentation levels
 Plug 'Yggdroot/indentLine'
