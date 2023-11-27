@@ -9,3 +9,5 @@ alias rm='rm -i'
 alias tmuxa='tmux attach-session -t'
 alias tmuxk='tmux kill-session -t'
 
+# nvim vs. vim
+alias vim='nvim'
