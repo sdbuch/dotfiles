@@ -9,13 +9,14 @@
 
 % Fonts
 \usepackage{csquotes}
-\usepackage{fontspec}
 \usepackage{polyglossia}
 \setdefaultlanguage{english}
 % --------------------------------------
 % SETTINGS FOR MATH WITHOUT unicode-math
+% (have to load fontspec after)
 % --------------------------------------
 % \usepackage[bigdelims,vvarbb]{newpxmath}
+% \usepackage{fontspec}
 % \usepackage{mathrsfs}
 % \usepackage{bm}
 % \setmainfont{TeX Gyre Pagella}
@@ -31,15 +32,15 @@
     bold-style=TeX,
     sans-style=upright,
 ]{unicode-math}
+\usepackage{fontspec}
 \setmainfont{TeX Gyre Termes}
 \setmathfont{Latin Modern Math}
-\setsansfont{Arial}
+\setsansfont{TeX Gyre Heros}
 \setmonofont{Source Code Pro}
-\setmathfont{Asana Math}[range={cal, bfcal}, StylisticSet=0]
-\setmathfont{XITS Math}[range={scr, bfscr}, StylisticSet=1]
-\setmathfont{STIX Two Math}[range={bb, bbit}, StylisticSet=0]
+\setmathfont{Asana Math}[range={cal, bfcal}]                 % computer modern \mathcal
+\setmathfont{XITS Math}[range={scr, bfscr}, StylisticSet=1]  % mathrsfs-type \mathscr
+\setmathfont{STIX Two Math}[range={bb, bbit}]                % mirrors newpxmath with vvarbb
 % --------------------------------------
-
 %\usepackage{lineno}
 %\linenumbers
 
@@ -91,12 +92,12 @@ backref=true
 \numberwithin{equation}{section} % Set up to label eqns by section...
 
 % Colors
-\newcommand{\mycolor}{RoyalBlue}
-\newcommand{\mycitecolor}{Red}
+\newcommand{\linkcolor}{RoyalBlue}
+\newcommand{\citecolor}{Red}
 \hypersetup{
-  linkcolor = \mycolor,
-  citecolor = \mycitecolor,
-  urlcolor = \mycitecolor,
+  linkcolor = \linkcolor,
+  citecolor = \citecolor,
+  urlcolor = \citecolor,
   colorlinks = true,
   linktocpage = true,
 }
