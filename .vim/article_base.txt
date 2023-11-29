@@ -9,18 +9,37 @@
 
 % Fonts
 \usepackage{csquotes}
-\usepackage[bigdelims,vvarbb]{newpxmath}
-\usepackage{mathrsfs}
-\usepackage{bm}
 \usepackage{fontspec}
 \usepackage{polyglossia}
 \setdefaultlanguage{english}
-
-\setmainfont{TeX Gyre Pagella}
-\setsansfont{DejaVu Sans}
+% --------------------------------------
+% SETTINGS FOR MATH WITHOUT unicode-math
+% --------------------------------------
+% \usepackage[bigdelims,vvarbb]{newpxmath}
+% \usepackage{mathrsfs}
+% \usepackage{bm}
+% \setmainfont{TeX Gyre Pagella}
+% \setsansfont{DejaVu Sans}
+% \setmonofont{Source Code Pro}
+% \DeclareSymbolFont{operators}{TU}{\rmdefault}{m}{n}
+% \SetSymbolFont{operators}{bold}{TU}{\rmdefault}{b}{n}
+% --------------------------------------
+% SETTINGS FOR MATH WITH unicode-math
+% --------------------------------------
+\usepackage[
+    math-style=TeX,
+    bold-style=TeX,
+    sans-style=upright,
+]{unicode-math}
+\setmainfont{TeX Gyre Termes}
+\setmathfont{Latin Modern Math}
+\setsansfont{Arial}
 \setmonofont{Source Code Pro}
-\DeclareSymbolFont{operators}{TU}{\rmdefault}{m}{n}
-\SetSymbolFont{operators}{bold}{TU}{\rmdefault}{b}{n}
+\setmathfont{Asana Math}[range={cal, bfcal}, StylisticSet=0]
+\setmathfont{XITS Math}[range={scr, bfscr}, StylisticSet=1]
+\setmathfont{STIX Two Math}[range={bb, bbit}, StylisticSet=0]
+% --------------------------------------
+
 %\usepackage{lineno}
 %\linenumbers
 

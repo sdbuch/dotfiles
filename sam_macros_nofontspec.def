@@ -36,29 +36,29 @@
 \ddefloop {alpha}{beta}{gamma}{delta}{epsilon}{varepsilon}{zeta}{eta}{theta}{vartheta}{iota}{kappa}{lambda}{mu}{nu}{xi}{pi}{varpi}{rho}{varrho}{sigma}{varsigma}{tau}{upsilon}{phi}{varphi}{chi}{psi}{omega}{Gamma}{Delta}{Theta}{Lambda}{Xi}{Pi}{Sigma}{varSigma}{Upsilon}{Phi}{Psi}{Omega}{ell}\ddefloop
 
 % \bbA, \bbB, ...
-\def\ddef#1{\expandafter\def\csname bb#1\endcsname{\ensuremath{\symbb{#1}}}}
+\def\ddef#1{\expandafter\def\csname bb#1\endcsname{\ensuremath{\mathbb{#1}}}}
 \ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZ\ddefloop
 
 % \cA, \cB, ...
-\def\ddef#1{\expandafter\def\csname c#1\endcsname{\ensuremath{\symcal{#1}}}}
+\def\ddef#1{\expandafter\def\csname c#1\endcsname{\ensuremath{\mathscr{#1}}}}
 \ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZ\ddefloop
 
 % \sA, \sB, ...
-\def\ddef#1{\expandafter\def\csname s#1\endcsname{\ensuremath{\symscr{#1}}}}
+\def\ddef#1{\expandafter\def\csname s#1\endcsname{\ensuremath{\mathcal{#1}}}}
 \ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZ\ddefloop
 
 % \fA, \fB, ...
-% \def\ddef#1{\expandafter\def\csname f#1\endcsname{\ensuremath{\symfrak{#1}}}}
+% \def\ddef#1{\expandafter\def\csname f#1\endcsname{\ensuremath{\mathfrak{#1}}}}
 %\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\ddefloop
 
 % \vA, \vB, ..., \va, \vb, ...
 \def\ddef#1{\expandafter\def\csname
-v#1\endcsname{\ensuremath{\symbfit{#1}}}}
+v#1\endcsname{\ensuremath{\bm{#1}}}}
 \ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\ddefloop
 
 % \valpha, \vbeta, ...,  \vGamma, \vDelta, ...,
 \def\ddef#1{\expandafter\def\csname
-v#1\endcsname{\ensuremath{\symbf{\csname #1\endcsname}}}}
+v#1\endcsname{\ensuremath{\bm{\csname #1\endcsname}}}}
 \ddefloop {alpha}{beta}{gamma}{delta}{epsilon}{varepsilon}{zeta}{eta}{theta}{vartheta}{iota}{kappa}{lambda}{mu}{nu}{xi}{pi}{varpi}{rho}{varrho}{sigma}{varsigma}{tau}{upsilon}{phi}{varphi}{chi}{psi}{omega}{Gamma}{Delta}{Theta}{Lambda}{Xi}{Pi}{Sigma}{varSigma}{Upsilon}{Phi}{Psi}{Omega}{ell}\ddefloop
 
 % Catch-alls
@@ -89,7 +89,7 @@ v#1\endcsname{\ensuremath{\symbf{\csname #1\endcsname}}}}
 \newcommand{\vscrr}{\bm{\mathscr{r}}}
 
 % Accenting
-%\newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
+\newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
 \let\underbar\relax
 \newcommand{\underbar}[1]{\mkern 1.5mu\underline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
 \newcommand{\conj}[1]{\overbar{#1}}
