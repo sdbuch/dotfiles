@@ -639,6 +639,22 @@ local lazy_plugins = {
 				}),
 			})
 
+			-- LaTeX: disable copilot
+			function table.shallow_copy(t)
+				local t2 = {}
+				for k,v in pairs(t) do
+					t2[k] = v
+				end
+				return t2
+			end
+			local sources = table.shallow_copy(cmp.get_config().sources)
+			for i = #sources, 1, -1 do
+				if sources[i].name == 'copilot' then
+					table.remove(sources, i)
+				end
+			end
+			cmp.setup.filetype("tex", { sources = sources })
+
 			-- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
 			cmp.setup.cmdline({ "/", "?" }, {
 				mapping = cmp.mapping.preset.cmdline(),

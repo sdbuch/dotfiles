@@ -53,9 +53,9 @@ ln -s $cdir/.tmux.conf ~/.tmux.conf
 ln -s $cdir/.inputrc ~/.inputrc
 
 # for neovim
-ln -s $cdir/init.vim ~/.config/nvim/init.vim
+ln -s $cdir/init.lua ~/.config/nvim/init.lua
 ln -s $cdir/latex_highlights.scm ~/.config/nvim/bundle/nvim-treesitter/queries/latex/highlights.scm
-ln -s $cdir/plugins.lua ~/.config/nvim/lua/plugins.lua
+# ln -s $cdir/plugins.lua ~/.config/nvim/lua/plugins.lua
 
 # cat .bashrc
 cat $cdir/.bashrc >> ~/.bashrc
