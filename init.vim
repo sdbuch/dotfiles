@@ -316,7 +316,8 @@ require'nvim-treesitter.configs'.setup {
   auto_install = true,
 
   -- List of parsers to ignore installing (for "all")
-  ignore_install = { },
+  -- tmp: perl treesitter is bugged
+  ignore_install = { "perl" },
 
   ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
   -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
@@ -1433,11 +1434,7 @@ EOF
   set smartcase  " automatically put a \C if capitalization
 
   " Add some shortcut commands for templates
-  command! Makegcc :r ~/.vim/gcc_makefile.txt
-  command! Maketex :r ~/.vim/tex_makefile.txt
-  command! Memoir :r ~/.vim/memoir_base.txt
   command! Article :r ~/.vim/article_base.txt
-  command! Chapter :r ~/.vim/chapter_base.txt
   command! Figure :r ~/.vim/figure_base.txt
   command! Subfigure :r ~/.vim/subfigure_base.txt
   command! Beamer :r ~/.vim/beamer_base.txt

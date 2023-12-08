@@ -38,9 +38,8 @@ mkdir ~/scripts
 mkdir ~/.config
 mkdir ~/.config/nvim
 mkdir ~/.config/nvim/lua
-mkdir ~/.config/nvim/pack
-mkdir ~/.config/nvim/pack/packer
-mkdir ~/.config/nvim/pack/packer/start
+mkdir ~/.config/nvim/lua/lualine
+mkdir ~/.config/nvim/lua/lualine/themes
 
 # config files
 ln -s $cdir/.gitconfig_linux ~/.gitconfig

@@ -226,7 +226,7 @@ v#1\endcsname{\ensuremath{\symbf{\csname #1\endcsname}}}}
 \newcommand{\prox}[1]{{\operatorname{prox}}_{#1}}
 \newcommand\restr[2]{{
   \left.\kern-\nulldelimiterspace
-#1
+#1\,
     \vphantom{\big|}
   \right|_{#2}
 }}

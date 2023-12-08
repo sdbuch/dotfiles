@@ -4,9 +4,9 @@ cdir=$(pwd)
 mkdir ~/.config
 mkdir ~/.config/nvim
 mkdir ~/.config/nvim/lua
-mkdir ~/.config/nvim/pack
-mkdir ~/.config/nvim/pack/packer
-mkdir ~/.config/nvim/pack/packer/start
+mkdir ~/.config/nvim/lua/lualine
+mkdir ~/.config/nvim/lua/lualine/themes
+mkdir ~/.config/nvim/snippets
 
 # config files
 ln -s $cdir/.gitconfig ~/.gitconfig
@@ -35,9 +35,12 @@ ln -s $cdir/.vim/tikz_base.txt ~/.vim/tikz_base.txt
 ln -s $cdir/.vim/colors/wombat256mod.vim ~/.vim/colors/wombat256mod.vim
 ln -s $cdir/.vim/snippets/tex.json ~/.vim/snippets/tex.json
 ln -s $cdir/.vim/snippets/python.json ~/.vim/snippets/python.json
+ln -s $cdir/.vim/snippets/tex.json ~/.config/nvim/snippets/tex.json
+ln -s $cdir/.vim/snippets/python.json ~/.config/nvim/snippets/python.json
 
 # for neovim
-ln -s $cdir/init.vim ~/.config/nvim/init.vim
+# ln -s $cdir/init.vim ~/.config/nvim/init.vim
+ln -s $cdir/init.lua ~/.config/nvim/init.lua
 ln -s $cdir/latex_highlights.scm ~/.config/nvim/bundle/nvim-treesitter/queries/latex/highlights.scm
 ln -s $cdir/plugins.lua ~/.config/nvim/lua/plugins.lua
 
