@@ -132,6 +132,18 @@ vim.api.nvim_create_autocmd('BufNewFile', {
     end
 })
 
+-- Neotree commands
+vim.cmd([[nnoremap <silent> \ :Neotree toggle current reveal_force_cwd<CR>]])
+vim.cmd([[nnoremap <silent> <F6> :Neotree reveal<CR>]])
+vim.cmd([[nnoremap <silent> <leader>gs :Neotree float git_status<CR>]])
+vim.cmd([[nnoremap <silent> <leader>sb :Neotree toggle show buffers right<CR>]])
+vim.cmd([[nnoremap <silent> <leader>of :Neotree float reveal_file=<cfile> reveal_force_cwd<CR>]])
+
+-- Texlab LSP commands
+vim.cmd([[nnoremap <silent> <Leader>ll  :TexlabBuild<CR>]])
+vim.cmd([[nnoremap <silent> <Leader>lc  :TexlabClean<CR>]])
+vim.cmd([[nnoremap <silent> <Leader>lv  :TexlabForward<CR>]])
+
 
 --------------------------------------------------------
 ------                  PLUGINS                  -------
@@ -219,6 +231,8 @@ local lazy_plugins = {
         end,
         build = function()
             -- maybe this is not needed...
+            -- it's copying the theme for lualine, following help page for sonokai
+            -- but seems lualine doesn't have any problem to find the theme...
             local plugpath = vim.fn.stdpath("data") .. "/lazy"
             infile = io.open(plugpath .. '/sonokai/lua/lualine/themes/sonokai.lua' , 'r')
             instr = infile:read('*a')
@@ -231,7 +245,6 @@ local lazy_plugins = {
         end,
     },
     -- Statusline.
-    -- Sonokai theme requires manual copy
     {
         "nvim-lualine/lualine.nvim",
         opts = {
@@ -243,6 +256,19 @@ local lazy_plugins = {
             },
         },
     },
+	-- Notification helper!
+	{
+		"rcarriga/nvim-notify",
+		opts = {
+			icons = {
+				DEBUG = "(!)",
+				ERROR = "🅔",
+				INFO = "ⓘ ", -- "ⓘ",
+				TRACE = "(⋱)",
+				WARN = "⚠️ ",
+			},
+		},
+	},
     -- Syntax highlighting.
 	{
 		"sdbuch/nvim-treesitter",
@@ -363,6 +389,458 @@ local lazy_plugins = {
     { 'andymass/vim-matchup' },
     -- Persist the cursor position when we close a file.
 	{ "vim-scripts/restore_view.vim" },
+    -- Web-based Markdown preview.
+	{
+		"iamcco/markdown-preview.nvim",
+		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+		ft = { "markdown" },
+		build = function()
+			vim.fn["mkdp#util#install"]()
+		end,
+		config = function()
+			vim.api.nvim_create_autocmd("FileType", {
+				pattern = "markdown",
+				callback = function()
+					vim.keymap.set("n", "<Leader>mdtp", "<Plug>MarkdownPreviewToggle")
+				end,
+			})
+		end,
+	},
+    -- File browser.
+	{
+		"nvim-neo-tree/neo-tree.nvim",
+		branch = "v3.x",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"MunifTanjim/nui.nvim",
+		},
+		opts = {
+			default_component_configs = {
+				icon = {
+					folder_closed = "+",
+					folder_open = "-",
+					folder_empty = "%",
+					default = "",
+				},
+				git_status = {
+					symbols = {
+						deleted = "x",
+						renamed = "r",
+						modified = "m",
+						untracked = "u",
+						ignored = "i",
+						unstaged = "u",
+						staged = "s",
+						conflict = "c",
+					},
+				},
+			},
+			filesystem = {
+				filtered_items = {
+					visible = false,
+					hide_dotfiles = false,
+					hide_gitignored = false,
+					hide_hidden = false,
+				},
+			},
+		},
+	},
+    -- Automatically set indentation settings.
+	{ "NMAC427/guess-indent.nvim", config = true },
+    -- Misc visuals from mini.nvim.
+	{
+		"echasnovski/mini.nvim",
+		config = function()
+			require("mini.animate").setup({
+				cursor = { enable = false },
+				scroll = { enable = false },
+			})
+			-- require("mini.cursorword").setup()
+			require("mini.trailspace").setup()
+			local hipatterns = require("mini.hipatterns")
+			hipatterns.setup({
+				highlighters = {
+					-- Highlight certain strings
+					-- These don't seem to be working (maybe sonokai's fault)
+					fixme = { pattern = "%f[%w]()FIXME()%f[%W]", group = "MiniHipatternsFixme" },
+					hack = { pattern = "%f[%w]()HACK()%f[%W]", group = "MiniHipatternsHack" },
+					todo = { pattern = "%f[%w]()TODO()%f[%W]", group = "MiniHipatternsTodo" },
+					note = { pattern = "%f[%w]()NOTE()%f[%W]", group = "MiniHipatternsNote" },
+					-- Highlight hex colors
+					hex_color = hipatterns.gen_highlighter.hex_color(),
+				},
+			})
+		end,
+	},
+	-- Split navigation. Requires corresponding changes to tmux config for tmux
+	-- integration.
+	-- TODO: probably needs to be debugged + hotkeys
+	{
+		"alexghergh/nvim-tmux-navigation",
+		config = function()
+			local nvim_tmux_nav = require("nvim-tmux-navigation")
+			nvim_tmux_nav.setup({
+				disable_when_zoomed = true, -- defaults to false
+			})
+			vim.keymap.set("n", "<C-h>", nvim_tmux_nav.NvimTmuxNavigateLeft)
+			vim.keymap.set("n", "<C-j>", nvim_tmux_nav.NvimTmuxNavigateDown)
+			vim.keymap.set("n", "<C-k>", nvim_tmux_nav.NvimTmuxNavigateUp)
+			vim.keymap.set("n", "<C-l>", nvim_tmux_nav.NvimTmuxNavigateRight)
+			vim.keymap.set("n", "<C-\\>", nvim_tmux_nav.NvimTmuxNavigateLastActive)
+			vim.keymap.set("n", "<C-Space>", nvim_tmux_nav.NvimTmuxNavigateNext)
+		end,
+	},
+	-- Package management.
+	{
+		"williamboman/mason.nvim",
+		opts = {
+			ui = {
+				icons = {
+					package_installed = "✓",
+					package_pending = "➜",
+					package_uninstalled = "✗",
+				},
+			},
+		},
+	},
+	-- Formatting.
+	{
+		"mhartington/formatter.nvim",
+		config = function()
+			-- Format keybinding.
+			vim.keymap.set("n", "<Leader>cf", ":Format<CR>", { noremap = true })
+
+			-- Automatically install formatters via Mason.
+			ENSURE_INSTALLED("lua", "stylua")
+			ENSURE_INSTALLED("python", "ruff") -- Can replace both black and isort!
+			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "prettier")
+			ENSURE_INSTALLED("html,css", "prettier")
+			ENSURE_INSTALLED("c,cpp,cuda", "clang-format")
+
+			-- Configure formatters.
+			local util = require("formatter.util")
+			require("formatter").setup({
+				logging = true,
+				log_level = vim.log.levels.WARN,
+				filetype = {
+					-- What's available:
+					-- https://github.com/mhartington/formatter.nvim/tree/master/lua/formatter/filetypes
+					lua = { require("formatter.filetypes.lua").stylua },
+					python = { require("formatter.filetypes.python").ruff },
+					typescript = { require("formatter.filetypes.typescript").prettier },
+					javascript = { require("formatter.filetypes.javascript").prettier },
+					html = { require("formatter.filetypes.html").prettier },
+					css = { require("formatter.filetypes.css").prettier },
+					markdown = { require("formatter.filetypes.markdown").prettier },
+					cpp = { require("formatter.filetypes.cpp").clangformat },
+					["*"] = { require("formatter.filetypes.any").remove_trailing_whitespace },
+				},
+			})
+		end,
+	},
+	-- Language servers.
+	{
+		"williamboman/mason-lspconfig.nvim",
+		config = { true },
+	},
+	-- Snippets.
+	-- TODO: Need to port some of these
+	{
+		"L3MON4D3/LuaSnip",
+		-- follow latest release.
+		version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+		-- install jsregexp (optional!).
+		build = "make install_jsregexp",
+		dependencies = { "rafamadriz/friendly-snippets" },
+	},
+	-- Completion sources.
+	{ "hrsh7th/cmp-nvim-lsp" },
+	{ "hrsh7th/cmp-buffer" },
+	{ "hrsh7th/cmp-path" },
+	{ "hrsh7th/cmp-cmdline" },
+	{ "hrsh7th/cmp-nvim-lsp-signature-help" },
+	{ "hrsh7th/cmp-emoji" },
+	{
+		"zbirenbaum/copilot.lua",
+		opts = {
+			suggestion = { enabled = false },
+			panel = { enabled = false },
+		},
+	},
+	{ "zbirenbaum/copilot-cmp", config = true },
+	{
+		"hrsh7th/nvim-cmp",
+		config = function()
+			local has_words_before = function()
+				if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
+					return false
+				end
+				local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+				return col ~= 0
+					and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
+			end
+
+			-- Set up nvim-cmp.
+			local cmp = require("cmp")
+			cmp.setup({
+				-- Need to set a snippet engine up, even if we don't care about snippets.
+				snippet = {
+					expand = function(args)
+						require("luasnip").lsp_expand(args.body)
+					end,
+				},
+				window = {
+					completion = cmp.config.window.bordered(),
+					documentation = cmp.config.window.bordered(),
+				},
+				mapping = cmp.mapping.preset.insert({
+					["<C-b>"] = cmp.mapping.scroll_docs(-4),
+					["<C-f>"] = cmp.mapping.scroll_docs(4),
+					["<C-Space>"] = cmp.mapping.complete(),
+					["<CR>"] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+					["<Tab>"] = vim.schedule_wrap(function(fallback)
+						if cmp.visible() and has_words_before() then
+							cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+						else
+							fallback()
+						end
+					end),
+					["<S-Tab>"] = function(fallback)
+						if cmp.visible() then
+							cmp.select_prev_item()
+						else
+							fallback()
+						end
+					end,
+				}),
+				sources = cmp.config.sources({
+					{ name = "copilot" },
+					{
+						name = 'nvim_lsp',
+						entry_filter = function(entry, ctx)
+							return require('cmp.types').lsp.CompletionItemKind[entry:get_kind()] ~= 'Text'
+						end
+					},
+					{ name = "nvim_lsp_signature_help" },
+					{ name = "emoji" },
+					{ name = "path" },
+					{ name = 'luasnip' }, -- For luasnip users.
+				}, {
+					{ name = "buffer" },
+				}),
+			})
+
+			-- Set configuration for specific filetype.
+			cmp.setup.filetype("gitcommit", {
+				sources = cmp.config.sources({
+					{ name = "emoji" },
+				}, {
+					{ name = "buffer" },
+				}),
+			})
+
+			-- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+			cmp.setup.cmdline({ "/", "?" }, {
+				mapping = cmp.mapping.preset.cmdline(),
+				sources = {
+					{ name = "buffer" },
+				},
+			})
+
+			-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+			cmp.setup.cmdline(":", {
+				mapping = cmp.mapping.preset.cmdline(),
+				sources = cmp.config.sources({ { name = "path" } }, { { name = "cmdline" } }),
+			})
+		end,
+	},
+	-- Configure LPSs
+	{
+		"neovim/nvim-lspconfig",
+		dependencies = { {"folke/neodev.nvim", config = true} },
+		config = function()
+			-- Dim LSP errors.
+			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { fg = "#8c3032" })
+			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextWarn", { fg = "#5a5a30" })
+			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextInfo", { fg = "#303f5a" })
+			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextHint", { fg = "#305a35" })
+			vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#333333", bg = "#a7a7a7" })
+			vim.api.nvim_set_hl(0, "CursorLine", { bg = "#333333" })
+
+			-- Automatically install language servers via Mason.
+			ENSURE_INSTALLED("python", "pyright")
+			ENSURE_INSTALLED("lua", "lua-language-server")
+			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "typescript-language-server")
+			ENSURE_INSTALLED("html", "html-lsp")
+			ENSURE_INSTALLED("css", "css-lsp")
+			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "eslint-lsp")
+			ENSURE_INSTALLED("tex", "texlab")
+			ENSURE_INSTALLED("c,cpp,cuda", "clangd")
+
+
+			-- Texlab supports a clean command.
+			-- Patch in a function that implements this, and add it to config below
+			local util = require 'lspconfig.util'
+			local function buf_clean(bufnr)
+				bufnr = util.validate_bufnr(bufnr)
+				local texlab_client = util.get_active_client_by_name(bufnr, 'texlab')
+				local params = {
+					command = 'texlab.cleanArtifacts',
+					arguments = {{ uri = vim.uri_from_bufnr(bufnr)}, },
+				}
+				if texlab_client then
+					texlab_client.request('workspace/executeCommand', params)
+					print 'Clean Success'
+				else
+					print 'method textDocument/clean is not supported by any servers active on the current buffer'
+				end
+			end
+
+			-- Set up lspconfig.
+			local capabilities = require("cmp_nvim_lsp").default_capabilities()
+			require("lspconfig").pyright.setup({ capabilities = capabilities })
+			require("lspconfig").lua_ls.setup({ capabilities = capabilities })
+			require("lspconfig").tsserver.setup({ capabilities = capabilities })
+			require("lspconfig").html.setup({ capabilities = capabilities })
+			require("lspconfig").cssls.setup({ capabilities = capabilities })
+			require("lspconfig").eslint.setup({ capabilities = capabilities })
+			require("lspconfig").texlab.setup{
+				-- cmd = { 'texlab', '-vvvv', '--log-file', '/Users/sdbuch/.local/state/nvim/texlab.log' },
+				capabilities = capabilities,
+				settings = {
+					texlab = {
+						build = {
+							args = { "-pdf", "-interaction=nonstopmode", "-synctex=1", "--shell-escape", "%f" },
+							executable = "latexmk",
+							forwardSearchAfter = false,
+							onSave = true
+						},
+						chktex = {
+							onEdit = false,
+							onOpenAndSave = true
+						},
+						forwardSearch = {
+							executable = '/Applications/Skim.app/Contents/SharedSupport/displayline',
+							args = { "%l", "%p", "%f" },
+						}
+					}
+				},
+				commands = {
+					TexlabClean = {
+						function()
+							buf_clean(0)
+						end,
+						description = 'Clean files in project in current buffer',
+					},
+				},
+			}
+			require("lspconfig").clangd.setup({ capabilities = capabilities })
+
+			vim.api.nvim_create_autocmd("LspAttach", {
+				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+				callback = function(ev)
+					-- Enable completion triggered by <c-x><c-o>
+					vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
+
+					vim.api.nvim_create_autocmd("CursorHold", {
+						buffer = bufnr,
+						callback = function()
+							local opts = {
+								focusable = false,
+								close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+								border = "rounded",
+								source = "always",
+								prefix = " ",
+								scope = "cursor",
+							}
+							vim.diagnostic.open_float(nil, opts)
+						end,
+					})
+					vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+						border = "rounded",
+					})
+
+					vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+						border = "rounded",
+					})
+
+					-- Buffer local mappings.
+					-- See `:help vim.lsp.*` for documentation on any of the below functions
+					local opts = { buffer = ev.buf }
+					vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+					vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+					vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+					vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+					-- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+					vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, opts)
+					vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, opts)
+					vim.keymap.set("n", "<space>wl", function()
+						print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+					end, opts)
+					vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, opts)
+					vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, opts)
+					vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, opts)
+					vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+					vim.keymap.set("n", "<space>lf", function()
+						vim.lsp.buf.format({ async = true })
+					end, opts)
+				end,
+			})
+		end,
+	},
+	-- View errors
+	{
+		"folke/trouble.nvim",
+		config = function()
+			vim.keymap.set("n", "<Leader><Tab>", ":TroubleToggle<CR>", {})
+			require("trouble").setup({
+				position = "bottom", -- position of the list can be: bottom, top, left, right
+				height = 10, -- height of the trouble list when position is top or bottom
+				width = 50, -- width of the list when position is left or right
+				icons = false, -- use devicons for filenames
+				mode = "workspace_diagnostics", -- "workspace_diagnostics", "document_diagnostics", "quickfix", "lsp_references", "loclist"
+				fold_open = "v", -- icon used for open folds
+				fold_closed = ">", -- icon used for closed folds
+				group = true, -- group results by file
+				padding = true, -- add an extra new line on top of the list
+				action_keys = { -- key mappings for actions in the trouble list
+				-- map to {} to remove a mapping, for example:
+				-- close = {},
+				close = "q", -- close the list
+				cancel = "<esc>", -- cancel the preview and get back to your last window / buffer / cursor
+				refresh = "r", -- manually refresh
+				jump = { "<cr>", "<tab>" }, -- jump to the diagnostic or open / close folds
+				open_split = { "<c-x>" }, -- open buffer in new split
+				open_vsplit = { "<c-v>" }, -- open buffer in new vsplit
+				open_tab = { "<c-t>" }, -- open buffer in new tab
+				jump_close = { "o" }, -- jump to the diagnostic and close the list
+				toggle_mode = "m", -- toggle between "workspace" and "document" diagnostics mode
+				toggle_preview = "P", -- toggle auto_preview
+				hover = "K", -- opens a small popup with the full multiline message
+				preview = "p", -- preview the diagnostic location
+				close_folds = { "zM", "zm" }, -- close all folds
+				open_folds = { "zR", "zr" }, -- open all folds
+				toggle_fold = { "zA", "za" }, -- toggle fold of current file
+				previous = "k", -- previous item
+				next = "j", -- next item
+			},
+			indent_lines = true, -- add an indent guide below the fold icons
+			auto_open = false, -- automatically open the list when you have diagnostics
+			auto_close = false, -- automatically close the list when you have no diagnostics
+			auto_preview = true, -- automatically preview the location of the diagnostic. <esc> to close preview and go back to last window
+			auto_fold = false, -- automatically fold a file trouble list at creation
+			auto_jump = { "lsp_definitions" }, -- for the given modes, automatically jump if there is only a single result
+			signs = {
+				-- icons / text used for a diagnostic
+				error = "error",
+				warning = "warn ",
+				hint = "hint ",
+				information = "info ",
+			},
+			use_diagnostic_signs = false, -- enabling this will use the signs defined in your lsp client
+		})
+	end,
+},
 }
 
 
