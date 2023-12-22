@@ -308,6 +308,7 @@ local lazy_plugins = {
 					"python",
 					"html",
 					"css",
+					"scss",
 					"javascript",
 					"markdown",
 					"markdown_inline",
@@ -571,7 +572,7 @@ local lazy_plugins = {
 			ENSURE_INSTALLED("python", "isort")
 			ENSURE_INSTALLED("python", "ruff") -- Can replace both black and isort!
 			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "prettier")
-			ENSURE_INSTALLED("html,css", "prettier")
+			ENSURE_INSTALLED("html,css,scss", "prettier")
 			ENSURE_INSTALLED("c,cpp,cuda", "clang-format")
 
 			-- Configure formatters.
@@ -746,7 +747,7 @@ local lazy_plugins = {
 			ENSURE_INSTALLED("lua", "lua-language-server")
 			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "typescript-language-server")
 			ENSURE_INSTALLED("html", "html-lsp")
-			ENSURE_INSTALLED("css", "css-lsp")
+			ENSURE_INSTALLED("css,scss", "css-lsp")
 			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "eslint-lsp")
 			ENSURE_INSTALLED("tex", "texlab")
 			ENSURE_INSTALLED("c,cpp,cuda", "clangd")
