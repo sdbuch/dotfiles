@@ -571,8 +571,8 @@ local lazy_plugins = {
 			ENSURE_INSTALLED("lua", "stylua")
 			ENSURE_INSTALLED("python", "isort")
 			ENSURE_INSTALLED("python", "ruff") -- Can replace both black and isort!
-			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "prettier")
-			ENSURE_INSTALLED("html,css,scss", "prettier")
+			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "prettierd")
+			ENSURE_INSTALLED("html,css,scss", "prettierd")
 			ENSURE_INSTALLED("c,cpp,cuda", "clang-format")
 
 			-- Configure formatters.
@@ -585,11 +585,12 @@ local lazy_plugins = {
 					-- https://github.com/mhartington/formatter.nvim/tree/master/lua/formatter/filetypes
 					lua = { require("formatter.filetypes.lua").stylua },
 					python = { require("formatter.filetypes.python").isort, require("formatter.filetypes.python").ruff },
-					typescript = { require("formatter.filetypes.typescript").prettier },
-					javascript = { require("formatter.filetypes.javascript").prettier },
-					html = { require("formatter.filetypes.html").prettier },
-					css = { require("formatter.filetypes.css").prettier },
-					markdown = { require("formatter.filetypes.markdown").prettier },
+					typescript = { require("formatter.filetypes.typescript").prettierd },
+					javascript = { require("formatter.filetypes.javascript").prettierd },
+					html = { require("formatter.filetypes.html").prettierd },
+					css = { require("formatter.filetypes.css").prettierd },
+					scss = { require("formatter.filetypes.css").prettierd },
+					markdown = { require("formatter.filetypes.markdown").prettierd },
 					cpp = { require("formatter.filetypes.cpp").clangformat },
 					["*"] = { require("formatter.filetypes.any").remove_trailing_whitespace },
 				},
