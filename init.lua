@@ -1,7 +1,6 @@
 -- Lua nvim config
 -- borrowed from brentyi as usual
 
-
 --------------------------------------------------------
 ------            SETTINGS/COMMANDS              -------
 --------------------------------------------------------
@@ -10,7 +9,7 @@
 vim.g.mapleader = ","
 
 -- turn off mouse
-vim.o.mouse = ''
+vim.o.mouse = ""
 
 -- vim visual
 vim.wo.relativenumber = true
@@ -20,9 +19,9 @@ vim.opt.showmode = false
 vim.opt.scrolloff = 10
 
 -- colorscheme options
-vim.g.sonokai_style = 'espresso'
+vim.g.sonokai_style = "espresso"
 vim.g.sonokai_better_performance = 1
-vim.g.sonokai_spell_foreground = 'colored'
+vim.g.sonokai_spell_foreground = "colored"
 
 -- Use current file's parent as cwd.
 vim.opt.autochdir = true
@@ -39,97 +38,102 @@ vim.opt.smarttab = true
 vim.opt.expandtab = true
 
 -- Latex globals
-vim.g.tex_flavor = 'latex'
+vim.g.tex_flavor = "latex"
+vim.g.gutentags_resolve_symlinks = 0
 
 -- Matchup settings
-vim.g.matchup_surround_enabled = 1  -- surround support (ds% and cs%)
-vim.g.matchup_transmute_enabled = 1  -- change matching tags as one's edited
+vim.g.matchup_surround_enabled = 1 -- surround support (ds% and cs%)
+vim.g.matchup_transmute_enabled = 1 -- change matching tags as one's edited
 
 -- Wildignore
-vim.opt.wildignore = { '*.swp', '*.o', '*.pyc', '*.pb', '*.a', '__pycache__' } -- python
-vim.opt.wildignore:append { '.venv/*', 'site-packages/*', '*.pdb' }            -- python
-vim.opt.wildignore:append { '.git/*', '.hg/*', '.svn/*' }                  -- versioning
-vim.opt.wildignore:append { '_site/*', '.jekyll-cache/*' }                     -- jekyll
-vim.opt.wildignore:append { 'node_modules/*' }                                   -- node
-vim.opt.wildignore:append { '*.bak', 'tags', '*.tar.*' }                          -- etc
-vim.opt.wildignore:append { '*.pdf', '*.synctex.gz', '*.dvi', '*.fls', '*.blg' }  -- tex
-vim.opt.wildignore:append { '*.bbl', '*.toc', '*.aux', '*.out', '*.fdb_latexmk' } -- tex
-if vim.fn.has('macunix') then
-    vim.o.wildignorecase = true
+vim.opt.wildignore = { "*.swp", "*.o", "*.pyc", "*.pb", "*.a", "__pycache__" } -- python
+vim.opt.wildignore:append({ ".venv/*", "site-packages/*", "*.pdb" }) -- python
+vim.opt.wildignore:append({ ".git/*", ".hg/*", ".svn/*" }) -- versioning
+vim.opt.wildignore:append({ "_site/*", ".jekyll-cache/*" }) -- jekyll
+vim.opt.wildignore:append({ "node_modules/*" }) -- node
+vim.opt.wildignore:append({ "*.bak", "tags", "*.tar.*" }) -- etc
+vim.opt.wildignore:append({ "*.pdf", "*.synctex.gz", "*.dvi", "*.fls", "*.blg" }) -- tex
+vim.opt.wildignore:append({ "*.bbl", "*.toc", "*.aux", "*.out", "*.fdb_latexmk" }) -- tex
+if vim.fn.has("macunix") then
+	vim.o.wildignorecase = true
 end
 
 -- clipboard
-vim.opt.clipboard:append { 'unnamed', 'unnamedplus' }
+vim.opt.clipboard:append({ "unnamed", "unnamedplus" })
 
 -- spell check
-vim.keymap.set('n', '<F7>', ':setlocal spell! spelllang=en_us<CR>', { noremap = true, silent = true})
+vim.keymap.set("n", "<F7>", ":setlocal spell! spelllang=en_us<CR>", { noremap = true, silent = true })
 
 -- terminal shortcuts
-vim.keymap.set('n', '<Leader>ot', ':split term://bash<CR>', { noremap = true, silent = true})
-vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]])
+vim.keymap.set("n", "<Leader>ot", ":split term://bash<CR>", { noremap = true, silent = true })
+vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]])
 
 -- navigation commands
 -- buffer
-vim.keymap.set('n', '<Leader>b', ':buffer <C-z><S-Tab>', { noremap = true})
-vim.keymap.set('n', '<Leader>q', ':bp|bd #<CR>', { noremap = true})
-vim.keymap.set('n', '<Leader>B', ':sbuffer <C-z><S-Tab>', { noremap = true})
-vim.keymap.set('n', '<Leader>gb', ':bnext<CR>', { noremap = true })
-vim.keymap.set('n', '<Leader>gB', ':bprevious<CR>', { noremap = true })
+vim.keymap.set("n", "<Leader>b", ":buffer <C-z><S-Tab>", { noremap = true })
+vim.keymap.set("n", "<Leader>q", ":bp|bd #<CR>", { noremap = true })
+vim.keymap.set("n", "<Leader>B", ":sbuffer <C-z><S-Tab>", { noremap = true })
+vim.keymap.set("n", "<Leader>gb", ":bnext<CR>", { noremap = true })
+vim.keymap.set("n", "<Leader>gB", ":bprevious<CR>", { noremap = true })
 -- window
-vim.keymap.set('n', '<Leader>w', '<C-W>w', { noremap = true })
-vim.keymap.set('n', '<Leader>W', '<C-W>W', { noremap = true })
+vim.keymap.set("n", "<Leader>w", "<C-W>w", { noremap = true })
+vim.keymap.set("n", "<Leader>W", "<C-W>W", { noremap = true })
 
 -- highlight search
 vim.o.hlsearch = true
-vim.keymap.set('n', '<F9>', ':noh<CR>', { noremap = true, silent = true})
+vim.keymap.set("n", "<F9>", ":noh<CR>", { noremap = true, silent = true })
 
 -- case-insensitive search
 vim.o.ignorecase = true
 vim.o.smartcase = true
 
 -- folding
--- -- use ufo for this
+-- -- use ufo for this... downloaded below
 -- vim.opt.foldmethod = expr
 -- vim.opt.foldexpr = nvim_treesitter#foldexpr()
 -- set foldlevelstart=99
+vim.o.foldcolumn = "1" -- '0' is not bad
+vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
 
 -- text wrapping in certain buffers
-vim.api.nvim_create_autocmd('FileType', {
-    pattern = 'tex',
-    callback = function ()
-        vim.opt.formatoptions:append({ 't' })
-        vim.o.textwidth = 80
-    end
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "tex",
+	callback = function()
+		vim.opt.formatoptions:append({ "t" })
+		vim.o.textwidth = 80
+	end,
 })
-vim.api.nvim_create_autocmd('FileType', {
-    pattern = 'python',
-    callback = function ()
-        vim.opt.formatoptions:append({ 't' })
-        vim.o.textwidth = 88
-    end
-})
+-- vim.api.nvim_create_autocmd('FileType', {
+-- 	pattern = 'python',
+-- 	callback = function ()
+-- 		vim.opt.formatoptions:append({ 't' })
+-- 		vim.o.textwidth = 88
+-- 	end
+-- })
 
 -- template commands (python, tex stubs)
-vim.api.nvim_create_user_command('Article', ':r ~/.vim/article_base.txt', {}) 
-vim.api.nvim_create_user_command('Figure', ':r ~/.vim/figure_base.txt', {}) 
-vim.api.nvim_create_user_command('Subfigure', ':r ~/.vim/subfigure_base.txt', {}) 
-vim.api.nvim_create_user_command('Beamer', ':r ~/.vim/beamer_base.txt', {}) 
-vim.api.nvim_create_user_command('Poster', ':r ~/.vim/poster_base.txt', {}) 
-vim.api.nvim_create_user_command('Tikz', ':r ~/.vim/tikz_base.txt', {}) 
-vim.api.nvim_create_user_command('Python', ':r ~/.vim/python_skeleton.py', {}) 
-vim.api.nvim_create_user_command('Listings', ':r ~/.vim/listings_base.txt', {}) 
+vim.api.nvim_create_user_command("Article", ":r ~/.vim/article_base.txt", {})
+vim.api.nvim_create_user_command("Figure", ":r ~/.vim/figure_base.txt", {})
+vim.api.nvim_create_user_command("Subfigure", ":r ~/.vim/subfigure_base.txt", {})
+vim.api.nvim_create_user_command("Beamer", ":r ~/.vim/beamer_base.txt", {})
+vim.api.nvim_create_user_command("Poster", ":r ~/.vim/poster_base.txt", {})
+vim.api.nvim_create_user_command("Tikz", ":r ~/.vim/tikz_base.txt", {})
+vim.api.nvim_create_user_command("Python", ":r ~/.vim/python_skeleton.py", {})
+vim.api.nvim_create_user_command("Listings", ":r ~/.vim/listings_base.txt", {})
 
 -- overleaf push command
 -- uses fugitive
-vim.api.nvim_create_user_command('Overleaf', ':Git add . | Git commit -m asdf | Git push', {})
+vim.api.nvim_create_user_command("Overleaf", ":Git add . | Git commit -m asdf | Git push", {})
 
 -- New file templates
 -- python
-vim.api.nvim_create_autocmd('BufNewFile', {
-    pattern = '*.py',
-    callback = function ()
-        vim.cmd('0r ~/.vim/python_skeleton.py')
-    end
+vim.api.nvim_create_autocmd("BufNewFile", {
+	pattern = "*.py",
+	callback = function()
+		vim.cmd("0r ~/.vim/python_skeleton.py")
+	end,
 })
 
 -- Neotree commands
@@ -143,7 +147,6 @@ vim.cmd([[nnoremap <silent> <leader>of :Neotree float reveal_file=<cfile> reveal
 vim.cmd([[nnoremap <silent> <Leader>ll  :TexlabBuild<CR>]])
 vim.cmd([[nnoremap <silent> <Leader>lc  :TexlabClean<CR>]])
 vim.cmd([[nnoremap <silent> <Leader>lv  :TexlabForward<CR>]])
-
 
 --------------------------------------------------------
 ------                  PLUGINS                  -------
@@ -222,40 +225,60 @@ end
 
 -- Configure plugins.
 local lazy_plugins = {
-    -- Color scheme.
-    {
-        'sainnhe/sonokai',
-        priority = 1000,
-        config = function()
-            vim.cmd.colorscheme("sonokai")
-        end,
-        build = function()
-            -- maybe this is not needed...
-            -- it's copying the theme for lualine, following help page for sonokai
-            -- but seems lualine doesn't have any problem to find the theme...
-            local plugpath = vim.fn.stdpath("data") .. "/lazy"
-            infile = io.open(plugpath .. '/sonokai/lua/lualine/themes/sonokai.lua' , 'r')
-            instr = infile:read('*a')
-            infile:close()
+	-- Color scheme.
+	{
+		"sainnhe/sonokai",
+		priority = 1000,
+		config = function()
+			vim.cmd.colorscheme("sonokai")
+		end,
+		build = function()
+			-- maybe this is not needed...
+			-- it's copying the theme for lualine, following help page for sonokai
+			-- but seems lualine doesn't have any problem to find the theme...
+			local plugpath = vim.fn.stdpath("data") .. "/lazy"
+			infile = io.open(plugpath .. "/sonokai/lua/lualine/themes/sonokai.lua", "r")
+			instr = infile:read("*a")
+			infile:close()
 
-            local configpath = vim.fn.stdpath('config')
-            outfile = io.open(configpath .. '/lua/lualine/themes/sonokai.lua', 'w')
-            outfile:write(instr)
-            outfile:close()
-        end,
-    },
-    -- Statusline.
-    {
-        "nvim-lualine/lualine.nvim",
-        opts = {
-            options = {
-                icons_enabled = false,
-                theme = 'auto',
-                component_separators = { left = "|", right = "|" },
-                section_separators = { left = "", right = "" },
-            },
-        },
-    },
+			local configpath = vim.fn.stdpath("config")
+			outfile = io.open(configpath .. "/lua/lualine/themes/sonokai.lua", "w")
+			outfile:write(instr)
+			outfile:close()
+		end,
+	},
+	-- Statusline.
+	{
+		"nvim-lualine/lualine.nvim",
+		opts = {
+			options = {
+				icons_enabled = false,
+				theme = "auto",
+				component_separators = { left = "|", right = "|" },
+				section_separators = { left = "", right = "" },
+			},
+			sections = {
+				lualine_a = { "mode" },
+				lualine_b = { "filename" },
+				lualine_c = { "diff" },
+				lualine_x = {
+					{
+						function(name, context) -- Filepath.
+							return vim.fn.fnamemodify(vim.fn.getcwd(), ":~")
+						end,
+						color = { fg = "#777777" },
+					},
+					"diagnostics",
+				},
+				lualine_y = { "filetype", "progress" },
+				lualine_z = { "location" },
+			},
+		},
+	},
+	-- close environments in tex
+	{ "sdbuch/closeb" },
+	-- ctags support for tex
+	{ "ludovicchabant/vim-gutentags" },
 	-- Notification helper!
 	{
 		"rcarriga/nvim-notify",
@@ -269,65 +292,98 @@ local lazy_plugins = {
 			},
 		},
 	},
-    -- Syntax highlighting.
+	-- Syntax highlighting.
 	{
 		"sdbuch/nvim-treesitter",
 		build = ":TSUpdate",
 		config = function()
 			---@diagnostic disable-next-line: missing-fields
 			require("nvim-treesitter.configs").setup({
-                ensure_installed = {
-                    "c",
-                    "cpp",
-                    "cuda",
-                    "lua",
-                    "vim",
-                    "python",
-                    "html",
-                    "css",
-                    "javascript",
-                    "markdown",
-                    "markdown_inline",
-                    "rust",
-                    "latex",
-                    "bibtex",
-                },
-                matchup = {
-                    enable = true,  -- mandatory, false will disable the whole extension
-                    disable = { "tex", "html", "c", "ruby", "config", "liquid", "lua", "make", "plaintex", "sh", "vim", "xml" },  -- optional, list of language that will be disabled
-                    -- [options]
-                },
+				ensure_installed = {
+					"c",
+					"cpp",
+					"cuda",
+					"lua",
+					"vim",
+					"python",
+					"html",
+					"css",
+					"javascript",
+					"markdown",
+					"markdown_inline",
+					"rust",
+					"latex",
+					"bibtex",
+				},
+				matchup = {
+					enable = true, -- mandatory, false will disable the whole extension
+					disable = {
+						"tex",
+						"html",
+						"c",
+						"ruby",
+						"config",
+						"liquid",
+						"lua",
+						"make",
+						"plaintex",
+						"sh",
+						"vim",
+						"xml",
+					}, -- optional, list of language that will be disabled
+					-- [options]
+				},
 				sync_install = false,
 				auto_install = true,
-                ignore_install = { "perl" },
-                highlight = {
-                    -- `false` will disable the whole extension
-                    enable = true,
+				ignore_install = { "perl" },
+				highlight = {
+					-- `false` will disable the whole extension
+					enable = true,
 
-                    -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
-                    -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
-                    -- the name of the parser)
-                    -- list of language that will be disabled
-                    disable = { },
+					-- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
+					-- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
+					-- the name of the parser)
+					-- list of language that will be disabled
+					disable = {},
 
-                    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-                    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-                    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-                    -- Instead of true it can also be a list of languages
-                    -- sam: adding this for latex, since current latex grammar (or treesitter?)
-                    -- causes issues with matching $ ... $ math environments...
-                    additional_vim_regex_highlighting = { "latex" },
-                },
+					-- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+					-- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+					-- Using this option may slow down your editor, and you may see some duplicate highlights.
+					-- Instead of true it can also be a list of languages
+					-- sam: adding this for latex, since current latex grammar (or treesitter?)
+					-- causes issues with matching $ ... $ math environments...
+					additional_vim_regex_highlighting = { "latex" },
+				},
 
-                indent = {
-                    enable = false,
-                    disable = { "latex" },
-                    -- disable = { },
-                },
+				indent = {
+					enable = false,
+					disable = { "latex" },
+					-- disable = { },
+				},
 			})
 		end,
 	},
-    -- Show indentation guides.
+	-- folding
+	{
+		"kevinhwang91/nvim-ufo",
+		dependencies = { "kevinhwang91/promise-async" },
+
+		config = function()
+			-- Option 3: treesitter as a main provider instead
+			-- Only depend on `nvim-treesitter/queries/filetype/folds.scm`,
+			-- performance and stability are better than `foldmethod=nvim_treesitter#foldexpr()`
+			require("ufo").setup({
+				provider_selector = function(bufnr, filetype, buftype)
+					return { "treesitter", "indent" }
+				end,
+			})
+
+			-- Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
+			vim.keymap.set("n", "zR", require("ufo").openAllFolds)
+			vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
+		end,
+	},
+	-- Show indentation guides.
 	{
 		"lukas-reineke/indent-blankline.nvim",
 		config = function()
@@ -336,42 +392,42 @@ local lazy_plugins = {
 			require("ibl").setup({ indent = { char = "·" } })
 		end,
 	},
-    -- Fuzzy find.
-    -- requires ripgrep (brew install ripgrep)
-    {
-        "nvim-telescope/telescope.nvim",
-        tag = "0.1.4",
-        dependencies = { "nvim-lua/plenary.nvim" },
-        config = function()
-            require("telescope").setup({})
+	-- Fuzzy find.
+	-- requires ripgrep (brew install ripgrep)
+	{
+		"nvim-telescope/telescope.nvim",
+		tag = "0.1.4",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		config = function()
+			require("telescope").setup({})
 
-            -- Use repository root as cwd for Telescope.
-            vim.api.nvim_create_autocmd("BufWinEnter", {
-                pattern = "*",
-                callback = vim.schedule_wrap(function()
-                    local root = vim.fs.dirname(vim.fs.find(".git", { upward = true })[1])
-                    if root ~= nil then
-                        vim.b["Telescope#repository_root"] = root
-                    else
-                        vim.b["Telescope#repository_root"] = "."
-                    end
-                end),
-            })
+			-- Use repository root as cwd for Telescope.
+			vim.api.nvim_create_autocmd("BufWinEnter", {
+				pattern = "*",
+				callback = vim.schedule_wrap(function()
+					local root = vim.fs.dirname(vim.fs.find(".git", { upward = true })[1])
+					if root ~= nil then
+						vim.b["Telescope#repository_root"] = root
+					else
+						vim.b["Telescope#repository_root"] = "."
+					end
+				end),
+			})
 
-            -- Bindings.
-            local builtin = require("telescope.builtin")
-            vim.keymap.set("n", "<C-p>", function()
-                builtin.find_files({ cwd = vim.b["Telescope#repository_root"] })
-            end)
-            vim.keymap.set("n", "<Leader>fg", function()
-                builtin.live_grep({ cwd = vim.b["Telescope#repository_root"] })
-            end)
-            vim.keymap.set("n", "<Leader>fb", builtin.buffers)
-            vim.keymap.set("n", "<Leader>fh", builtin.help_tags)
-            vim.keymap.set("n", "<Leader>h", builtin.oldfiles)
-        end,
-    },
-    -- Tagbar-style code overview.
+			-- Bindings.
+			local builtin = require("telescope.builtin")
+			vim.keymap.set("n", "<C-p>", function()
+				builtin.find_files({ cwd = vim.b["Telescope#repository_root"] })
+			end)
+			vim.keymap.set("n", "<Leader>fg", function()
+				builtin.live_grep({ cwd = vim.b["Telescope#repository_root"] })
+			end)
+			vim.keymap.set("n", "<Leader>fb", builtin.buffers)
+			vim.keymap.set("n", "<Leader>fh", builtin.help_tags)
+			vim.keymap.set("n", "<Leader>h", builtin.oldfiles)
+		end,
+	},
+	-- Tagbar-style code overview.
 	{
 		"stevearc/aerial.nvim",
 		config = function()
@@ -379,17 +435,17 @@ local lazy_plugins = {
 			vim.keymap.set("n", "<F8>", "<cmd>AerialToggle!<CR>")
 		end,
 	},
-    -- Git helpers.
+	-- Git helpers.
 	{ "tpope/vim-fugitive" },
 	{ "lewis6991/gitsigns.nvim", config = true },
 	-- Comments. By default, bound to `gcc`.
 	{ "numToStr/Comment.nvim", config = true },
 	-- Motions.
 	{ "kylechui/nvim-surround", config = true },
-    { 'andymass/vim-matchup' },
-    -- Persist the cursor position when we close a file.
-	{ "vim-scripts/restore_view.vim" },
-    -- Web-based Markdown preview.
+	{ "andymass/vim-matchup" },
+	-- Persist the cursor position when we close a file.
+	{ "farmergreg/vim-lastplace" },
+	-- Web-based Markdown preview.
 	{
 		"iamcco/markdown-preview.nvim",
 		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
@@ -406,7 +462,7 @@ local lazy_plugins = {
 			})
 		end,
 	},
-    -- File browser.
+	-- File browser.
 	{
 		"nvim-neo-tree/neo-tree.nvim",
 		branch = "v3.x",
@@ -445,9 +501,9 @@ local lazy_plugins = {
 			},
 		},
 	},
-    -- Automatically set indentation settings.
+	-- Automatically set indentation settings.
 	{ "NMAC427/guess-indent.nvim", config = true },
-    -- Misc visuals from mini.nvim.
+	-- Misc visuals from mini.nvim.
 	{
 		"echasnovski/mini.nvim",
 		config = function()
@@ -512,6 +568,7 @@ local lazy_plugins = {
 
 			-- Automatically install formatters via Mason.
 			ENSURE_INSTALLED("lua", "stylua")
+			ENSURE_INSTALLED("python", "isort")
 			ENSURE_INSTALLED("python", "ruff") -- Can replace both black and isort!
 			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "prettier")
 			ENSURE_INSTALLED("html,css", "prettier")
@@ -526,7 +583,7 @@ local lazy_plugins = {
 					-- What's available:
 					-- https://github.com/mhartington/formatter.nvim/tree/master/lua/formatter/filetypes
 					lua = { require("formatter.filetypes.lua").stylua },
-					python = { require("formatter.filetypes.python").ruff },
+					python = { require("formatter.filetypes.python").isort, require("formatter.filetypes.python").ruff },
 					typescript = { require("formatter.filetypes.typescript").prettier },
 					javascript = { require("formatter.filetypes.javascript").prettier },
 					html = { require("formatter.filetypes.html").prettier },
@@ -616,15 +673,15 @@ local lazy_plugins = {
 				sources = cmp.config.sources({
 					{ name = "copilot" },
 					{
-						name = 'nvim_lsp',
+						name = "nvim_lsp",
 						entry_filter = function(entry, ctx)
-							return require('cmp.types').lsp.CompletionItemKind[entry:get_kind()] ~= 'Text'
-						end
+							return require("cmp.types").lsp.CompletionItemKind[entry:get_kind()] ~= "Text"
+						end,
 					},
 					{ name = "nvim_lsp_signature_help" },
 					{ name = "emoji" },
 					{ name = "path" },
-					{ name = 'luasnip' }, -- For luasnip users.
+					{ name = "luasnip" }, -- For luasnip users.
 				}, {
 					{ name = "buffer" },
 				}),
@@ -642,14 +699,14 @@ local lazy_plugins = {
 			-- LaTeX: disable copilot
 			function table.shallow_copy(t)
 				local t2 = {}
-				for k,v in pairs(t) do
+				for k, v in pairs(t) do
 					t2[k] = v
 				end
 				return t2
 			end
 			local sources = table.shallow_copy(cmp.get_config().sources)
 			for i = #sources, 1, -1 do
-				if sources[i].name == 'copilot' then
+				if sources[i].name == "copilot" then
 					table.remove(sources, i)
 				end
 			end
@@ -670,10 +727,10 @@ local lazy_plugins = {
 			})
 		end,
 	},
-	-- Configure LPSs
+	-- Configure LSPs
 	{
 		"neovim/nvim-lspconfig",
-		dependencies = { {"folke/neodev.nvim", config = true} },
+		dependencies = { { "folke/neodev.nvim", config = true } },
 		config = function()
 			-- Dim LSP errors.
 			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { fg = "#8c3032" })
@@ -684,6 +741,7 @@ local lazy_plugins = {
 			vim.api.nvim_set_hl(0, "CursorLine", { bg = "#333333" })
 
 			-- Automatically install language servers via Mason.
+			-- TODO: some of these failing (wrong LSP identifiers?)
 			ENSURE_INSTALLED("python", "pyright")
 			ENSURE_INSTALLED("lua", "lua-language-server")
 			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "typescript-language-server")
@@ -693,22 +751,21 @@ local lazy_plugins = {
 			ENSURE_INSTALLED("tex", "texlab")
 			ENSURE_INSTALLED("c,cpp,cuda", "clangd")
 
-
 			-- Texlab supports a clean command.
 			-- Patch in a function that implements this, and add it to config below
-			local util = require 'lspconfig.util'
+			local util = require("lspconfig.util")
 			local function buf_clean(bufnr)
 				bufnr = util.validate_bufnr(bufnr)
-				local texlab_client = util.get_active_client_by_name(bufnr, 'texlab')
+				local texlab_client = util.get_active_client_by_name(bufnr, "texlab")
 				local params = {
-					command = 'texlab.cleanArtifacts',
-					arguments = {{ uri = vim.uri_from_bufnr(bufnr)}, },
+					command = "texlab.cleanArtifacts",
+					arguments = { { uri = vim.uri_from_bufnr(bufnr) } },
 				}
 				if texlab_client then
-					texlab_client.request('workspace/executeCommand', params)
-					print 'Clean Success'
+					texlab_client.request("workspace/executeCommand", params)
+					print("Clean Success")
 				else
-					print 'method textDocument/clean is not supported by any servers active on the current buffer'
+					print("method textDocument/clean is not supported by any servers active on the current buffer")
 				end
 			end
 
@@ -720,7 +777,7 @@ local lazy_plugins = {
 			require("lspconfig").html.setup({ capabilities = capabilities })
 			require("lspconfig").cssls.setup({ capabilities = capabilities })
 			require("lspconfig").eslint.setup({ capabilities = capabilities })
-			require("lspconfig").texlab.setup{
+			require("lspconfig").texlab.setup({
 				-- cmd = { 'texlab', '-vvvv', '--log-file', '/Users/sdbuch/.local/state/nvim/texlab.log' },
 				capabilities = capabilities,
 				settings = {
@@ -729,27 +786,27 @@ local lazy_plugins = {
 							args = { "-pdf", "-interaction=nonstopmode", "-synctex=1", "--shell-escape", "%f" },
 							executable = "latexmk",
 							forwardSearchAfter = false,
-							onSave = true
+							onSave = true,
 						},
 						chktex = {
 							onEdit = false,
-							onOpenAndSave = true
+							onOpenAndSave = true,
 						},
 						forwardSearch = {
-							executable = '/Applications/Skim.app/Contents/SharedSupport/displayline',
+							executable = "/Applications/Skim.app/Contents/SharedSupport/displayline",
 							args = { "%l", "%p", "%f" },
-						}
-					}
+						},
+					},
 				},
 				commands = {
 					TexlabClean = {
 						function()
 							buf_clean(0)
 						end,
-						description = 'Clean files in project in current buffer',
+						description = "Clean files in project in current buffer",
 					},
 				},
-			}
+			})
 			require("lspconfig").clangd.setup({ capabilities = capabilities })
 
 			vim.api.nvim_create_autocmd("LspAttach", {
@@ -820,45 +877,44 @@ local lazy_plugins = {
 				group = true, -- group results by file
 				padding = true, -- add an extra new line on top of the list
 				action_keys = { -- key mappings for actions in the trouble list
-				-- map to {} to remove a mapping, for example:
-				-- close = {},
-				close = "q", -- close the list
-				cancel = "<esc>", -- cancel the preview and get back to your last window / buffer / cursor
-				refresh = "r", -- manually refresh
-				jump = { "<cr>", "<tab>" }, -- jump to the diagnostic or open / close folds
-				open_split = { "<c-x>" }, -- open buffer in new split
-				open_vsplit = { "<c-v>" }, -- open buffer in new vsplit
-				open_tab = { "<c-t>" }, -- open buffer in new tab
-				jump_close = { "o" }, -- jump to the diagnostic and close the list
-				toggle_mode = "m", -- toggle between "workspace" and "document" diagnostics mode
-				toggle_preview = "P", -- toggle auto_preview
-				hover = "K", -- opens a small popup with the full multiline message
-				preview = "p", -- preview the diagnostic location
-				close_folds = { "zM", "zm" }, -- close all folds
-				open_folds = { "zR", "zr" }, -- open all folds
-				toggle_fold = { "zA", "za" }, -- toggle fold of current file
-				previous = "k", -- previous item
-				next = "j", -- next item
-			},
-			indent_lines = true, -- add an indent guide below the fold icons
-			auto_open = false, -- automatically open the list when you have diagnostics
-			auto_close = false, -- automatically close the list when you have no diagnostics
-			auto_preview = true, -- automatically preview the location of the diagnostic. <esc> to close preview and go back to last window
-			auto_fold = false, -- automatically fold a file trouble list at creation
-			auto_jump = { "lsp_definitions" }, -- for the given modes, automatically jump if there is only a single result
-			signs = {
-				-- icons / text used for a diagnostic
-				error = "error",
-				warning = "warn ",
-				hint = "hint ",
-				information = "info ",
-			},
-			use_diagnostic_signs = false, -- enabling this will use the signs defined in your lsp client
-		})
-	end,
-},
+					-- map to {} to remove a mapping, for example:
+					-- close = {},
+					close = "q", -- close the list
+					cancel = "<esc>", -- cancel the preview and get back to your last window / buffer / cursor
+					refresh = "r", -- manually refresh
+					jump = { "<cr>", "<tab>" }, -- jump to the diagnostic or open / close folds
+					open_split = { "<c-x>" }, -- open buffer in new split
+					open_vsplit = { "<c-v>" }, -- open buffer in new vsplit
+					open_tab = { "<c-t>" }, -- open buffer in new tab
+					jump_close = { "o" }, -- jump to the diagnostic and close the list
+					toggle_mode = "m", -- toggle between "workspace" and "document" diagnostics mode
+					toggle_preview = "P", -- toggle auto_preview
+					hover = "K", -- opens a small popup with the full multiline message
+					preview = "p", -- preview the diagnostic location
+					close_folds = { "zM", "zm" }, -- close all folds
+					open_folds = { "zR", "zr" }, -- open all folds
+					toggle_fold = { "zA", "za" }, -- toggle fold of current file
+					previous = "k", -- previous item
+					next = "j", -- next item
+				},
+				indent_lines = true, -- add an indent guide below the fold icons
+				auto_open = false, -- automatically open the list when you have diagnostics
+				auto_close = false, -- automatically close the list when you have no diagnostics
+				auto_preview = true, -- automatically preview the location of the diagnostic. <esc> to close preview and go back to last window
+				auto_fold = false, -- automatically fold a file trouble list at creation
+				auto_jump = { "lsp_definitions" }, -- for the given modes, automatically jump if there is only a single result
+				signs = {
+					-- icons / text used for a diagnostic
+					error = "error",
+					warning = "warn ",
+					hint = "hint ",
+					information = "info ",
+				},
+				use_diagnostic_signs = false, -- enabling this will use the signs defined in your lsp client
+			})
+		end,
+	},
 }
-
 
 local lazy_opts = {
 	-- We don't want to install custom fonts, so we'll switch to Unicode icons.
