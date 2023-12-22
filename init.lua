@@ -574,6 +574,7 @@ local lazy_plugins = {
 			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "prettierd")
 			ENSURE_INSTALLED("html,css,scss", "prettierd")
 			ENSURE_INSTALLED("c,cpp,cuda", "clang-format")
+			ENSURE_INSTALLED("tex", "latexindent")
 
 			-- Configure formatters.
 			local util = require("formatter.util")
@@ -592,6 +593,7 @@ local lazy_plugins = {
 					scss = { require("formatter.filetypes.css").prettierd },
 					markdown = { require("formatter.filetypes.markdown").prettierd },
 					cpp = { require("formatter.filetypes.cpp").clangformat },
+					tex = { require("formatter.filetypes.latex").latexindent },
 					["*"] = { require("formatter.filetypes.any").remove_trailing_whitespace },
 				},
 			})
