@@ -560,6 +560,44 @@ local lazy_plugins = {
 			},
 		},
 	},
+	-- Quarto plugin.
+	{
+		"quarto-dev/quarto-nvim",
+		opts = {
+			lspFeatures = {
+				languages = { "r", "python", "julia", "bash", "html", "lua" },
+			},
+		},
+		ft = "quarto",
+		keys = {
+			{ "<leader>Qa", ":QuartoActivate<cr>", desc = "quarto activate" },
+			{ "<leader>Qp", ":lua require'quarto'.quartoPreview()<cr>", desc = "quarto preview" },
+			{ "<leader>Qq", ":lua require'quarto'.quartoClosePreview()<cr>", desc = "quarto close" },
+			{ "<leader>Qh", ":QuartoHelp ", desc = "quarto help" },
+			{ "<leader>Qe", ":lua require'otter'.export()<cr>", desc = "quarto export" },
+			{ "<leader>QE", ":lua require'otter'.export(true)<cr>", desc = "quarto export overwrite" },
+			{ "<leader>Qrr", ":QuartoSendAbove<cr>", desc = "quarto run to cursor" },
+			{ "<leader>Qra", ":QuartoSendAll<cr>", desc = "quarto run all" },
+			{ "<leader><cr>", ":SlimeSend<cr>", desc = "send code chunk" },
+			{ "<c-cr>", ":SlimeSend<cr>", desc = "send code chunk" },
+			{ "<c-cr>", "<esc>:SlimeSend<cr>i", mode = "i", desc = "send code chunk" },
+			{ "<c-cr>", "<Plug>SlimeRegionSend<cr>", mode = "v", desc = "send code chunk" },
+			{ "<cr>", "<Plug>SlimeRegionSend<cr>", mode = "v", desc = "send code chunk" },
+			{ "<leader>ctr", ":split term://R<cr>", desc = "terminal: R" },
+			{ "<leader>cti", ":split term://ipython<cr>", desc = "terminal: ipython" },
+			{ "<leader>ctp", ":split term://python<cr>", desc = "terminal: python" },
+			{ "<leader>ctj", ":split term://julia<cr>", desc = "terminal: julia" },
+		},
+	},
+	-- Otter (used for quarto)
+	{
+		"jmbuhr/otter.nvim",
+		opts = {
+			buffers = {
+				set_filetype = true,
+			},
+		},
+	},
 	-- Formatting.
 	{
 		"mhartington/formatter.nvim",
@@ -686,6 +724,7 @@ local lazy_plugins = {
 					{ name = "emoji" },
 					{ name = "path" },
 					{ name = "luasnip" }, -- For luasnip users.
+					{ name = "otter" }, -- For quarto (installed above)
 				}, {
 					{ name = "buffer" },
 				}),
@@ -754,6 +793,7 @@ local lazy_plugins = {
 			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "eslint-lsp")
 			ENSURE_INSTALLED("tex", "texlab")
 			ENSURE_INSTALLED("c,cpp,cuda", "clangd")
+			ENSURE_INSTALLED("quarto", "marksman")
 
 			-- Texlab supports a clean command.
 			-- Patch in a function that implements this, and add it to config below
@@ -778,6 +818,11 @@ local lazy_plugins = {
 			require("lspconfig").pyright.setup({ capabilities = capabilities })
 			require("lspconfig").lua_ls.setup({ capabilities = capabilities })
 			require("lspconfig").tsserver.setup({ capabilities = capabilities })
+			require("lspconfig").marksman.setup({
+				capabilities = capabilities,
+				filetypes = { "quarto" },
+				root_dir = require("lspconfig.util").root_pattern(".git", ".marksman.toml", "_quarto.yml"),
+			})
 			require("lspconfig").html.setup({ capabilities = capabilities })
 			require("lspconfig").cssls.setup({ capabilities = capabilities })
 			require("lspconfig").eslint.setup({ capabilities = capabilities })
