@@ -99,7 +99,7 @@ v#1\endcsname{\ensuremath{\symbf{\csname #1\endcsname}}}}
 \newcommand{\wh}{\widehat}
 \newcommand{\wt}{\widetilde}
 \newcommand{\ol}[1]{\overbar{#1}}
-\newcommand{\ul}[1]{\underbar{#1}}
+%\newcommand{\ul}[1]{\underbar{#1}}
 \newcommand{\kron}{\otimes}
 \newcommand{\elwise}{\circleddot}
 \let\dsum\relax
@@ -217,7 +217,7 @@ v#1\endcsname{\ensuremath{\symbf{\csname #1\endcsname}}}}
 \newcommand{\gtsimwhp}{\underset{\whp}{\gtrsim}}
 \newcommand{\psdgeq}{\succcurlyeq}
 \newcommand{\psdleq}{\preccurlyeq}
-\newcommand{\st}{\operatorname{subject\,to}}
+%\newcommand{\st}{\operatorname{subject\,to}}
 \newcommand{\defn}{\overset{\text{def}}{=}}
 \newcommand{\normsubdiff}[1]{\partial\norm{}_{#1}}
 \newcommand{\normalize}[1]{\frac{#1}{\norm*{#1}_2}}

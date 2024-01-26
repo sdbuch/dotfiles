@@ -1,73 +1,91 @@
-\documentclass[18pt,hyperref={pdfpagelabels=false}]{beamer}
+\documentclass[xcolor=dvipsnames]{beamer}
+\usepackage[utf8]{inputenc}
+
 \usetheme{metropolis}
 \usepackage{fontspec}
 \setmainfont{Latin Modern Roman}
 \setsansfont{Latin Modern Sans}
 \setmonofont{Latin Modern Mono}
-%\usecolortheme{beaver}
-%\usepackage{fontspec}
-%\setsansfont[Mapping=tex-text]{Ubuntu}
-%\usefonttheme[stillsansseriftext]{Ubuntu}
-%\usepackage{pxfonts} % Or mathpazo
-%\usepackage{mathpazo}
-%\usepackage{eulervm} 
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\usepackage{hyperref}
+\usepackage{color}
+
 \renewcommand\rmdefault{pplx}
 \renewcommand\mathfamilydefault{cmr}
 \usepackage[
 backend=biber,
-style=alphabetic,
-sorting=ynt,
+%style=numeric-comp,
+style=authoryear,
+sorting=nyt,
 doi=false,
 hyperref=true,
 isbn=false,
-sortcites,
+uniquename=init,
 url=false,
-maxbibnames=99,
-maxalphanames=3,
-minalphanames=3,
-maxcitenames=2,
-mincitenames=1,
-backref=true
+maxbibnames=99
 ]{biblatex}
 \addbibresource{refs.bib}
-\renewbibmacro{in:}{}
-%\renewcommand*{\bibfont}{\tiny}
-\input{simplemedia.def} % Modified defs for working LuaLatex movie embedding in
-                        % pympress
-%\setbeamertemplate{bibliography item}[text]
-\setbeamertemplate{bibliography item}{}
-\setbeamertemplate{bibliography entry title}{}
-\setbeamertemplate{bibliography entry location}{}
-\setbeamertemplate{bibliography entry note}{}
-\setbeamertemplate{headline}{}
-\usepackage{amsmath,amsbsy,amsfonts,amssymb,amsthm,color,dsfont,mleftright}
-\usepackage[skins,breakable]{tcolorbox}
-\usepackage{bm}
-\usepackage{ulem}
-\usepackage{mathrsfs}
-\usepackage{algorithm}
-\usepackage[noend]{algorithmic}
-\usepackage{color}
+
+%\RequirePackage{etex}
 \usepackage{xcolor}
 \usepackage{graphicx}
+%\usepackage{MnSymbol}
+\usepackage{stmaryrd}
+\usepackage{colortbl}
+\usepackage{caption}
+\usepackage{comment}
+\usepackage{bookmark}
+\usepackage{microtype}
+\usepackage[utf8]{inputenc}
+\usepackage{pdfpages}
+\usepackage{listings}
+\usepackage{color}
 \usepackage[percent]{overpic}
 \usepackage[export]{adjustbox}
-\usepackage{framed}
-\usepackage{verbatim}
-\usepackage{varwidth}
-\usepackage{pgfplots}
-\usepackage{nicefrac}
+\usepackage{booktabs}
+\usepackage{soul}
+\usepackage[normalem]{ulem}
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{lipsum}
+\usepackage{wrapfig}
+\usepackage{bm}
+\usepackage{amsmath,amsfonts,amsthm,amssymb,amscd,bbm}
+\usepackage{hyperref}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \usepackage{subcaption}
-\pgfplotsset{compat=newest}
-\usepgfplotslibrary{fillbetween}
-\usetikzlibrary{shapes.misc, shapes.geometric, arrows,
-positioning, decorations.pathreplacing,calc,shadings}
-\tikzstyle{line} = [draw, -latex']
-\usepackage{shadow}
-\usepackage{microtype}
-\usepackage{empheq}
-\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
-\renewcommand{\mathbf}{\boldsymbol} 
+%\usepackage{subfigure}
+%\usepackage{subfig}
+
+%\usepackage{pgfplots,changes}
+%\pgfplotsset{compat=newest}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+
+%\usepackage{animate}
+\input{simplemedia.def} % Modified defs for working LuaLatex movie embedding in
+                        % pympress
+\usepackage{media9}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{pgf}
+%\usepackage{etex}
+\usepackage{tikz,pgfplots}
+\pgfplotsset{compat=1.16}
+%\usepackage{changes}
+\usepackage{tikz-3dplot}
+% \usepackage{subfigure}
+%\usepackage{subfig}
+\usetikzlibrary{positioning}
+%% the following commands are needed for some matlab2tikz features
+\usetikzlibrary{plotmarks}
+\usetikzlibrary{arrows.meta}
+\usepackage{mathtools}
+\usepackage{extarrows}
+\usepgfplotslibrary{patchplots}
+\usepackage{grffile}
+
 
 \setbeamertemplate{footline}[frame number]{}
 %\setbeamertempalte{page number in head/foot}{}
@@ -75,87 +93,138 @@ positioning, decorations.pathreplacing,calc,shadings}
 %\setbeamertemplate{footline}{}
 \setbeamercolor{background canvas}{bg=white}
 
-\definecolor{cssgreen}{rgb}{0,0.5,0}
-\definecolor{skyblue}{HTML}{00BFFF}
 
-\newcommand\widthcolor{orange}
-\newcommand\depthcolor{purple}
-\newcommand\datacolor{cssgreen}
-\newcommand\frameoptions{noframenumbering,plain}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \usepackage{listings}
+\usepackage{color}
+
+\usepackage{amscd,amsfonts,amsmath,amssymb}
+% \usepackage[mathscr]{eucal}
+% \usepackage{graphicx}
+\usepackage{bm}
+% \input{../math_notation}
 \input{sam_macros.def}
+
+
+\usepackage{tikz}
 \usepackage{bbding}
+
+\newcommand{\circm}{\mathsf{circ}}
 \newcommand{\fco}{\text{\FourClowerOpen}}
 \newcommand{\adim}{n_0}
 \newcommand{\mdim}{d_0}
+\newcommand{\mb}{\boldsymbol}
+\newcommand{\mc}{\mathcal}
+\newcommand{\pre}{\mathrm{pre}}
+\newcommand{\post}{\mathrm{post}}
 
-%\setcounter{tocdepth}{2}
-\usepackage[english]{babel}
-\usepackage{csquotes}
-%\usepackage{hyperref}
+\newtheorem{proposition}[theorem]{Proposition}
 
-\usepackage{hyperref}
-%\usepackage{pgfpages}
-%\input{fixstuff}
-%\setbeameroption{show notes on second screen=right}
 
-\title{{Deep Networks and the \\ Multiple Manifold Problem}}
-\author{
-  \texorpdfstring{
-  \textbf{Sam Buchanan} \\
-  TTIC
-  \vspace{.1in} \\ 
-  {\footnotesize Joint with:} \vspace{0.1in} \\
-  \includegraphics[height=1in]{figs/dg.png}
-  \hspace{0.25in}
-  \includegraphics[height=1in]{figs/tw.jpg}
-  \hspace{0.25in}
-  \includegraphics[height=1in]{figs/JW.jpg} \\
-  {\hphantom{}} \hspace{0.1in} Dar Gilboa 
-  \hspace{0.4in}
-  Tingran Wang
-  \hspace{0.3in}
-  John Wright \\
-  {\hphantom{}} \hspace{0.18in} Google
-  \hspace{0.6in}
-  Columbia U.
-  \hspace{0.38in}
-  Columbia U.
-}{Sam Buchanan}
-} 
-\date[]{}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{applegreen}{rgb}{0.55, 0.71, 0.0}
+\definecolor{cornflowerblue}{rgb}{0.39, 0.58, 0.93}
+\definecolor{cssgreen}{rgb}{0,0.5,0}
+\definecolor{skyblue}{HTML}{00BFFF}
+\newcommand\widthcolor{orange}
+\newcommand\depthcolor{purple}
+\newcommand\datacolor{cssgreen}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=2mm,
+  belowskip=2mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=2
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \AtBeginSection[]
 {
   \begin{frame}[noframenumbering,plain]{Outline}
-    \tableofcontents[currentsection]
+    \tableofcontents[currentsection,subsubsectionstyle=show/show/show/shaded]
   \end{frame}
-} 
+}
 
-\AtBeginSubsection[]
-{
-  \begin{frame}{Outline}
-    \tableofcontents[currentsection, currentsubsection]
-  \end{frame}
-} 
+%\AtBeginSubsection[]
+%{
+%    \begin{frame}{Outline}
+%        \tableofcontents[currentsection, currentsubsection]
+%    \end{frame}
+%}
 
-\newcommand{\mc}{\mathcal}
-\newcommand{\mb}{\boldsymbol}
+
+\title{{White-Box Transformers \\ via Sparse Rate Reduction}}
+\author{
+  \texorpdfstring{
+  \textbf{Sam Buchanan} \\
+  TTIC
+  %\vspace{.2in} \\
+  %\includegraphics[height=0.5in]{./figures/logo-full-cropped.pdf}
+  %{\footnotesize Joint with:} \vspace{0.1in} \\
+  %\includegraphics[height=1in]{figures/dg.png}
+  %\hspace{0.25in}
+  %\includegraphics[height=1in]{figures/tw.jpg}
+  %\hspace{0.25in}
+  %\includegraphics[height=1in]{figures/JW.jpg} \\
+  %{\hphantom{}} \hspace{0.1in} Dar Gilboa
+  %\hspace{0.4in}
+  %Tingran Wang
+  %\hspace{0.3in}
+  %John Wright \\
+  %{\hphantom{}} \hspace{0.18in} Google
+  %\hspace{0.6in}
+  %Columbia U.
+  %\hspace{0.38in}
+  %Columbia U.
+}{Sam Buchanan}
+}
+\date{January 6, 2024}
+\titlegraphic{
+%\vspace{6.8cm}
+%\hspace{-0.1cm} \includegraphics[height=0.5in]{./figures/logo-full-cropped.pdf}
+}
+
 \begin{document}
 
-\begin{frame}[noframenumbering,plain]
-  \titlepage
+
+\begin{frame}
+	\titlepage
 \end{frame}
 
-\begin{frame}[standout]
-  Backup Slides
-\end{frame}
+% Example slides...
+%\addtobeamertemplate{footline}{\hskip1em {\color{gray} %Clockwise from top left:
+%Wright and Ma 2022}}{}
+%\begin{frame}
+%
+%\end{frame}
+%\setbeamertemplate{footline}[frame number]{}
+%\addtobeamertemplate{footline}{}{}
+%
+%\begin{frame}[standout]
+%asdf
+%\end{frame}
+%
+%\begin{frame}[plain,noframenumbering]{A true collaborative team effort from seven universities!}
+%\vspace{-0.2in}
+%\begin{center}
+%\includegraphics[width=\linewidth]{figures/authors.png}
+%\end{center}
+%\centerline{\Large \bf Thank You! Questions?}
+%\end{frame}
 
-\setbeamertemplate{footline}{}
-\begin{frame}[t, allowframebreaks, noframenumbering]
-  \nocite{*}
-  \frametitle{References}
-  \printbibliography[heading=none]
-\end{frame}
 
 \end{document}
