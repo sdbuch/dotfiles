@@ -67,6 +67,6 @@ ln -s $cdir/.vim/snippets/python.json ~/.vim/snippets/python.json
 ln -s $cdir/scripts/dev-tmux ~/scripts/dev-tmux
 
 # try to install software
-chmod +x $cdir/install_neovim.sh
-./install_neovim.sh
+chmod +x $cdir/install_nvim_linux.sh
+./install_nvim_linux.sh
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
