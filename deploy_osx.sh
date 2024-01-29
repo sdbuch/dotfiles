@@ -7,15 +7,18 @@ mkdir ~/.config/nvim/lua
 mkdir ~/.config/nvim/lua/lualine
 mkdir ~/.config/nvim/lua/lualine/themes
 mkdir ~/.config/nvim/snippets
+mkdir ~/scripts
 
 # config files
 ln -s $cdir/.gitconfig ~/.gitconfig
 ln -s $cdir/.gitignore_global ~/.gitignore_global
 ln -s $cdir/.latexmkrc ~/.latexmkrc
-ln -s $cdir/.profile ~/.profile
+ln -s $cdir/.bash_profile ~/.bash_profile
+ln -s $cdir/.bash_aliases ~/.bash_aliases
 ln -s $cdir/.vimrc ~/.vimrc
 ln -s $cdir/.inputrc ~/.inputrc
 ln -s $cdir/.vim/python_imports.txt ~/.vim/python_skeleton.py
+ln -s $cdir/.tmux.conf ~/.tmux.conf
 
 # these directories might need to be adjusted based on
 # texmf installation
@@ -56,3 +59,7 @@ sudo cp $cdir/com.user.keyboardmapping.plist /Library/LaunchDaemons/com.user.key
 
 # for gitignore
 git config --global core.excludesfile ~/.gitignore_global
+
+# install
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+ln -s $cdir/scripts/dev-tmux ~/scripts/dev-tmux

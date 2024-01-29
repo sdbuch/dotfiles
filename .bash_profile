@@ -1,25 +1,16 @@
 # .bashrc
 
-# User specific aliases 
-alias cp='cp -i'
-alias rm='rm -i'
-alias mv='mv -i'
-alias ls='ls -G'
-alias la='ls -FaG'
-alias ll='ls -FlasG'
-alias lt='ls -FlasGrt'
-alias mex='/Applications/MATLAB.app/bin/mex'
-alias rpi='arp -a -n | grep b8:27:eb:'
-alias qtconsole='jupyter qtconsole'
+# User specific aliases
 
-# nvim vs. vim
-alias vim='nvim'
+if [ -f ~/.bash_aliases ]; then
+  . ~/.bash_aliases
+fi
 
 #alias vim='vim --servername VIM'
- 
+
 
 # User functions
-function cdl() { 
+function cdl() {
   cd "$@"
   ll
 }
@@ -45,6 +36,7 @@ export PATH=${PATH}:/usr/local/lib
 export PATH=${PATH}:/opt/homebrew/lib
 export PATH=${PATH}:~/projects/github/keychain
 export PATH=${PATH}:~/bin
+export PATH=${PATH}:~/scripts
 export GEM_HOME="$HOME/.gem"
 
 
