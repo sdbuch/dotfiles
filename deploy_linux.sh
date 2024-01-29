@@ -35,6 +35,9 @@ mkdir ~/.vim/colors
 mkdir ~/.vim/snippets
 mkdir ~/scripts
 # below for neovim
+# For nvim v0.9.5, init file goes at ~/.config/nvim/,
+# but plugins go at ~/.local/share/nvim/.
+# If overwriting an existing install, might need to clean these directories.
 mkdir ~/.config
 mkdir ~/.config/nvim
 mkdir ~/.config/nvim/lua
