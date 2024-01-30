@@ -73,3 +73,4 @@ ln -s $cdir/scripts/dev-tmux ~/scripts/dev-tmux
 chmod +x $cdir/install_nvim_linux.sh
 ./install_nvim_linux.sh
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+sudo apt-get install ripgrep

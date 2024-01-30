@@ -663,8 +663,14 @@ local lazy_plugins = {
 		"zbirenbaum/copilot.lua",
 		opts = {
 			suggestion = { enabled = false },
-			panel = { enabled = false },
+			panel = {
+				enabled = true,
+			},
 		},
+		config = function()
+			require("copilot").setup({})
+			vim.keymap.set("n", "<Leader>C", ":Copilot panel<CR>", {})
+		end,
 	},
 	{ "zbirenbaum/copilot-cmp", config = true },
 	{
