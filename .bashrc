@@ -11,9 +11,6 @@ export PATH=$PATH:~/scripts
 # Vim as default editor
 export EDITOR=nvim
 
-# tmux config
-export TERM="xterm-256color"
-
 # for CUDA
 export CUDA_HOME=/usr/local/cuda
 
