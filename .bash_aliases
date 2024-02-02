@@ -21,3 +21,8 @@ alias mex='/Applications/MATLAB.app/bin/mex'
 alias rpi='arp -a -n | grep b8:27:eb:'
 alias qtconsole='jupyter qtconsole'
 
+# git
+alias gitd='git difftool'
+alias gitc='git commit -m'
+alias gits='git status'
+alias gita='git add'

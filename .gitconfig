@@ -1,6 +1,6 @@
 [user]
 	name = sdbuch
-  email = 19997120+sdbuch@users.noreply.github.com
+	email = 19997120+sdbuch@users.noreply.github.com
 [credential]
 	helper = osxkeychain
 [core]
@@ -12,3 +12,7 @@
 	defaultBranch = main
 [diff]
     tool = nvimdiff
+[difftool]
+    prompt = false
+[difftool "nvimdiff"]
+    cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
