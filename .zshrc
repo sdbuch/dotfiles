@@ -56,8 +56,11 @@ plugins=(
   bundler
   zsh-vi-mode
   zsh-autosuggestions
+  iterm2
 )
 
+# config for iterm2 zsh integration
+zstyle :omz:plugins:iterm2 shell-integration yes
 
 # Config for zsh-vi-mode
 export ZVM_VI_EDITOR=nvim
@@ -120,9 +123,6 @@ eval `keychain --eval --agents ssh --inherit any id_ed25519`
 # colors
 export CLICOLOR=1
 export COLORTERM=truecolor
-
-# iterm2 shell integration
-# source ~/.iterm2_shell_integration.zsh
 
 # History file parameters
 HISTSIZ=10000

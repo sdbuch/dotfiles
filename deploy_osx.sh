@@ -62,12 +62,15 @@ sudo cp $cdir/com.user.keyboardmapping.plist /Library/LaunchDaemons/com.user.key
 git config --global core.excludesfile ~/.gitignore_global
 
 # for iterm2
-if [ ! -f ~/.iterm2_shell_integration.zsh ]; then
-    curl -L https://iterm2.com/shell_integration/zsh \
-        -o ~/.iterm2_shell_integration.zsh
-fi
+# Can do this with oh-my-zsh
+#if [ ! -f ~/.iterm2_shell_integration.zsh ]; then
+#    curl -L https://iterm2.com/shell_integration/zsh \
+#        -o ~/.iterm2_shell_integration.zsh
+#fi
 
 # oh-my-zsh
+# TODO: Need a solution for installing custom oh-my-zsh plugins, these were done manually...
+# cross-ref with .zshrc to see what needs to be added
 if [ ! -f ~/zsh-install.sh ]; then
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o ~/zsh_install.sh)"
     sh ~/zsh_install.sh
