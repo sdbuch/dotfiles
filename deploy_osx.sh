@@ -14,8 +14,9 @@ ln -s $cdir/.gitconfig ~/.gitconfig
 ln -s $cdir/.gitignore_global ~/.gitignore_global
 ln -s $cdir/.latexmkrc ~/.latexmkrc
 ln -s $cdir/.bash_profile ~/.bash_profile
-ln -s $cdir/.bash_aliases ~/.bash_aliases
+ln -s $cdir/.aliases ~/.aliases
 ln -s $cdir/.vimrc ~/.vimrc
+ln -s $cdir/.zshrc ~/.zshrc
 ln -s $cdir/.inputrc ~/.inputrc
 ln -s $cdir/.vim/python_imports.txt ~/.vim/python_skeleton.py
 ln -s $cdir/.tmux.conf ~/.tmux.conf
@@ -60,6 +61,18 @@ sudo cp $cdir/com.user.keyboardmapping.plist /Library/LaunchDaemons/com.user.key
 # for gitignore
 git config --global core.excludesfile ~/.gitignore_global
 
-# install
+# for iterm2
+if [ ! -f ~/.iterm2_shell_integration.zsh ]; then
+    curl -L https://iterm2.com/shell_integration/zsh \
+        -o ~/.iterm2_shell_integration.zsh
+fi
+
+# oh-my-zsh
+if [ ! -f ~/zsh-install.sh ]; then
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o ~/zsh_install.sh)"
+    sh ~/zsh_install.sh
+fi
+
+# tmux
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ln -s $cdir/scripts/dev-tmux ~/scripts/dev-tmux

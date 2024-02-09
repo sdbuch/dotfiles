@@ -138,7 +138,7 @@ vim.api.nvim_create_autocmd("BufNewFile", {
 
 -- Neotree commands
 vim.cmd([[nnoremap <silent> \ :Neotree toggle current reveal_force_cwd<CR>]])
-vim.cmd([[nnoremap <silent> <F6> :Neotree reveal<CR>]])
+vim.cmd([[nnoremap <silent> <F6> :Neotree toggle<CR>]])
 vim.cmd([[nnoremap <silent> <leader>gs :Neotree float git_status<CR>]])
 vim.cmd([[nnoremap <silent> <leader>sb :Neotree toggle show buffers right<CR>]])
 vim.cmd([[nnoremap <silent> <leader>of :Neotree float reveal_file=<cfile> reveal_force_cwd<CR>]])
@@ -382,6 +382,8 @@ local lazy_plugins = {
 			-- Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
 			vim.keymap.set("n", "zR", require("ufo").openAllFolds)
 			vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
+			vim.keymap.set('n', 'zr', require('ufo').openFoldsExceptKinds)
+			vim.keymap.set('n', 'zm', require('ufo').closeFoldsWith) -- closeAllFolds == closeFoldsWith(0)
 		end,
 	},
 	-- Show indentation guides.
@@ -390,7 +392,7 @@ local lazy_plugins = {
 		config = function()
 			vim.api.nvim_set_hl(0, "IblIndent", { fg = "#573757" })
 			vim.api.nvim_set_hl(0, "IblScope", { fg = "#555585" })
-			require("ibl").setup({ indent = { char = "·" } })
+			require("ibl").setup({ indent = { char = "·" }, scope = { show_start = false, show_end = false } })
 		end,
 	},
 	-- Fuzzy find.
@@ -491,8 +493,14 @@ local lazy_plugins = {
 						conflict = "c",
 					},
 				},
+				name = {
+					use_git_status_colors = true,
+				},
 			},
 			filesystem = {
+				bind_to_cwd = false,
+				-- hijack_netrw_behavior = "open_current",
+				hijack_netrw_behavior = "open_current",
 				filtered_items = {
 					visible = false,
 					hide_dotfiles = false,

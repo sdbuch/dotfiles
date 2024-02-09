@@ -2,8 +2,8 @@
 
 # User specific aliases
 
-if [ -f ~/.bash_aliases ]; then
-  . ~/.bash_aliases
+if [ -f ~/.aliases ]; then
+  . ~/.aliases
 fi
 
 #alias vim='vim --servername VIM'
@@ -55,7 +55,7 @@ export CLICOLOR=1
 #export LSCOLORS='GxFxCxDxBxegedabagaced'
 #export LSCOLORS='BxBxhxDxfxhxhxhxhxcxcx'
 
-
+# iterm2 shell integration
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
 
 # History file parameters

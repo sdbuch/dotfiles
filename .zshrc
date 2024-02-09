@@ -1,0 +1,178 @@
+# .zshrc
+#
+# Source global definitions
+if [ -f /etc/zshrc ]; then
+	. /etc/zshrc
+fi
+
+
+## first: OH-MY-ZSH CONFIG
+# Path to your oh-my-zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
+
+# Would you like to use another custom folder than $ZSH/custom?
+export ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
+
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time oh-my-zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+# ZSH_THEME="robbyrussell"
+
+# Uncomment the following line to use hyphen-insensitive completion.
+# Case-sensitive completion must be off. _ and - will be interchangeable.
+HYPHEN_INSENSITIVE="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+# You can also set it to another string to have that shown instead of the default red dots.
+# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
+# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
+COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+DISABLE_UNTRACKED_FILES_DIRTY="false"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# You can set one of the optional three formats:
+# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# or set a custom format using the strftime function format specifications,
+# see 'man strftime' for details.
+HIST_STAMPS="yyyy-mm-dd"
+
+# Uncomment the following line to disable auto-setting terminal title.
+DISABLE_AUTO_TITLE="true"
+
+
+# Which plugins would you like to load?
+# Standard plugins can be found in $ZSH/plugins/
+# Custom plugins may be added to $ZSH_CUSTOM/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(
+  git
+  bundler
+  zsh-vi-mode
+  zsh-autosuggestions
+)
+
+
+# Config for zsh-vi-mode
+export ZVM_VI_EDITOR=nvim
+
+source $ZSH/oh-my-zsh.sh
+
+# You may need to manually set your language environment
+export LANG=en_US.UTF-8
+
+# Config autosuggestions
+#ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#6A5E59,bg=#312C2B"
+#ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#6A5E59"
+
+## second: STANDARD CONFIG
+# User specific aliases
+
+if [ -f ~/.aliases ]; then
+  . ~/.aliases
+fi
+
+# User functions
+function cdl() {
+  cd "$@"
+  ll
+}
+
+# TODO: bugged in zsh
+function gif2mp4() {
+  local first_arg=$1 \
+        second_arg=$2
+
+  shift 2
+
+  magick "$first_arg" -layers coalesce "$second_arg" "$@"
+
+}
+
+# Use vim (nvim with alises)
+export EDITOR=nvim
+
+# Path specs
+export PATH=${PATH}:/usr/local/lib
+export PATH=${PATH}:/opt/homebrew/lib
+export PATH=${PATH}:~/projects/github/keychain
+export PATH=${PATH}:~/bin
+export PATH=${PATH}:~/scripts
+export GEM_HOME="$HOME/.gem"
+
+# Lua spec
+# This is for a homebrew install as of 8/18/2022...
+# TODO: not sure what uses this
+export LUA_PREFIX="/opt/homebrew/Cellar/lua/5.4.4_1"
+
+# Mypy path for stubs
+export MYPYPATH=~/.vim/vim-lsp-settings/stubs
+
+# Start keychain
+eval `keychain --eval --agents ssh --inherit any id_ed25519`
+
+# colors
+# export CLICOLOR=1
+export COLORTERM=truecolor
+
+# iterm2 shell integration
+# source ~/.iterm2_shell_integration.zsh
+
+# History file parameters
+HISTSIZ=10000
+HISTFILESIZE=200000
+
+# Brew thing
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Gstreamer setup...
+export GST_PLUGIN_PATH="/opt/homebrew/lib/gstreamer-1.0"
+export LIBGS="/opt/homebrew/Cellar/ghostscript/10.01.2/lib/libgs.dylib"
+
+
+# PATH management with anaconda, for brew
+export PATHO=$PATH
+brew () {
+  export PATH="$PATHO"
+  # echo "Anaconda removed from path"
+  command brew "$@"
+  export PATH="/Users/sdbuch/anaconda3/bin:$PATHO"
+  # echo "Anaconda restored to path"
+}
+
+# config for ruby
+# source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
+# source /opt/homebrew/opt/chruby/share/chruby/auto.sh
+# chruby ruby-3.1.2
+eval "$(rbenv init - zsh)"
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/sdbuch/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/sdbuch/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/sdbuch/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/sdbuch/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+fpath=($fpath "/Users/sdbuch/.zfunctions")
+
+# Set typewritten ZSH as a prompt
+# Typewritten config
+export TYPEWRITTEN_COLOR_MAPPINGS="primary:#9FA0E1;secondary:#81D0C9;accent:#E4E3E1;notice:#F0C66F;info_negative:#F86882;info_positive:#A6CD77;info_neutral_1:#F0C66F;info_neutral_2:#81D0C9;info_special:#F08D71"
+# NOTE: installed with npm (see github repo)
+autoload -U promptinit; promptinit
+prompt typewritten
+
