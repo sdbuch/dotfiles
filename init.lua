@@ -727,7 +727,6 @@ local lazy_plugins = {
 					end,
 				}),
 				sources = cmp.config.sources({
-					{ name = "copilot" },
 					{
 						name = "nvim_lsp",
 						entry_filter = function(entry, ctx)
@@ -741,6 +740,7 @@ local lazy_plugins = {
 					{ name = "otter" }, -- For quarto (installed above)
 				}, {
 					{ name = "buffer" },
+					{ name = "copilot" }
 				}),
 			})
 
@@ -800,6 +800,7 @@ local lazy_plugins = {
 			-- Automatically install language servers via Mason.
 			-- TODO: some of these failing (wrong LSP identifiers?)
 			ENSURE_INSTALLED("python", "pyright")
+			-- ENSURE_INSTALLED("python", "ruff-lsp")
 			ENSURE_INSTALLED("lua", "lua-language-server")
 			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "typescript-language-server")
 			ENSURE_INSTALLED("html", "html-lsp")
@@ -830,6 +831,15 @@ local lazy_plugins = {
 			-- Set up lspconfig.
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 			require("lspconfig").pyright.setup({ capabilities = capabilities })
+			-- -- Custom setup for ruff-lsp
+			-- local on_attach = function(client, bufnr)
+			-- 	-- Disable hover in favor of Pyright
+			-- 	client.server_capabilities.hoverProvider = false
+			-- end
+			-- require("lspconfig").ruff_lsp.setup({
+			-- 	capabilities = capabilities,
+			-- 	on_attach = on_attach,
+			-- })
 			require("lspconfig").lua_ls.setup({ capabilities = capabilities })
 			require("lspconfig").tsserver.setup({ capabilities = capabilities })
 			require("lspconfig").marksman.setup({
@@ -913,11 +923,11 @@ local lazy_plugins = {
 					vim.keymap.set("n", "<space>wl", function()
 						print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 					end, opts)
-					vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, opts)
-					vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, opts)
-					vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, opts)
+					vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, opts)
+					vim.keymap.set("n", "rn", vim.lsp.buf.rename, opts)
+					vim.keymap.set("n", "ca", vim.lsp.buf.code_action, opts)
 					vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-					vim.keymap.set("n", "<space>lf", function()
+					vim.keymap.set("n", "<space>cf", function()
 						vim.lsp.buf.format({ async = true })
 					end, opts)
 				end,
