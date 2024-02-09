@@ -925,7 +925,7 @@ local lazy_plugins = {
 					end, opts)
 					vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, opts)
 					vim.keymap.set("n", "rn", vim.lsp.buf.rename, opts)
-					vim.keymap.set("n", "ca", vim.lsp.buf.code_action, opts)
+					vim.keymap.set("n", "<Leader>ca", vim.lsp.buf.code_action, opts)
 					vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
 					vim.keymap.set("n", "<space>cf", function()
 						vim.lsp.buf.format({ async = true })
