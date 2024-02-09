@@ -118,7 +118,7 @@ export MYPYPATH=~/.vim/vim-lsp-settings/stubs
 eval `keychain --eval --agents ssh --inherit any id_ed25519`
 
 # colors
-# export CLICOLOR=1
+export CLICOLOR=1
 export COLORTERM=truecolor
 
 # iterm2 shell integration
@@ -172,6 +172,7 @@ fpath=($fpath "/Users/sdbuch/.zfunctions")
 # Set typewritten ZSH as a prompt
 # Typewritten config
 export TYPEWRITTEN_COLOR_MAPPINGS="primary:#9FA0E1;secondary:#81D0C9;accent:#E4E3E1;notice:#F0C66F;info_negative:#F86882;info_positive:#A6CD77;info_neutral_1:#F0C66F;info_neutral_2:#81D0C9;info_special:#F08D71"
+export TYPEWRITTEN_RELATIVE_PATH="adaptive"
 # NOTE: installed with npm (see github repo)
 autoload -U promptinit; promptinit
 prompt typewritten

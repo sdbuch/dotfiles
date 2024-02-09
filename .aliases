@@ -22,7 +22,8 @@ alias rpi='arp -a -n | grep b8:27:eb:'
 alias qtconsole='jupyter qtconsole'
 
 # git
+# Some of these commented, redundant with oh-my-zsh git plugin
 alias gitd='git difftool'
-alias gitc='git commit -m'
-alias gits='git status'
-alias gita='git add'
+# alias gitc='git commit -m'
+# alias gits='git status'
+# alias gita='git add'
