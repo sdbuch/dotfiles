@@ -57,10 +57,18 @@ plugins=(
   zsh-vi-mode
   zsh-autosuggestions
   iterm2
+  gpg-agent
+  keychain
+  python
+  brew
 )
 
 # config for iterm2 zsh integration
 zstyle :omz:plugins:iterm2 shell-integration yes
+
+# config for keychain
+zstyle :omz:plugins:keychain agents gpg,ssh
+zstyle :omz:plugins:keychain identities id_ed25519
 
 # Config for zsh-vi-mode
 export ZVM_VI_EDITOR=nvim
@@ -118,7 +126,8 @@ export LUA_PREFIX="/opt/homebrew/Cellar/lua/5.4.4_1"
 export MYPYPATH=~/.vim/vim-lsp-settings/stubs
 
 # Start keychain
-eval `keychain --eval --agents ssh --inherit any id_ed25519`
+# can do this with oh-my-zsh plugin
+# eval `keychain --eval --agents ssh --inherit any id_ed25519`
 
 # colors
 export CLICOLOR=1
