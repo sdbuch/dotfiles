@@ -5,6 +5,14 @@ if [ -f /etc/zshrc ]; then
 	. /etc/zshrc
 fi
 
+# Path specs
+export PATH=${PATH}:/usr/local/lib
+export PATH=${PATH}:/opt/homebrew/lib
+export PATH=${PATH}:~/projects/github/keychain
+export PATH=${PATH}:~/bin
+export PATH=${PATH}:~/scripts
+export GEM_HOME="$HOME/.gem"
+
 
 ## first: OH-MY-ZSH CONFIG
 # Path to your oh-my-zsh installation.
@@ -109,13 +117,6 @@ function gif2mp4() {
 # Use vim (nvim with alises)
 export EDITOR=nvim
 
-# Path specs
-export PATH=${PATH}:/usr/local/lib
-export PATH=${PATH}:/opt/homebrew/lib
-export PATH=${PATH}:~/projects/github/keychain
-export PATH=${PATH}:~/bin
-export PATH=${PATH}:~/scripts
-export GEM_HOME="$HOME/.gem"
 
 # Lua spec
 # This is for a homebrew install as of 8/18/2022...
