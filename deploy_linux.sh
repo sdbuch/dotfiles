@@ -49,6 +49,7 @@ ln -s $cdir/.gitconfig_linux ~/.gitconfig
 ln -s $cdir/.gitignore_global ~/.gitignore_global
 git config --global core.excludesfile ~/.gitignore_global
 ln -s $cdir/.vimrc ~/.vimrc
+# TODO: configure to concatenate to existing file like zshrc below...
 # ln -s $cdir/.bashrc ~/.bashrc
 ln -s $cdir/.aliases ~/.aliases
 ln -s $cdir/.dircolors ~/.dircolors
