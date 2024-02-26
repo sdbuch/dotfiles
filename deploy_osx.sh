@@ -16,10 +16,16 @@ ln -s $cdir/.latexmkrc ~/.latexmkrc
 ln -s $cdir/.bash_profile ~/.bash_profile
 ln -s $cdir/.aliases ~/.aliases
 ln -s $cdir/.vimrc ~/.vimrc
-cp -n $cdir/.zshrc_base_mac ~/.zshrc  # Copy this file instead, since it'll be modified.
 ln -s $cdir/.inputrc ~/.inputrc
 ln -s $cdir/.vim/python_imports.txt ~/.vim/python_skeleton.py
 ln -s $cdir/.tmux.conf ~/.tmux.conf
+if [ ! -f ~/.zshrc ]; then
+    touch ~/.zshrc
+    echo ". $cdir/.zshrc_base_mac" > ~/.zshrc
+else
+    echo "File exists, not overwriting: ~/.zshrc"
+fi
+# cp -n $cdir/.zshrc_mac ~/.zshrc  # Copy this file instead, since it'll be modified.
 
 # these directories might need to be adjusted based on
 # texmf installation

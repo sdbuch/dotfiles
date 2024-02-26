@@ -2,7 +2,7 @@
 #
 
 
-if [ ! -f /usr/bin/nvim ]; then
+if [ ! -f /usr/local/bin/nvim ]; then
     # download
     # wget https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz
     wget https://github.com/neovim/neovim/releases/download/stable/nvim-macos.tar.gz

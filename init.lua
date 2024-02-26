@@ -370,6 +370,23 @@ local lazy_plugins = {
 		dependencies = { "kevinhwang91/promise-async" },
 
 		config = function()
+			-- -- Option 2: nvim lsp as LSP client
+			-- -- Tell the server the capability of foldingRange,
+			-- -- Neovim hasn't added foldingRange to default capabilities, users must add it manually
+			-- local capabilities = vim.lsp.protocol.make_client_capabilities()
+			-- capabilities.textDocument.foldingRange = {
+			-- 	dynamicRegistration = false,
+			-- 	lineFoldingOnly = true
+			-- }
+			-- local language_servers = require("lspconfig").util.available_servers() -- or list servers manually like {'gopls', 'clangd'}
+			-- for _, ls in ipairs(language_servers) do
+			-- 	require('lspconfig')[ls].setup({
+			-- 		capabilities = capabilities
+			-- 		-- you can add other fields for setting up lsp server in this table
+			-- 	})
+			-- end
+			-- require('ufo').setup()
+
 			-- Option 3: treesitter as a main provider instead
 			-- Only depend on `nvim-treesitter/queries/filetype/folds.scm`,
 			-- performance and stability are better than `foldmethod=nvim_treesitter#foldexpr()`
@@ -621,6 +638,7 @@ local lazy_plugins = {
 			ENSURE_INSTALLED("html,css,scss", "prettierd")
 			ENSURE_INSTALLED("c,cpp,cuda", "clang-format")
 			ENSURE_INSTALLED("tex", "latexindent")
+			ENSURE_INSTALLED("markdown", "prettierd")
 
 			-- Configure formatters.
 			local util = require("formatter.util")
@@ -669,14 +687,16 @@ local lazy_plugins = {
 	{ "hrsh7th/cmp-emoji" },
 	{
 		"zbirenbaum/copilot.lua",
-		opts = {
-			suggestion = { enabled = false },
-			panel = {
-				enabled = true,
-			},
-		},
 		config = function()
-			require("copilot").setup({})
+			require("copilot").setup({
+				suggestion = { enabled = false },
+				panel = {
+					enabled = true,
+				},
+				filetypes = {
+					markdown = true, -- overrides default
+				},
+			})
 			vim.keymap.set("n", "<Leader>C", ":Copilot panel<CR>", {})
 		end,
 	},
@@ -741,7 +761,10 @@ local lazy_plugins = {
 				}, {
 					{ name = "buffer" },
 					{ name = "copilot" }
-				}),
+				})
+				-- {
+				-- 	{ name = "buffer" },
+				-- }),
 			})
 
 			-- Set configuration for specific filetype.
@@ -805,6 +828,7 @@ local lazy_plugins = {
 			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "typescript-language-server")
 			ENSURE_INSTALLED("html", "html-lsp")
 			ENSURE_INSTALLED("css,scss", "css-lsp")
+			-- ENSURE_INSTALLED("markdown", "marksman")
 			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "eslint-lsp")
 			ENSURE_INSTALLED("tex", "texlab")
 			ENSURE_INSTALLED("c,cpp,cuda", "clangd")

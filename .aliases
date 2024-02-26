@@ -16,6 +16,10 @@ alias tmuxl='tmux ls'
 # nvim vs. vim
 alias vim='nvim'
 
+# conda
+alias cee='conda env export > environment.yml'
+alias cec='conda env create -f environment.yml'
+
 # etc
 alias mex='/Applications/MATLAB.app/bin/mex'
 alias rpi='arp -a -n | grep b8:27:eb:'

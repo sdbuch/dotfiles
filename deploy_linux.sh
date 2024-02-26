@@ -54,7 +54,13 @@ ln -s $cdir/.aliases ~/.aliases
 ln -s $cdir/.dircolors ~/.dircolors
 ln -s $cdir/.tmux.conf ~/.tmux.conf
 ln -s $cdir/.inputrc ~/.inputrc
-cp -n $cdir/.zshrc_base_linux ~/.zshrc  # Copy this file instead, since it'll be modified.
+if [ ! -f ~/.zshrc ]; then
+    touch ~/.zshrc
+    echo ". $cdir/.zshrc_base_linux" > ~/.zshrc
+else
+    echo "File exists, not overwriting: ~/.zshrc"
+fi
+# cp -n $cdir/.zshrc_base_linux ~/.zshrc  # Copy this file instead, since it'll be modified.
 
 # for neovim
 ln -s $cdir/init.lua ~/.config/nvim/init.lua
