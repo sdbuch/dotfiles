@@ -54,6 +54,7 @@ ln -s $cdir/.aliases ~/.aliases
 ln -s $cdir/.dircolors ~/.dircolors
 ln -s $cdir/.tmux.conf ~/.tmux.conf
 ln -s $cdir/.inputrc ~/.inputrc
+cp -n $cdir/.zshrc_base_linux ~/.zshrc  # Copy this file instead, since it'll be modified.
 
 # for neovim
 ln -s $cdir/init.lua ~/.config/nvim/init.lua
@@ -69,21 +70,30 @@ ln -s $cdir/.vim/colors/wombat256mod.vim ~/.vim/colors/wombat256mod.vim
 ln -s $cdir/.vim/snippets/python.json ~/.vim/snippets/python.json
 ln -s $cdir/scripts/dev-tmux ~/scripts/dev-tmux
 
-# for iterm2 integration (ssh)
-if [ ! -f ~/.iterm2_shell_integration.zsh ]; then
-    curl -L https://iterm2.com/shell_integration/zsh \
-        -o ~/.iterm2_shell_integration.zsh
-fi
-
-# TODO: Install zsh...
-# oh-my-zsh
+# Install zsh...
+sudo apt-get install zsh
+# Install oh-my-zsh
 if [ ! -f ~/zsh-install.sh ]; then
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o ~/zsh_install.sh)"
-    sh ~/zsh_install.sh
+    sh ~/zsh_install.sh --keep-zshrc # --unattended
 fi
+# Install oh-my-zsh plugins/themes
+# typewritten (theme)
+sudo npm install -g typewritten
+# zsh-vi-mode
+git clone https://github.com/jeffreytse/zsh-vi-mode $ZSH_CUSTOM/plugins/zsh-vi-mode
+# zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
 # try to install nvim
 chmod +x $cdir/install_nvim_linux.sh
 ./install_nvim_linux.sh
+
+# install other software
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 sudo apt-get install ripgrep
+
+# TODO: install conda
+# currently just configure it
+~/miniconda3/bin/conda init zsh
+~/miniconda3/bin/conda init

@@ -87,6 +87,7 @@ source $ZSH/oh-my-zsh.sh
 export LANG=en_US.UTF-8
 
 # Config autosuggestions
+# TODO: this causes bugs in completion
 #ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#6A5E59,bg=#312C2B"
 #ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#6A5E59"
 
@@ -161,21 +162,6 @@ brew () {
 # source /opt/homebrew/opt/chruby/share/chruby/auto.sh
 # chruby ruby-3.1.2
 eval "$(rbenv init - zsh)"
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/Users/sdbuch/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/Users/sdbuch/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/Users/sdbuch/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/Users/sdbuch/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
 
 fpath=($fpath "/Users/sdbuch/.zfunctions")
 

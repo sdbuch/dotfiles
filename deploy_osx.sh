@@ -16,7 +16,7 @@ ln -s $cdir/.latexmkrc ~/.latexmkrc
 ln -s $cdir/.bash_profile ~/.bash_profile
 ln -s $cdir/.aliases ~/.aliases
 ln -s $cdir/.vimrc ~/.vimrc
-ln -s $cdir/.zshrc ~/.zshrc
+cp -n $cdir/.zshrc_base_mac ~/.zshrc  # Copy this file instead, since it'll be modified.
 ln -s $cdir/.inputrc ~/.inputrc
 ln -s $cdir/.vim/python_imports.txt ~/.vim/python_skeleton.py
 ln -s $cdir/.tmux.conf ~/.tmux.conf
@@ -29,6 +29,7 @@ ln -s $cdir/beamercolorthemegemini.sty ~/Library/texmf/tex/latex/local/beamercol
 ln -s $cdir/beamerthemegemini.sty ~/Library/texmf/tex/latex/local/beamerthemegemini.sty
 
 # for vim
+# some of these old things are used in nvim too
 ln -s $cdir/.vim/article_base.txt ~/.vim/article_base.txt
 ln -s $cdir/.vim/beamer_base.txt ~/.vim/beamer_base.txt
 ln -s $cdir/.vim/figure_base.txt ~/.vim/figure_base.txt
@@ -73,9 +74,18 @@ git config --global core.excludesfile ~/.gitignore_global
 # cross-ref with .zshrc to see what needs to be added
 if [ ! -f ~/zsh-install.sh ]; then
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o ~/zsh_install.sh)"
-    sh ~/zsh_install.sh
+    sh ~/zsh_install.sh --keep-zshrc
 fi
+
+# install nvim
+chmod +x $cdir/install_nvim_osx.sh
+./install_nvim_osx.sh
 
 # tmux
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ln -s $cdir/scripts/dev-tmux ~/scripts/dev-tmux
+
+# TODO: install conda
+# currently just configure it
+~/miniconda3/bin/conda init zsh
+~/miniconda3/bin/conda init
