@@ -97,6 +97,10 @@ vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decr
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
 
+-- vim-doge
+-- disable default mappings
+vim.g.doge_enable_mappings = 0
+
 -- text wrapping in certain buffers
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "tex",
@@ -527,6 +531,24 @@ local lazy_plugins = {
 			},
 		},
 	},
+	-- automatic docstring printing
+	{
+		"kkoomen/vim-doge",
+		build = ":call doge#install()",
+		config = function()
+			-- pnemonic: (p)rint (d)oc (s)tring
+			vim.keymap.set('n', '<Leader>pds', '<Plug>(doge-generate)')
+
+			-- Interactive mode comment todo-jumping
+			vim.keymap.set('n', '<TAB>', '<Plug>(doge-comment-jump-forward)')
+			vim.keymap.set('n', '<S-TAB>', '<Plug>(doge-comment-jump-backward)')
+			vim.keymap.set('i', '<TAB>', '<Plug>(doge-comment-jump-forward)')
+			vim.keymap.set('i', '<S-TAB>', '<Plug>(doge-comment-jump-backward)')
+			vim.keymap.set('x', '<TAB>', '<Plug>(doge-comment-jump-forward)')
+			vim.keymap.set('x', '<S-TAB>', '<Plug>(doge-comment-jump-backward)')
+		end,
+
+	},
 	-- Automatically set indentation settings.
 	{ "NMAC427/guess-indent.nvim", config = true },
 	-- Misc visuals from mini.nvim.
@@ -666,7 +688,7 @@ local lazy_plugins = {
 	-- Language servers.
 	{
 		"williamboman/mason-lspconfig.nvim",
-		config = { true },
+		config = true,
 	},
 	-- Snippets.
 	-- TODO: Need to port some of these
@@ -962,7 +984,11 @@ local lazy_plugins = {
 	{
 		"folke/trouble.nvim",
 		config = function()
-			vim.keymap.set("n", "<Leader><Tab>", ":TroubleToggle<CR>", {})
+			-- vim.keymap.set("n", "<Leader><Tab>", ":TroubleToggle<CR>", {})
+			vim.keymap.set("n", "<leader><Tab>", function()
+				vim.cmd "m'"
+				require("trouble").toggle()
+			end)
 			require("trouble").setup({
 				position = "bottom", -- position of the list can be: bottom, top, left, right
 				height = 10, -- height of the trouble list when position is top or bottom
