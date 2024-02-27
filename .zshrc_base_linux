@@ -123,9 +123,6 @@ fi
 HISTSIZ=10000
 HISTFILESIZE=200000
 
-# TODO: not sure what sets this
-fpath=($fpath "~/.zfunctions")
-
 # Set typewritten ZSH as a prompt
 # Typewritten config
 export TYPEWRITTEN_COLOR_MAPPINGS="primary:#9FA0E1;secondary:#81D0C9;accent:#E4E3E1;notice:#F0C66F;info_negative:#F86882;info_positive:#A6CD77;info_neutral_1:#F0C66F;info_neutral_2:#81D0C9;info_special:#F08D71"
