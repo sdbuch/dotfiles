@@ -9,6 +9,7 @@ alias mv='mv -i'
 alias ls='ls -G'
 
 # tmux
+# NOTE: these are redundant with oh-my-zsh
 alias tmuxa='tmux attach-session -t'
 alias tmuxk='tmux kill-session -t'
 alias tmuxl='tmux ls'
