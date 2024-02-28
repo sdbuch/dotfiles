@@ -609,10 +609,10 @@ local lazy_plugins = {
 				-- list of named colors where we try to extract the guifg from the
 				-- list of highlight groups or use the hex color if hl not found as a fallback
 				colors = {
-					error = { "DiagnosticError", "ErrorMsg", "#FD6883" },
+					error = { "DiagnosticError", "ErrorMsg", "#DC2626" },
 					warning = { "DiagnosticWarn", "WarningMsg", "#FBBF24" },
 					info = { "DiagnosticInfo", "#85DAD2" },
-					hint = { "DiagnosticHint", "#ADDA78" },
+					hint = { "DiagnosticHint", "#10B981" },
 					default = { "Identifier", "#9FA0E1" },
 					test = { "Identifier", "#FF00FF" }
 				},
@@ -899,6 +899,7 @@ local lazy_plugins = {
 			ENSURE_INSTALLED("c,cpp,cuda", "clangd")
 			ENSURE_INSTALLED("quarto", "marksman")
 
+			-- TODO: Need to debug texlab diagnostics...
 			-- Texlab supports a clean command.
 			-- Patch in a function that implements this, and add it to config below
 			local util = require("lspconfig.util")
