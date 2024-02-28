@@ -403,8 +403,8 @@ local lazy_plugins = {
 			-- Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
 			vim.keymap.set("n", "zR", require("ufo").openAllFolds)
 			vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
-			vim.keymap.set('n', 'zr', require('ufo').openFoldsExceptKinds)
-			vim.keymap.set('n', 'zm', require('ufo').closeFoldsWith) -- closeAllFolds == closeFoldsWith(0)
+			vim.keymap.set("n", "zr", require("ufo").openFoldsExceptKinds)
+			vim.keymap.set("n", "zm", require("ufo").closeFoldsWith) -- closeAllFolds == closeFoldsWith(0)
 		end,
 	},
 	-- Show indentation guides.
@@ -537,17 +537,16 @@ local lazy_plugins = {
 		build = ":call doge#install()",
 		config = function()
 			-- pnemonic: (p)rint (d)oc (s)tring
-			vim.keymap.set('n', '<Leader>pds', '<Plug>(doge-generate)')
+			vim.keymap.set("n", "<Leader>pds", "<Plug>(doge-generate)")
 
 			-- Interactive mode comment todo-jumping
-			vim.keymap.set('n', '<TAB>', '<Plug>(doge-comment-jump-forward)')
-			vim.keymap.set('n', '<S-TAB>', '<Plug>(doge-comment-jump-backward)')
-			vim.keymap.set('i', '<TAB>', '<Plug>(doge-comment-jump-forward)')
-			vim.keymap.set('i', '<S-TAB>', '<Plug>(doge-comment-jump-backward)')
-			vim.keymap.set('x', '<TAB>', '<Plug>(doge-comment-jump-forward)')
-			vim.keymap.set('x', '<S-TAB>', '<Plug>(doge-comment-jump-backward)')
+			vim.keymap.set("n", "<TAB>", "<Plug>(doge-comment-jump-forward)")
+			vim.keymap.set("n", "<S-TAB>", "<Plug>(doge-comment-jump-backward)")
+			vim.keymap.set("i", "<TAB>", "<Plug>(doge-comment-jump-forward)")
+			vim.keymap.set("i", "<S-TAB>", "<Plug>(doge-comment-jump-backward)")
+			vim.keymap.set("x", "<TAB>", "<Plug>(doge-comment-jump-forward)")
+			vim.keymap.set("x", "<S-TAB>", "<Plug>(doge-comment-jump-backward)")
 		end,
-
 	},
 	-- Automatically set indentation settings.
 	{ "NMAC427/guess-indent.nvim", config = true },
@@ -564,17 +563,61 @@ local lazy_plugins = {
 			local hipatterns = require("mini.hipatterns")
 			hipatterns.setup({
 				highlighters = {
-					-- Highlight certain strings
-					-- These don't seem to be working (maybe sonokai's fault)
-					fixme = { pattern = "%f[%w]()FIXME()%f[%W]", group = "MiniHipatternsFixme" },
-					hack = { pattern = "%f[%w]()HACK()%f[%W]", group = "MiniHipatternsHack" },
-					todo = { pattern = "%f[%w]()TODO()%f[%W]", group = "MiniHipatternsTodo" },
-					note = { pattern = "%f[%w]()NOTE()%f[%W]", group = "MiniHipatternsNote" },
 					-- Highlight hex colors
 					hex_color = hipatterns.gen_highlighter.hex_color(),
 				},
 			})
 		end,
+	},
+	-- TODOs with quickfix support.
+	{
+		"folke/todo-comments.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		config = function()
+			vim.keymap.set("n", "<leader>t<Tab>", function()
+				vim.cmd("silent! m'") -- This will fail if we're in (say) trouble window. So silent!
+				vim.cmd(":TodoTrouble")
+			end)
+			require("todo-comments").setup({
+				signs = false,
+				keywords = {
+					FIX = {
+						icon = "x", -- icon used for the sign, and in search results
+						color = "error", -- can be a hex color, or a named color (see below)
+						alt = { "FIXME", "BUG", "FIXIT", "ISSUE" }, -- a set of other keywords that all map to this FIX keywords
+						-- signs = false, -- configure signs for some keywords individually
+					},
+					TODO = { icon = "+", color = "info" },
+					HACK = { icon = "?", color = "warning" },
+					WARN = { icon = "-", color = "warning", alt = { "WARNING", "XXX" } },
+					PERF = { icon = "o", color = "default", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+					NOTE = { icon = "~", color = "hint", alt = { "INFO" } },
+					TEST = { icon = ".", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
+				},
+				highlight = {
+					multiline = true, -- enable multine todo comments
+					multiline_pattern = "^.", -- lua pattern to match the next multiline from the start of the matched keyword
+					multiline_context = 10, -- extra lines that will be re-evaluated when changing a line
+					before = "", -- "fg" or "bg" or empty
+					keyword = "bg", -- "fg", "bg", "wide", "wide_bg", "wide_fg" or empty. (wide and wide_bg is the same as bg, but will also highlight surrounding characters, wide_fg acts accordingly but with fg)
+					after = "", -- "fg" or "bg" or empty
+					pattern = [[.*<(KEYWORDS)\s*:]], -- pattern or table of patterns, used for highlighting (vim regex)
+					comments_only = true, -- uses treesitter to match keywords in comments only
+					max_line_len = 400, -- ignore lines longer than this
+					exclude = {}, -- list of file types to exclude highlighting
+				},
+				-- list of named colors where we try to extract the guifg from the
+				-- list of highlight groups or use the hex color if hl not found as a fallback
+				colors = {
+					error = { "DiagnosticError", "ErrorMsg", "#FD6883" },
+					warning = { "DiagnosticWarn", "WarningMsg", "#FBBF24" },
+					info = { "DiagnosticInfo", "#85DAD2" },
+					hint = { "DiagnosticHint", "#ADDA78" },
+					default = { "Identifier", "#9FA0E1" },
+					test = { "Identifier", "#FF00FF" }
+				},
+			})
+		end
 	},
 	-- Split navigation. Requires corresponding changes to tmux config for tmux
 	-- integration.
@@ -782,8 +825,8 @@ local lazy_plugins = {
 					{ name = "otter" }, -- For quarto (installed above)
 				}, {
 					{ name = "buffer" },
-					{ name = "copilot" }
-				})
+					{ name = "copilot" },
+				}),
 				-- {
 				-- 	{ name = "buffer" },
 				-- }),
@@ -876,7 +919,19 @@ local lazy_plugins = {
 
 			-- Set up lspconfig.
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
-			require("lspconfig").pyright.setup({ capabilities = capabilities })
+			require("lspconfig").pyright.setup({
+				capabilities = capabilities,
+				settings = {
+					python = {
+						analysis = {
+							autoSearchPaths = true,
+							useLibraryCodeForTypes = true,
+							-- diagnosticMode = 'openFilesOnly',
+							diagnosticMode = 'workspace',
+						},
+					},
+				},
+			})
 			-- -- Custom setup for ruff-lsp
 			-- local on_attach = function(client, bufnr)
 			-- 	-- Disable hover in favor of Pyright
@@ -986,8 +1041,13 @@ local lazy_plugins = {
 		config = function()
 			-- vim.keymap.set("n", "<Leader><Tab>", ":TroubleToggle<CR>", {})
 			vim.keymap.set("n", "<leader><Tab>", function()
-				vim.cmd "m'"
+				vim.cmd("silent! m'") -- This will fail if we're in (say) trouble window. So silent!
+				-- require("trouble").toggle("workspace_diagnostics")
 				require("trouble").toggle()
+			end)
+			vim.keymap.set("n", "<leader><S-Tab>", function()
+				vim.cmd("silent! m'") -- This will fail if we're in (say) trouble window. So silent!
+				require("trouble").toggle("document_diagnostics")
 			end)
 			require("trouble").setup({
 				position = "bottom", -- position of the list can be: bottom, top, left, right
