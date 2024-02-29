@@ -575,8 +575,20 @@ local lazy_plugins = {
 		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
 			vim.keymap.set("n", "<leader>t<Tab>", function()
+				-- Command to (attempt to) find project root, then toggle todos on this directory.
+				-- Todo only searches on subdirectories (and calls by default on cwd)
 				vim.cmd("silent! m'") -- This will fail if we're in (say) trouble window. So silent!
-				vim.cmd(":TodoTrouble")
+				local root_dir = vim.fs.dirname(vim.fs.find({ "setup.py", "pyproject.toml", ".git" }, {
+					upward = true,
+					path = vim.fn.getcwd(),
+				})[1])
+				require("trouble").open({ mode = "todo", cwd = root_dir })
+			end)
+			vim.keymap.set("n", "<leader>t<S-Tab>", function()
+				-- This variant runs the default call to todo
+				-- Todo only searches on subdirectories (and calls by default on cwd)
+				vim.cmd("silent! m'") -- This will fail if we're in (say) trouble window. So silent!
+				require("trouble").open({ mode = "todo"})
 			end)
 			require("todo-comments").setup({
 				signs = false,
@@ -614,10 +626,10 @@ local lazy_plugins = {
 					info = { "DiagnosticInfo", "#85DAD2" },
 					hint = { "DiagnosticHint", "#10B981" },
 					default = { "Identifier", "#9FA0E1" },
-					test = { "Identifier", "#FF00FF" }
+					test = { "Identifier", "#FF00FF" },
 				},
 			})
-		end
+		end,
 	},
 	-- Split navigation. Requires corresponding changes to tmux config for tmux
 	-- integration.
@@ -928,7 +940,7 @@ local lazy_plugins = {
 							autoSearchPaths = true,
 							useLibraryCodeForTypes = true,
 							-- diagnosticMode = 'openFilesOnly',
-							diagnosticMode = 'workspace',
+							diagnosticMode = "workspace",
 						},
 					},
 				},
@@ -1043,8 +1055,7 @@ local lazy_plugins = {
 			-- vim.keymap.set("n", "<Leader><Tab>", ":TroubleToggle<CR>", {})
 			vim.keymap.set("n", "<leader><Tab>", function()
 				vim.cmd("silent! m'") -- This will fail if we're in (say) trouble window. So silent!
-				-- require("trouble").toggle("workspace_diagnostics")
-				require("trouble").toggle()
+				require("trouble").toggle("workspace_diagnostics")
 			end)
 			vim.keymap.set("n", "<leader><S-Tab>", function()
 				vim.cmd("silent! m'") -- This will fail if we're in (say) trouble window. So silent!
