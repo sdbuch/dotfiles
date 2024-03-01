@@ -68,6 +68,9 @@ vim.keymap.set("n", "<F7>", ":setlocal spell! spelllang=en_us<CR>", { noremap = 
 vim.keymap.set("n", "<Leader>ot", ":split term://bash<CR>", { noremap = true, silent = true })
 vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]])
 
+-- hotkey to close quickfix menus
+vim.keymap.set("n", "<Leader>cc", ":cclose<CR>", { noremap = true, silent = true })
+
 -- navigation commands
 -- buffer
 vim.keymap.set("n", "<Leader>b", ":buffer <C-z><S-Tab>", { noremap = true })
@@ -1038,7 +1041,7 @@ local lazy_plugins = {
 						print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 					end, opts)
 					vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, opts)
-					vim.keymap.set("n", "rn", vim.lsp.buf.rename, opts)
+					vim.keymap.set("n", "<Leader>rn", vim.lsp.buf.rename, opts)
 					vim.keymap.set("n", "<Leader>ca", vim.lsp.buf.code_action, opts)
 					vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
 					vim.keymap.set("n", "<space>cf", function()
