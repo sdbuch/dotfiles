@@ -69,6 +69,7 @@ plugins=(
   keychain
   python
   brew
+  tmux
 )
 
 # config for iterm2 zsh integration
@@ -156,6 +157,17 @@ brew () {
   export PATH="/Users/sdbuch/anaconda3/bin:$PATHO"
   # echo "Anaconda restored to path"
 }
+# additional PATH management with brew + tmux
+# This is suboptimal because it's hardcoded our conda directory. 
+# But there seems to be an issue with the conda setup script,
+# where it doesn't prepend the conda/bin path to our PATH 
+# variable if it finds it somewhere else in the path.
+# We always want it to be at the start of the path, to take 
+# precedence over brew's python. So just hardcode it here for 
+# tmux sessions where we inherit PATH, then call this script again
+if [ -n "$TMUX" ]; then
+    export PATH="/Users/sdbuch/anaconda3/bin:$PATH"
+fi
 
 # config for ruby
 # source /opt/homebrew/opt/chruby/share/chruby/chruby.sh

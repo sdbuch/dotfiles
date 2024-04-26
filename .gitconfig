@@ -16,3 +16,5 @@
     prompt = false
 [difftool "nvimdiff"]
     cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
+[pull]
+	rebase = false

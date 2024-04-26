@@ -603,8 +603,8 @@ local lazy_plugins = {
 						-- signs = false, -- configure signs for some keywords individually
 					},
 					TODO = { icon = "+", color = "info" },
-					HACK = { icon = "?", color = "warning" },
-					WARN = { icon = "-", color = "warning", alt = { "WARNING", "XXX" } },
+					HACK = { icon = "?", color = "warning", alt = { "CHECK" } },
+					WARN = { icon = "-", color = "warning", alt = { "WARNING" } },
 					PERF = { icon = "o", color = "default", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
 					NOTE = { icon = "~", color = "hint", alt = { "INFO" } },
 					TEST = { icon = ".", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
@@ -903,6 +903,7 @@ local lazy_plugins = {
 			-- Automatically install language servers via Mason.
 			-- TODO: some of these failing (wrong LSP identifiers?)
 			ENSURE_INSTALLED("python", "pyright")
+			ENSURE_INSTALLED("rust", "rust-analyzer")
 			-- ENSURE_INSTALLED("python", "ruff-lsp")
 			ENSURE_INSTALLED("lua", "lua-language-server")
 			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "typescript-language-server")
@@ -928,6 +929,26 @@ local lazy_plugins = {
 				if texlab_client then
 					texlab_client.request("workspace/executeCommand", params)
 					print("Clean Success")
+				else
+					print("method textDocument/clean is not supported by any servers active on the current buffer")
+				end
+			end
+			local function buf_dependency_graph(bufnr)
+				bufnr = util.validate_bufnr(bufnr)
+				local texlab_client = util.get_active_client_by_name(bufnr, "texlab")
+				local params = {
+					command = "texlab.showDependencyGraph",
+				}
+				if texlab_client then
+					local response = texlab_client.request_sync("workspace/executeCommand", params)
+					local lines = vim.split(response["result"], "\n", true)
+					local ok, result = pcall(vim.fn.writefile, lines, "./.dependency")
+					if ok then
+						print("Dependency graph written to ./.dependency")
+					else
+						print("Error writing dependency graph")
+					end
+					-- print(response["result"])
 				else
 					print("method textDocument/clean is not supported by any servers active on the current buffer")
 				end
@@ -967,6 +988,7 @@ local lazy_plugins = {
 			require("lspconfig").html.setup({ capabilities = capabilities })
 			require("lspconfig").cssls.setup({ capabilities = capabilities })
 			require("lspconfig").eslint.setup({ capabilities = capabilities })
+			require("lspconfig").rust_analyzer.setup({ capabilities = capabilities })
 			require("lspconfig").texlab.setup({
 				-- cmd = { 'texlab', '-vvvv', '--log-file', '/Users/sdbuch/.local/state/nvim/texlab.log' },
 				capabilities = capabilities,
@@ -986,6 +1008,9 @@ local lazy_plugins = {
 							executable = "/Applications/Skim.app/Contents/SharedSupport/displayline",
 							args = { "%l", "%p", "%f" },
 						},
+						experimental = {
+							followPackageLinks = true,
+						},
 					},
 				},
 				commands = {
@@ -994,6 +1019,12 @@ local lazy_plugins = {
 							buf_clean(0)
 						end,
 						description = "Clean files in project in current buffer",
+					},
+					TexlabDependencyGraph = {
+						function()
+							buf_dependency_graph(0)
+						end,
+						description = "Print dependency graph for current project",
 					},
 				},
 			})

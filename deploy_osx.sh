@@ -30,6 +30,8 @@ fi
 # these directories might need to be adjusted based on
 # texmf installation
 ln -s $cdir/sam_macros.def ~/Library/texmf/tex/latex/local/sam_macros.def
+ln -s $cdir/sam_macros_common.def ~/Library/texmf/tex/latex/local/sam_macros_common.def
+ln -s $cdir/sam_macros_nofontspec.def ~/Library/texmf/tex/latex/local/sam_macros_nofontspec.def
 ln -s $cdir/sam_preamble.def ~/Library/texmf/tex/latex/local/sam_preamble.def
 ln -s $cdir/beamercolorthemegemini.sty ~/Library/texmf/tex/latex/local/beamercolorthemegemini.sty
 ln -s $cdir/beamerthemegemini.sty ~/Library/texmf/tex/latex/local/beamerthemegemini.sty
