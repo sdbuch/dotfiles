@@ -25,6 +25,12 @@ wandb
 *.blg
 *.fdb_latexmk
 *.fls
+*.idx
+*.soc
+*.ind
+*.loc
+*.ilg
+*.nlo
 *.out
 *.run.xml
 *.mat
