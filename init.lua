@@ -591,7 +591,7 @@ local lazy_plugins = {
 				-- This variant runs the default call to todo
 				-- Todo only searches on subdirectories (and calls by default on cwd)
 				vim.cmd("silent! m'") -- This will fail if we're in (say) trouble window. So silent!
-				require("trouble").open({ mode = "todo"})
+				require("trouble").open({ mode = "todo" })
 			end)
 			require("todo-comments").setup({
 				signs = false,
@@ -1085,63 +1085,98 @@ local lazy_plugins = {
 	-- View errors
 	{
 		"folke/trouble.nvim",
-		config = function()
-			-- vim.keymap.set("n", "<Leader><Tab>", ":TroubleToggle<CR>", {})
-			vim.keymap.set("n", "<leader><Tab>", function()
-				vim.cmd("silent! m'") -- This will fail if we're in (say) trouble window. So silent!
-				require("trouble").toggle("workspace_diagnostics")
-			end)
-			vim.keymap.set("n", "<leader><S-Tab>", function()
-				vim.cmd("silent! m'") -- This will fail if we're in (say) trouble window. So silent!
-				require("trouble").toggle("document_diagnostics")
-			end)
-			require("trouble").setup({
-				position = "bottom", -- position of the list can be: bottom, top, left, right
-				height = 10, -- height of the trouble list when position is top or bottom
-				width = 50, -- width of the list when position is left or right
-				icons = false, -- use devicons for filenames
-				mode = "workspace_diagnostics", -- "workspace_diagnostics", "document_diagnostics", "quickfix", "lsp_references", "loclist"
-				fold_open = "v", -- icon used for open folds
-				fold_closed = ">", -- icon used for closed folds
-				group = true, -- group results by file
-				padding = true, -- add an extra new line on top of the list
-				action_keys = { -- key mappings for actions in the trouble list
-					-- map to {} to remove a mapping, for example:
-					-- close = {},
-					close = "q", -- close the list
-					cancel = "<esc>", -- cancel the preview and get back to your last window / buffer / cursor
-					refresh = "r", -- manually refresh
-					jump = { "<cr>", "<tab>" }, -- jump to the diagnostic or open / close folds
-					open_split = { "<c-x>" }, -- open buffer in new split
-					open_vsplit = { "<c-v>" }, -- open buffer in new vsplit
-					open_tab = { "<c-t>" }, -- open buffer in new tab
-					jump_close = { "o" }, -- jump to the diagnostic and close the list
-					toggle_mode = "m", -- toggle between "workspace" and "document" diagnostics mode
-					toggle_preview = "P", -- toggle auto_preview
-					hover = "K", -- opens a small popup with the full multiline message
-					preview = "p", -- preview the diagnostic location
-					close_folds = { "zM", "zm" }, -- close all folds
-					open_folds = { "zR", "zr" }, -- open all folds
-					toggle_fold = { "zA", "za" }, -- toggle fold of current file
-					previous = "k", -- previous item
-					next = "j", -- next item
+		branch = "dev", -- IMPORTANT!
+		keys = {
+			{
+				"<leader><Tab>",
+				"<cmd>Trouble cascade toggle<cr>",
+				desc = "Diagnostics (Trouble)",
+			},
+			{
+				"<leader><S-Tab>",
+				"<cmd>Trouble cascade toggle filter.buf=0<cr>",
+				desc = "Buffer Diagnostics (Trouble)",
+			},
+			{
+				"<leader>cs",
+				"<cmd>Trouble symbols toggle focus=false<cr>",
+				desc = "Symbols (Trouble)",
+			},
+			{
+				"<leader>cl",
+				"<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+				desc = "LSP Definitions / references / ... (Trouble)",
+			},
+			{
+				"<leader>xL",
+				"<cmd>Trouble loclist toggle<cr>",
+				desc = "Location List (Trouble)",
+			},
+			{
+				"<leader>xQ",
+				"<cmd>Trouble qflist toggle<cr>",
+				desc = "Quickfix List (Trouble)",
+			},
+		},
+		opts = {
+			modes = {
+				cascade = {
+					mode = "diagnostics", -- inherit from diagnostics mode
+					filter = function(items)
+						local severity = vim.diagnostic.severity.HINT
+						for _, item in ipairs(items) do
+							severity = math.min(severity, item.severity)
+						end
+						return vim.tbl_filter(function(item)
+							return item.severity == severity
+						end, items)
+					end,
 				},
-				indent_lines = true, -- add an indent guide below the fold icons
-				auto_open = false, -- automatically open the list when you have diagnostics
-				auto_close = false, -- automatically close the list when you have no diagnostics
-				auto_preview = true, -- automatically preview the location of the diagnostic. <esc> to close preview and go back to last window
-				auto_fold = false, -- automatically fold a file trouble list at creation
-				auto_jump = { "lsp_definitions" }, -- for the given modes, automatically jump if there is only a single result
-				signs = {
-					-- icons / text used for a diagnostic
-					error = "error",
-					warning = "warn ",
-					hint = "hint ",
-					information = "info ",
+			},
+			icons = {
+				---@type trouble.Indent.symbols
+				indent = {
+					top = "│ ",
+					middle = "├╴",
+					last = "└╴",
+					-- last          = "-╴",
+					-- last       = "╰╴", -- rounded
+					fold_open = "˅ ",
+					fold_closed = "＾",
+					ws = "  ",
 				},
-				use_diagnostic_signs = false, -- enabling this will use the signs defined in your lsp client
-			})
-		end,
+				folder_closed = "📁",
+				folder_open = "📂",
+				kinds = {
+					Array = "▦",
+					Boolean = "⊭",
+					Class = "🏛️",
+					Constant = "ℏ",
+					Constructor = "🦺",
+					Enum = "𑂼",
+					EnumMember = "𑂼",
+					Event = "🎪",
+					Field = "🌾",
+					File = "🗄️",
+					Function = "⨐",
+					Interface = "🚦",
+					Key = "🔑",
+					Method = "🔣",
+					Module = "🏰",
+					Namespace = "📇",
+					Null = "␀",
+					Number = "#",
+					Object = "📲",
+					Operator = "👷",
+					Package = "📦",
+					Property = "⅊",
+					String = "🪢",
+					Struct = "⛩️",
+					TypeParameter = "♳",
+					Variable = "𖡄",
+				},
+			},
+		}, -- for default options, refer to the configuration section for custom setup.
 	},
 }
 
