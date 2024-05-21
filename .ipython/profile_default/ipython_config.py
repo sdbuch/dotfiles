@@ -36,6 +36,7 @@ c.InteractiveShellApp.exec_lines = [
     'import numpy.linalg as npla',
     'import scipy as sp',
     'import scipy.io as sio',
+    'import torch',
     'import matplotlib.pyplot as plt',
     'import matplotlib as mpl',
     'from numpy.random import default_rng',
