@@ -155,6 +155,8 @@
 }
 
 % misc operators
+\newcommand{\mem}{\mathrm{mem}}
+\newcommand{\softmax}{\operatorname{\mathrm{softmax}}}
 %\newcommand{\equid}{\overset{\mathrm{d}}{\equiv}}
 \newcommand{\equid}{\overset{d}{=}}
 \newcommand{\xor}{\oplus}
@@ -230,6 +232,7 @@
 \newcommand*{\Zero}{\mathbf{0}}
 \newcommand*{\Id}{\operatorname{\mathrm{Id}}}
 \newcommand*{\conv}{\mathbin{\ast}}
+\newcommand*{\iconv}{\mathbin{\square}}
 \newcommand*{\xcorr}{\mathbin{\star}}
 \newcommand*{\cconv}{\mathbin{\circledast}}
 \newcommand{\frob}{\mathrm{F}}

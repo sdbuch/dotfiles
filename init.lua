@@ -112,6 +112,13 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.o.textwidth = 80
 	end,
 })
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "markdown",
+	callback = function()
+		vim.opt.formatoptions:append({ "t" })
+		vim.o.textwidth = 80
+	end,
+})
 -- vim.api.nvim_create_autocmd('FileType', {
 -- 	pattern = 'python',
 -- 	callback = function ()
@@ -757,14 +764,41 @@ local lazy_plugins = {
 		-- install jsregexp (optional!).
 		build = "make install_jsregexp",
 		dependencies = { "rafamadriz/friendly-snippets" },
+		config = function()
+			require("luasnip.loaders.from_vscode").lazy_load({
+				paths = { "./luasnip_snippets" },
+			})
+		end,
+	},
+	{
+		"smjonas/snippet-converter.nvim",
+		-- SnippetConverter uses semantic versioning. Example: use version = "1.*" to avoid breaking changes on version 1.
+		-- Uncomment the next line to follow stable releases only.
+		-- tag = "*",
+		config = function()
+			local template = {
+				-- name = "t1", (optionally give your template a name to refer to it in the `ConvertSnippets` command)
+				sources = {
+					vsnip = {
+						vim.fn.stdpath("config") .. "/snippets",
+					},
+				},
+				output = {
+					-- Specify the output formats and paths
+					vscode_luasnip = {
+						vim.fn.stdpath("config") .. "/luasnip_snippets",
+					},
+				},
+			}
+
+			require("snippet_converter").setup({
+				templates = { template },
+				-- To change the default settings (see configuration section in the documentation)
+				-- settings = {},
+			})
+		end,
 	},
 	-- Completion sources.
-	{ "hrsh7th/cmp-nvim-lsp" },
-	{ "hrsh7th/cmp-buffer" },
-	{ "hrsh7th/cmp-path" },
-	{ "hrsh7th/cmp-cmdline" },
-	{ "hrsh7th/cmp-nvim-lsp-signature-help" },
-	{ "hrsh7th/cmp-emoji" },
 	{
 		"zbirenbaum/copilot.lua",
 		config = function()
@@ -783,6 +817,15 @@ local lazy_plugins = {
 	{ "zbirenbaum/copilot-cmp", config = true },
 	{
 		"hrsh7th/nvim-cmp",
+		dependencies = {
+			{ "hrsh7th/cmp-nvim-lsp" },
+			{ "hrsh7th/cmp-buffer" },
+			{ "hrsh7th/cmp-path" },
+			{ "hrsh7th/cmp-cmdline" },
+			{ "hrsh7th/cmp-nvim-lsp-signature-help" },
+			{ "hrsh7th/cmp-emoji" },
+			{ "saadparwaiz1/cmp_luasnip" },
+		},
 		config = function()
 			local has_words_before = function()
 				if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
@@ -795,6 +838,7 @@ local lazy_plugins = {
 
 			-- Set up nvim-cmp.
 			local cmp = require("cmp")
+			local luasnip = require("luasnip")
 			cmp.setup({
 				-- Need to set a snippet engine up, even if we don't care about snippets.
 				snippet = {
@@ -810,21 +854,52 @@ local lazy_plugins = {
 					["<C-b>"] = cmp.mapping.scroll_docs(-4),
 					["<C-f>"] = cmp.mapping.scroll_docs(4),
 					["<C-Space>"] = cmp.mapping.complete(),
-					["<CR>"] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-					["<Tab>"] = vim.schedule_wrap(function(fallback)
-						if cmp.visible() and has_words_before() then
-							cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+					-- ["<CR>"] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+					["<CR>"] = cmp.mapping(function(fallback)
+						if cmp.visible() then
+							if luasnip.expandable() then
+								luasnip.expand()
+							else
+								cmp.confirm({
+									select = true,
+								})
+							end
 						else
 							fallback()
 						end
 					end),
-					["<S-Tab>"] = function(fallback)
+					-- ["<Tab>"] = vim.schedule_wrap(function(fallback)
+					-- 	if cmp.visible() and has_words_before() then
+					-- 		cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+					-- 	else
+					-- 		fallback()
+					-- 	end
+					-- end),
+					["<Tab>"] = cmp.mapping(function(fallback)
 						if cmp.visible() then
-							cmp.select_prev_item()
+							cmp.select_next_item()
+						elseif luasnip.locally_jumpable(1) then
+							luasnip.jump(1)
 						else
 							fallback()
 						end
-					end,
+					end, { "i", "s" }),
+					-- ["<S-Tab>"] = function(fallback)
+					-- 	if cmp.visible() then
+					-- 		cmp.select_prev_item()
+					-- 	else
+					-- 		fallback()
+					-- 	end
+					-- end,
+					["<S-Tab>"] = cmp.mapping(function(fallback)
+						if cmp.visible() then
+							cmp.select_prev_item()
+						elseif luasnip.locally_jumpable(-1) then
+							luasnip.jump(-1)
+						else
+							fallback()
+						end
+					end, { "i", "s" }),
 				}),
 				sources = cmp.config.sources({
 					{
@@ -1085,7 +1160,7 @@ local lazy_plugins = {
 	-- View errors
 	{
 		"folke/trouble.nvim",
-		branch = "dev", -- IMPORTANT!
+		cmd = "Trouble",
 		keys = {
 			{
 				"<leader><Tab>",
