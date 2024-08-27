@@ -1,4 +1,5 @@
-cdir=$(pwd)
+# cdir=$(pwd)
+cdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # make directories (for neovim)
 mkdir ~/.config
@@ -19,6 +20,7 @@ ln -s $cdir/.vimrc ~/.vimrc
 ln -s $cdir/.inputrc ~/.inputrc
 ln -s $cdir/.vim/python_imports.txt ~/.vim/python_skeleton.py
 ln -s $cdir/.tmux.conf ~/.tmux.conf
+ln -s $cdir/.wezterm.lua ~/.wezterm.lua
 if [ ! -f ~/.zshrc ]; then
     touch ~/.zshrc
     echo ". $cdir/.zshrc_base_mac" > ~/.zshrc

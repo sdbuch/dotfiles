@@ -308,7 +308,7 @@ local lazy_plugins = {
 	},
 	-- Syntax highlighting.
 	{
-		"sdbuch/nvim-treesitter",
+		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
 		config = function()
 			---@diagnostic disable-next-line: missing-fields
@@ -541,6 +541,94 @@ local lazy_plugins = {
 			},
 		},
 	},
+	-- debugger
+	{
+		"mfussenegger/nvim-dap",
+		config = function()
+			vim.keymap.set("n", "<F5>", ":lua require('dap').continue()<CR>")
+			vim.keymap.set("n", "<F10>", function()
+				require("dap").step_over()
+			end)
+			vim.keymap.set("n", "<F11>", function()
+				require("dap").step_into()
+			end)
+			vim.keymap.set("n", "<F12>", function()
+				require("dap").step_out()
+			end)
+			vim.keymap.set("n", "<Leader>b", function()
+				require("dap").toggle_breakpoint()
+			end)
+			vim.keymap.set("n", "<Leader>B", function()
+				require("dap").set_breakpoint()
+			end)
+			vim.keymap.set("n", "<Leader>lp", function()
+				require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
+			end)
+			vim.keymap.set("n", "<Leader>cb", function()
+				require("dap").clear_breakpoints()
+			end)
+			vim.keymap.set("n", "<Leader>cc", function()
+				require("dap").run_to_cursor()
+			end)
+			vim.keymap.set("n", "<Leader>dc", function()
+				require("dap").repl.open({ height = 10 })
+			end)
+			vim.keymap.set("n", "<Leader>dl", function()
+				require("dap").run_last()
+			end)
+			vim.keymap.set({ "n", "v" }, "<Leader>K", function()
+				require("dap.ui.widgets").hover()
+			end)
+			vim.keymap.set({ "n", "v" }, "<Leader>dp", function()
+				require("dap.ui.widgets").preview()
+			end)
+			vim.keymap.set("n", "<Leader>df", function()
+				local widgets = require("dap.ui.widgets")
+				widgets.centered_float(widgets.frames)
+			end)
+			vim.keymap.set("n", "<Leader>ds", function()
+				local widgets = require("dap.ui.widgets")
+				widgets.centered_float(widgets.scopes)
+			end)
+			vim.keymap.set("n", "<Leader>dk", function()
+				require("dap").terminate()
+			end)
+			vim.keymap.set("n", "<Leader>dr", function()
+				require("dap").restart()
+			end)
+			require("dap").defaults.fallback.external_terminal = {
+				command = "tmux",
+				-- args = { "split-window", "-v", "-e", "remain-on-exit=on" },
+				-- args = { "split-window", "-v", "set-option", "-p", "remain-on-exit", "on" },
+				args = { "split-window", "-v", "-l", "30%"},
+			}
+		end,
+	},
+	-- python debugger extension
+	{
+		"mfussenegger/nvim-dap-python",
+		config = function()
+			require("dap-python").setup("python", { console = "externalTerminal" })
+			vim.keymap.set("n", "<leader>tf", ":lua require('dap-python').test_method()<CR>")
+			vim.keymap.set("n", "<leader>tc", ":lua require('dap-python').test_class()<CR>")
+			vim.keymap.set("n", "<leader>ts", ":lua require('dap-python').debug_selection()<CR>")
+		end,
+	},
+	-- debugger virtual text
+	{
+		"theHamsta/nvim-dap-virtual-text",
+		config = function()
+			require("nvim-dap-virtual-text").setup()
+		end,
+	},
+	-- -- debugger ui
+	-- {
+	-- 	"rcarriga/nvim-dap-ui",
+	-- 	dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
+	-- 	config = function()
+	-- 		require("dapui").setup()
+	-- 	end,
+	-- },
 	-- automatic docstring printing
 	{
 		"kkoomen/vim-doge",
@@ -669,44 +757,6 @@ local lazy_plugins = {
 					package_pending = "➜",
 					package_uninstalled = "✗",
 				},
-			},
-		},
-	},
-	-- Quarto plugin.
-	{
-		"quarto-dev/quarto-nvim",
-		opts = {
-			lspFeatures = {
-				languages = { "r", "python", "julia", "bash", "html", "lua" },
-			},
-		},
-		ft = "quarto",
-		keys = {
-			{ "<leader>Qa", ":QuartoActivate<cr>", desc = "quarto activate" },
-			{ "<leader>Qp", ":lua require'quarto'.quartoPreview()<cr>", desc = "quarto preview" },
-			{ "<leader>Qq", ":lua require'quarto'.quartoClosePreview()<cr>", desc = "quarto close" },
-			{ "<leader>Qh", ":QuartoHelp ", desc = "quarto help" },
-			{ "<leader>Qe", ":lua require'otter'.export()<cr>", desc = "quarto export" },
-			{ "<leader>QE", ":lua require'otter'.export(true)<cr>", desc = "quarto export overwrite" },
-			{ "<leader>Qrr", ":QuartoSendAbove<cr>", desc = "quarto run to cursor" },
-			{ "<leader>Qra", ":QuartoSendAll<cr>", desc = "quarto run all" },
-			{ "<leader><cr>", ":SlimeSend<cr>", desc = "send code chunk" },
-			{ "<c-cr>", ":SlimeSend<cr>", desc = "send code chunk" },
-			{ "<c-cr>", "<esc>:SlimeSend<cr>i", mode = "i", desc = "send code chunk" },
-			{ "<c-cr>", "<Plug>SlimeRegionSend<cr>", mode = "v", desc = "send code chunk" },
-			{ "<cr>", "<Plug>SlimeRegionSend<cr>", mode = "v", desc = "send code chunk" },
-			{ "<leader>ctr", ":split term://R<cr>", desc = "terminal: R" },
-			{ "<leader>cti", ":split term://ipython<cr>", desc = "terminal: ipython" },
-			{ "<leader>ctp", ":split term://python<cr>", desc = "terminal: python" },
-			{ "<leader>ctj", ":split term://julia<cr>", desc = "terminal: julia" },
-		},
-	},
-	-- Otter (used for quarto)
-	{
-		"jmbuhr/otter.nvim",
-		opts = {
-			buffers = {
-				set_filetype = true,
 			},
 		},
 	},
