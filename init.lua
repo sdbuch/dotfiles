@@ -571,7 +571,13 @@ local lazy_plugins = {
 				require("dap").run_to_cursor()
 			end)
 			vim.keymap.set("n", "<Leader>dc", function()
-				require("dap").repl.open({ height = 10 })
+				require("dap").repl.toggle({ height = 20 })
+			end)
+			vim.keymap.set("n", "<Leader>du", function()
+				require("dap").up()
+			end)
+			vim.keymap.set("n", "<Leader>dd", function()
+				require("dap").down()
 			end)
 			vim.keymap.set("n", "<Leader>dl", function()
 				require("dap").run_last()
@@ -591,6 +597,7 @@ local lazy_plugins = {
 				widgets.centered_float(widgets.scopes)
 			end)
 			vim.keymap.set("n", "<Leader>dk", function()
+				require("dap").repl.close()
 				require("dap").terminate()
 			end)
 			vim.keymap.set("n", "<Leader>dr", function()
@@ -600,7 +607,7 @@ local lazy_plugins = {
 				command = "tmux",
 				-- args = { "split-window", "-v", "-e", "remain-on-exit=on" },
 				-- args = { "split-window", "-v", "set-option", "-p", "remain-on-exit", "on" },
-				args = { "split-window", "-v", "-l", "30%"},
+				args = { "split-window", "-v", "-l", "15%"},
 			}
 		end,
 	},
