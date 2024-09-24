@@ -59,7 +59,9 @@ if vim.fn.has("macunix") then
 end
 
 -- clipboard
-vim.opt.clipboard:append({ "unnamed", "unnamedplus" })
+-- vim.opt.clipboard:append({ "unnamed", "unnamedplus" })
+vim.o.clipboard = 'unnamedplus'
+
 
 -- spell check
 vim.keymap.set("n", "<F7>", ":setlocal spell! spelllang=en_us<CR>", { noremap = true, silent = true })
@@ -290,7 +292,10 @@ local lazy_plugins = {
 		},
 	},
 	-- close environments in tex
-	{ "sdbuch/closeb" },
+	{ 
+		"sdbuch/closeb",
+		ft = { "tex" },
+	},
 	-- ctags support for tex
 	{ "ludovicchabant/vim-gutentags" },
 	-- Notification helper!
@@ -567,7 +572,7 @@ local lazy_plugins = {
 			vim.keymap.set("n", "<Leader>cb", function()
 				require("dap").clear_breakpoints()
 			end)
-			vim.keymap.set("n", "<Leader>cc", function()
+			vim.keymap.set("n", "<Leader><F5>", function()
 				require("dap").run_to_cursor()
 			end)
 			vim.keymap.set("n", "<Leader>dc", function()
