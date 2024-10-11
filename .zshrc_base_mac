@@ -77,7 +77,7 @@ zstyle :omz:plugins:iterm2 shell-integration yes
 
 # config for keychain
 zstyle :omz:plugins:keychain agents gpg,ssh
-zstyle :omz:plugins:keychain identities id_ed25519
+zstyle :omz:plugins:keychain identities id_ed25519 hwagyesa-github
 
 # Config for zsh-vi-mode
 export ZVM_VI_EDITOR=nvim

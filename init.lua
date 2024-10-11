@@ -60,8 +60,7 @@ end
 
 -- clipboard
 -- vim.opt.clipboard:append({ "unnamed", "unnamedplus" })
-vim.o.clipboard = 'unnamedplus'
-
+vim.o.clipboard = "unnamedplus"
 
 -- spell check
 vim.keymap.set("n", "<F7>", ":setlocal spell! spelllang=en_us<CR>", { noremap = true, silent = true })
@@ -292,7 +291,7 @@ local lazy_plugins = {
 		},
 	},
 	-- close environments in tex
-	{ 
+	{
 		"sdbuch/closeb",
 		ft = { "tex" },
 	},
@@ -612,7 +611,7 @@ local lazy_plugins = {
 				command = "tmux",
 				-- args = { "split-window", "-v", "-e", "remain-on-exit=on" },
 				-- args = { "split-window", "-v", "set-option", "-p", "remain-on-exit", "on" },
-				args = { "split-window", "-v", "-l", "15%"},
+				args = { "split-window", "-v", "-l", "15%" },
 			}
 		end,
 	},
@@ -1009,6 +1008,37 @@ local lazy_plugins = {
 			end
 			cmp.setup.filetype("tex", { sources = sources })
 
+			-- command to toggle copilot.
+			_G.toggle_buffer_source = function()
+				local sources = cmp.get_config().sources
+				local buffer_enabled = false
+
+				-- Check if buffer source is enabled
+				for _, source in ipairs(sources) do
+					if source.name == "copilot" then
+						buffer_enabled = true
+						break
+					end
+				end
+
+				if buffer_enabled then
+					-- Disable buffer source
+					cmp.setup({
+						sources = vim.tbl_filter(function(source)
+							return source.name ~= "copilot"
+						end, sources),
+					})
+					print("Copilot disabled.")
+				else
+					-- Enable buffer source
+					table.insert(sources, { name = "copilot" })
+					cmp.setup({ sources = sources })
+					print("Copilot enabled.")
+				end
+			end
+			-- Map the copilot toggle function to <leader>ct
+			vim.keymap.set("n", "<leader>ct", ":lua toggle_buffer_source()<CR>", { noremap = true, silent = true })
+
 			-- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
 			cmp.setup.cmdline({ "/", "?" }, {
 				mapping = cmp.mapping.preset.cmdline(),
@@ -1116,7 +1146,7 @@ local lazy_plugins = {
 			-- 	on_attach = on_attach,
 			-- })
 			require("lspconfig").lua_ls.setup({ capabilities = capabilities })
-			require("lspconfig").tsserver.setup({ capabilities = capabilities })
+			require("lspconfig").ts_ls.setup({ capabilities = capabilities })
 			require("lspconfig").marksman.setup({
 				capabilities = capabilities,
 				filetypes = { "quarto" },

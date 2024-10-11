@@ -6,7 +6,7 @@
 [core]
 	excludesfile = /Users/sdbuch/.gitignore_global
 [credential "https://git.overleaf.com"]
-	username = sambuchanan6@gmail.com
+	username = git
 	helper = cache
 [init]
 	defaultBranch = main
