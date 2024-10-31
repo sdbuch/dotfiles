@@ -70,7 +70,17 @@ vim.keymap.set("n", "<Leader>ot", ":split term://bash<CR>", { noremap = true, si
 vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]])
 
 -- hotkey to close quickfix menus
-vim.keymap.set("n", "<Leader>cc", ":cclose<CR>", { noremap = true, silent = true })
+-- vim.keymap.set("n", "<Leader>cc", ":cclose<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>cc", function()
+	-- First close the quickfix window
+	vim.cmd("cclose")
+
+	-- Then close trouble windows
+	local view = require('trouble').close()
+	while view do
+		view = require('trouble').close()
+	end
+end, { noremap = true, silent = true })
 
 -- navigation commands
 -- buffer
@@ -613,6 +623,7 @@ local lazy_plugins = {
 				-- args = { "split-window", "-v", "set-option", "-p", "remain-on-exit", "on" },
 				args = { "split-window", "-v", "-l", "15%" },
 			}
+			require("dap").defaults.fallback.force_external_terminal = true
 		end,
 	},
 	-- python debugger extension
