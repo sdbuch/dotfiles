@@ -76,9 +76,9 @@ vim.keymap.set("n", "<Leader>cc", function()
 	vim.cmd("cclose")
 
 	-- Then close trouble windows
-	local view = require('trouble').close()
+	local view = require("trouble").close()
 	while view do
-		view = require('trouble').close()
+		view = require("trouble").close()
 	end
 end, { noremap = true, silent = true })
 
@@ -600,7 +600,7 @@ local lazy_plugins = {
 				require("dap.ui.widgets").hover()
 			end)
 			vim.keymap.set({ "n", "v" }, "<Leader>dp", function()
-				require("dap.ui.widgets").preview()
+				require("dap").pause()
 			end)
 			vim.keymap.set("n", "<Leader>df", function()
 				local widgets = require("dap.ui.widgets")
@@ -631,7 +631,9 @@ local lazy_plugins = {
 		"mfussenegger/nvim-dap-python",
 		config = function()
 			require("dap-python").setup("python", { console = "externalTerminal" })
+			require("dap-python").test_runner = "pytest"
 			vim.keymap.set("n", "<leader>tf", ":lua require('dap-python').test_method()<CR>")
+			vim.keymap.set("n", "<leader>tlf", ":lua require('dap-python').test_method({ config = { justMyCode = false }})<CR>")
 			vim.keymap.set("n", "<leader>tc", ":lua require('dap-python').test_class()<CR>")
 			vim.keymap.set("n", "<leader>ts", ":lua require('dap-python').debug_selection()<CR>")
 		end,

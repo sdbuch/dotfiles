@@ -1,10 +1,12 @@
 tags
+tags *
 wandb
 .DS_Store
 .DS_Store?
 .Trashes
 .Spotlight-V100
 .sass-cache
+.hypothesis
 ._*
 *.o
 *.so
@@ -42,3 +44,5 @@ __pycache__*
 *.toc
 *.lock
 *(busy)
+*.pkl
+*.pth
