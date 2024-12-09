@@ -633,7 +633,11 @@ local lazy_plugins = {
 			require("dap-python").setup("python", { console = "externalTerminal" })
 			require("dap-python").test_runner = "pytest"
 			vim.keymap.set("n", "<leader>tf", ":lua require('dap-python').test_method()<CR>")
-			vim.keymap.set("n", "<leader>tlf", ":lua require('dap-python').test_method({ config = { justMyCode = false }})<CR>")
+			vim.keymap.set(
+				"n",
+				"<leader>tlf",
+				":lua require('dap-python').test_method({ config = { justMyCode = false }})<CR>"
+			)
 			vim.keymap.set("n", "<leader>tc", ":lua require('dap-python').test_class()<CR>")
 			vim.keymap.set("n", "<leader>ts", ":lua require('dap-python').debug_selection()<CR>")
 		end,
@@ -642,7 +646,10 @@ local lazy_plugins = {
 	{
 		"theHamsta/nvim-dap-virtual-text",
 		config = function()
-			require("nvim-dap-virtual-text").setup()
+			require("nvim-dap-virtual-text").setup({
+				commented = true,
+				virt_text_pos = "eol",
+			})
 		end,
 	},
 	-- -- debugger ui
@@ -651,6 +658,56 @@ local lazy_plugins = {
 	-- 	dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
 	-- 	config = function()
 	-- 		require("dapui").setup()
+	-- 	end,
+	-- },
+	-- python repl integration
+	{
+		"jpalardy/vim-slime",
+		ft = { "python" },
+		init = function()
+			vim.g.slime_target = "tmux"
+			-- vim.g.slime_python_ipython = 1
+			vim.g.slime_bracketed_paste = 1
+			vim.g.slime_preserve_curpos = 1
+		end,
+	},
+	-- { -- treesitter support is nice (cf iron.nvim), but this is slow...
+	-- 	"geg2102/nvim-python-repl",
+	-- 	dependencies = "nvim-treesitter",
+	-- 	ft = { "python", "lua", "scala" },
+	-- 	config = function()
+	-- 		require("nvim-python-repl").setup({
+	-- 			execute_on_send = true,
+	-- 			vsplit = true,
+	-- 			prompt_spawn = false,
+	-- 			spawn_command = {
+	-- 				python = { "jupyter-console", "--ZMQTerminalInteractiveShell.image_handler=None" },
+	-- 			},
+	-- 		})
+	--
+	-- 		vim.keymap.set("n", "<leader>sf", function()
+	-- 			require("nvim-python-repl").send_statement_definition()
+	-- 		end, { desc = "Send semantic unit to REPL" })
+	--
+	-- 		vim.keymap.set("v", "<leader>sv", function()
+	-- 			require("nvim-python-repl").send_visual_to_repl()
+	-- 		end, { desc = "Send visual selection to REPL" })
+	--
+	-- 		vim.keymap.set("n", "<leader>sb", function()
+	-- 			require("nvim-python-repl").send_buffer_to_repl()
+	-- 		end, { desc = "Send entire buffer to REPL" })
+	--
+	-- 		vim.keymap.set("n", "<leader>rte", function()
+	-- 			require("nvim-python-repl").toggle_execute()
+	-- 		end, { desc = "Automatically execute command in REPL after sent" })
+	--
+	-- 		vim.keymap.set("n", "<leader>rtv", function()
+	-- 			require("nvim-python-repl").toggle_vertical()
+	-- 		end, { desc = "Create REPL in vertical or horizontal split" })
+	--
+	-- 		vim.keymap.set("n", "<leader>ro", function()
+	-- 			require("nvim-python-repl").open_repl()
+	-- 		end, { desc = "Opens the REPL in a window split" })
 	-- 	end,
 	-- },
 	-- automatic docstring printing
@@ -810,7 +867,10 @@ local lazy_plugins = {
 					-- What's available:
 					-- https://github.com/mhartington/formatter.nvim/tree/master/lua/formatter/filetypes
 					lua = { require("formatter.filetypes.lua").stylua },
-					python = { require("formatter.filetypes.python").ruff, require("formatter.filetypes.python").isort  },
+					python = {
+						require("formatter.filetypes.python").ruff,
+						require("formatter.filetypes.python").isort,
+					},
 					typescript = { require("formatter.filetypes.typescript").prettierd },
 					javascript = { require("formatter.filetypes.javascript").prettierd },
 					-- html = { require("formatter.filetypes.html").prettierd },
@@ -986,7 +1046,7 @@ local lazy_plugins = {
 					{ name = "emoji" },
 					{ name = "path" },
 					{ name = "luasnip" }, -- For luasnip users.
-					{ name = "otter" }, -- For quarto (installed above)
+					-- { name = "otter" }, -- For quarto (installed above)
 				}, {
 					{ name = "buffer" },
 					{ name = "copilot" },
