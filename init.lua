@@ -794,7 +794,7 @@ local lazy_plugins = {
 			-- Automatically install formatters via Mason.
 			ENSURE_INSTALLED("lua", "stylua")
 			ENSURE_INSTALLED("python", "isort")
-			ENSURE_INSTALLED("python", "ruff") -- Can replace both black and isort!
+			ENSURE_INSTALLED("python", "ruff")
 			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "prettierd")
 			ENSURE_INSTALLED("html,css,scss", "prettierd")
 			ENSURE_INSTALLED("c,cpp,cuda", "clang-format")
@@ -810,7 +810,7 @@ local lazy_plugins = {
 					-- What's available:
 					-- https://github.com/mhartington/formatter.nvim/tree/master/lua/formatter/filetypes
 					lua = { require("formatter.filetypes.lua").stylua },
-					python = { require("formatter.filetypes.python").isort, require("formatter.filetypes.python").ruff },
+					python = { require("formatter.filetypes.python").ruff, require("formatter.filetypes.python").isort  },
 					typescript = { require("formatter.filetypes.typescript").prettierd },
 					javascript = { require("formatter.filetypes.javascript").prettierd },
 					-- html = { require("formatter.filetypes.html").prettierd },
@@ -928,52 +928,52 @@ local lazy_plugins = {
 					["<C-b>"] = cmp.mapping.scroll_docs(-4),
 					["<C-f>"] = cmp.mapping.scroll_docs(4),
 					["<C-Space>"] = cmp.mapping.complete(),
-					-- ["<CR>"] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-					["<CR>"] = cmp.mapping(function(fallback)
-						if cmp.visible() then
-							if luasnip.expandable() then
-								luasnip.expand()
-							else
-								cmp.confirm({
-									select = true,
-								})
-							end
-						else
-							fallback()
-						end
-					end),
-					-- ["<Tab>"] = vim.schedule_wrap(function(fallback)
-					-- 	if cmp.visible() and has_words_before() then
-					-- 		cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+					["<CR>"] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+					-- ["<CR>"] = cmp.mapping(function(fallback)
+					-- 	if cmp.visible() then
+					-- 		if luasnip.expandable() then
+					-- 			luasnip.expand()
+					-- 		else
+					-- 			cmp.confirm({
+					-- 				select = true,
+					-- 			})
+					-- 		end
 					-- 	else
 					-- 		fallback()
 					-- 	end
 					-- end),
-					["<Tab>"] = cmp.mapping(function(fallback)
-						if cmp.visible() then
-							cmp.select_next_item()
-						elseif luasnip.locally_jumpable(1) then
-							luasnip.jump(1)
+					["<Tab>"] = vim.schedule_wrap(function(fallback)
+						if cmp.visible() and has_words_before() then
+							cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
 						else
 							fallback()
 						end
-					end, { "i", "s" }),
-					-- ["<S-Tab>"] = function(fallback)
+					end),
+					-- ["<Tab>"] = cmp.mapping(function(fallback)
 					-- 	if cmp.visible() then
-					-- 		cmp.select_prev_item()
+					-- 		cmp.select_next_item()
+					-- 	elseif luasnip.locally_jumpable(1) then
+					-- 		luasnip.jump(1)
 					-- 	else
 					-- 		fallback()
 					-- 	end
-					-- end,
-					["<S-Tab>"] = cmp.mapping(function(fallback)
+					-- end, { "i", "s" }),
+					["<S-Tab>"] = function(fallback)
 						if cmp.visible() then
 							cmp.select_prev_item()
-						elseif luasnip.locally_jumpable(-1) then
-							luasnip.jump(-1)
 						else
 							fallback()
 						end
-					end, { "i", "s" }),
+					end,
+					-- ["<S-Tab>"] = cmp.mapping(function(fallback)
+					-- 	if cmp.visible() then
+					-- 		cmp.select_prev_item()
+					-- 	elseif luasnip.locally_jumpable(-1) then
+					-- 		luasnip.jump(-1)
+					-- 	else
+					-- 		fallback()
+					-- 	end
+					-- end, { "i", "s" }),
 				}),
 				sources = cmp.config.sources({
 					{
