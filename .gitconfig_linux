@@ -1,5 +1,10 @@
 [user]
 	name = sdbuch
-  email = 19997120+sdbuch@users.noreply.github.com
+	email = 19997120+sdbuch@users.noreply.github.com
 [core]
 	excludesfile = /home/sam/.gitignore_global
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
