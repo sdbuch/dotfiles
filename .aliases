@@ -17,6 +17,9 @@ alias tmuxa='tmux attach-session -t'
 alias tmuxk='tmux kill-session -t'
 alias tmuxl='tmux ls'
 
+#ipython
+alias ipyterm='ipython --profile=term'
+
 # nvim vs. vim
 alias vim='nvim'
 

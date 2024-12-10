@@ -13,6 +13,9 @@ export PATH=${PATH}:~/bin
 export PATH=${PATH}:~/scripts
 export GEM_HOME="$HOME/.gem"
 
+# for image.nvim luarocks
+export DYLD_FALLBACK_LIBRARY_PATH="$(brew --prefix)/lib:$DYLD_FALLBACK_LIBRARY_PATH"
+
 
 ## first: OH-MY-ZSH CONFIG
 # Path to your oh-my-zsh installation.

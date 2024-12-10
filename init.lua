@@ -652,14 +652,6 @@ local lazy_plugins = {
 			})
 		end,
 	},
-	-- -- debugger ui
-	-- {
-	-- 	"rcarriga/nvim-dap-ui",
-	-- 	dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
-	-- 	config = function()
-	-- 		require("dapui").setup()
-	-- 	end,
-	-- },
 	-- python repl integration
 	{
 		"jpalardy/vim-slime",
@@ -671,45 +663,46 @@ local lazy_plugins = {
 			vim.g.slime_preserve_curpos = 1
 		end,
 	},
-	-- { -- treesitter support is nice (cf iron.nvim), but this is slow...
-	-- 	"geg2102/nvim-python-repl",
-	-- 	dependencies = "nvim-treesitter",
-	-- 	ft = { "python", "lua", "scala" },
-	-- 	config = function()
-	-- 		require("nvim-python-repl").setup({
-	-- 			execute_on_send = true,
-	-- 			vsplit = true,
-	-- 			prompt_spawn = false,
-	-- 			spawn_command = {
-	-- 				python = { "jupyter-console", "--ZMQTerminalInteractiveShell.image_handler=None" },
-	-- 			},
-	-- 		})
-	--
-	-- 		vim.keymap.set("n", "<leader>sf", function()
-	-- 			require("nvim-python-repl").send_statement_definition()
-	-- 		end, { desc = "Send semantic unit to REPL" })
-	--
-	-- 		vim.keymap.set("v", "<leader>sv", function()
-	-- 			require("nvim-python-repl").send_visual_to_repl()
-	-- 		end, { desc = "Send visual selection to REPL" })
-	--
-	-- 		vim.keymap.set("n", "<leader>sb", function()
-	-- 			require("nvim-python-repl").send_buffer_to_repl()
-	-- 		end, { desc = "Send entire buffer to REPL" })
-	--
-	-- 		vim.keymap.set("n", "<leader>rte", function()
-	-- 			require("nvim-python-repl").toggle_execute()
-	-- 		end, { desc = "Automatically execute command in REPL after sent" })
-	--
-	-- 		vim.keymap.set("n", "<leader>rtv", function()
-	-- 			require("nvim-python-repl").toggle_vertical()
-	-- 		end, { desc = "Create REPL in vertical or horizontal split" })
-	--
-	-- 		vim.keymap.set("n", "<leader>ro", function()
-	-- 			require("nvim-python-repl").open_repl()
-	-- 		end, { desc = "Opens the REPL in a window split" })
-	-- 	end,
-	-- },
+	-- inline images (requires imagemagick)
+	{
+		"3rd/image.nvim",
+		opts = {
+			backend = "kitty",
+			integrations = {
+				markdown = {
+					filetypes = { "markdown", "vimwiki", "quarto" },
+				},
+			},
+			max_width = 100, -- tweak to preference
+			max_height = 12, -- ^
+			max_height_window_percentage = math.huge, -- this is necessary for a good experience
+			max_width_window_percentage = math.huge,
+			window_overlap_clear_enabled = true,
+			window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
+		},
+		-- This is on a preview branch...
+		-- config = function()
+		-- 	vim.keymap.set("n", "<leader>it", function()
+		-- 		if require("image").is_enabled() then
+		-- 			require("image").disable()
+		-- 		else
+		-- 			require("image").enable()
+		-- 		end
+		-- 	end)
+		-- end,
+	},
+	-- ipynb-like experience
+	{
+		"benlubas/molten-nvim",
+		version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
+		dependencies = { "3rd/image.nvim" },
+		build = ":UpdateRemotePlugins",
+		init = function()
+			-- these are examples, not defaults. Please see the readme
+			vim.g.molten_image_provider = "image.nvim"
+			vim.g.molten_output_win_max_height = 20
+		end,
+	},
 	-- automatic docstring printing
 	{
 		"kkoomen/vim-doge",
@@ -1438,6 +1431,10 @@ local lazy_opts = {
 			task = "📌",
 			lazy = "💤 ",
 		},
+	},
+	-- for image.nvim + imagemagick luarocks install
+	rocks = {
+		hererocks = true, -- recommended if you do not have global installation of Lua 5.1.
 	},
 }
 require("lazy").setup(lazy_plugins, lazy_opts)
