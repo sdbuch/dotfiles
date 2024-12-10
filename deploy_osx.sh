@@ -19,6 +19,7 @@ ln -s $cdir/.aliases ~/.aliases
 ln -s $cdir/.vimrc ~/.vimrc
 ln -s $cdir/.inputrc ~/.inputrc
 ln -s $cdir/.vim/python_imports.txt ~/.vim/python_skeleton.py
+ln -s $cdir/.vim/quarto_skeleton.qmd ~/.vim/quarto_skeleton.qmd
 ln -s $cdir/.tmux.conf ~/.tmux.conf
 ln -s $cdir/.wezterm.lua ~/.wezterm.lua
 if [ ! -f ~/.zshrc ]; then

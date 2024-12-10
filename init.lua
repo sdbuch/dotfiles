@@ -160,6 +160,13 @@ vim.api.nvim_create_autocmd("BufNewFile", {
 		vim.cmd("0r ~/.vim/python_skeleton.py")
 	end,
 })
+-- quarto
+vim.api.nvim_create_autocmd("BufNewFile", {
+	pattern = "*.qmd",
+	callback = function()
+		vim.cmd("0r ~/.vim/quarto_skeleton.qmd")
+	end,
+})
 
 -- Neotree commands
 vim.cmd([[nnoremap <silent> \ :Neotree toggle current reveal_force_cwd<CR>]])
@@ -701,6 +708,86 @@ local lazy_plugins = {
 			-- these are examples, not defaults. Please see the readme
 			vim.g.molten_image_provider = "image.nvim"
 			vim.g.molten_output_win_max_height = 20
+			vim.g.molten_auto_open_output = false
+			vim.g.molten_wrap_output = true
+			vim.g.molten_virt_text_output = false
+			vim.g.molten_virt_lines_off_by_1 = true
+
+			vim.keymap.set(
+				"n",
+				"<leader>e",
+				":MoltenEvaluateOperator<CR>",
+				{ desc = "evaluate operator", silent = true }
+			)
+			vim.keymap.set(
+				"n",
+				"<leader>oo",
+				":noautocmd MoltenEnterOutput<CR>",
+				{ desc = "open output window", silent = true }
+			)
+			vim.keymap.set("n", "<leader>re", ":MoltenReevaluateCell<CR>", { desc = "re-eval cell", silent = true })
+			vim.keymap.set(
+				"v",
+				"<leader>ve",
+				":<C-u>MoltenEvaluateVisual<CR>gv",
+				{ desc = "execute visual selection", silent = true }
+			)
+			vim.keymap.set("n", "<leader>oc", ":MoltenHideOutput<CR>", { desc = "close output window", silent = true })
+			vim.keymap.set("n", "<leader>md", ":MoltenDelete<CR>", { desc = "delete Molten cell", silent = true })
+
+			-- if you work with html outputs:
+			vim.keymap.set(
+				"n",
+				"<leader>ob",
+				":MoltenOpenInBrowser<CR>",
+				{ desc = "open output in browser", silent = true }
+			)
+		end,
+	},
+	-- quarto
+	{
+		"quarto-dev/quarto-nvim",
+		dependencies = {
+			{
+				"jmbuhr/otter.nvim",
+				config = function()
+					require("otter").setup({
+						lsp = { diagnostic_update_events = { "BufWritePost", "InsertLeave", "TextChanged" } },
+					})
+				end,
+			},
+			{ "nvim-treesitter/nvim-treesitter" },
+		},
+		config = function()
+			local quarto = require("quarto")
+			quarto.setup({
+				lspFeatures = {
+					languages = { "python" },
+					chunks = "all",
+					diagnostics = { -- Need to configure options here for otter (above)
+						enabled = true,
+					},
+					completion = {
+						enabled = true,
+					},
+				},
+				codeRunner = {
+					enabled = true,
+					default_method = "molten",
+				},
+			})
+
+			-- require('otter').
+
+			local runner = require("quarto.runner")
+			vim.keymap.set("n", "<leader>rc", runner.run_cell, { desc = "run cell", silent = true })
+			vim.keymap.set("n", "<leader>ra", runner.run_above, { desc = "run cell and above", silent = true })
+			vim.keymap.set("n", "<leader>rA", runner.run_all, { desc = "run all cells", silent = true })
+			vim.keymap.set("n", "<leader>rl", runner.run_line, { desc = "run line", silent = true })
+			vim.keymap.set("v", "<leader>rv", runner.run_range, { desc = "run visual range", silent = true })
+			vim.keymap.set("n", "<leader>RA", function()
+				runner.run_all(true)
+			end, { desc = "run all cells of all languages", silent = true })
 		end,
 	},
 	-- automatic docstring printing
@@ -836,10 +923,12 @@ local lazy_plugins = {
 	},
 	-- Formatting.
 	{
-		"mhartington/formatter.nvim",
+		"stevearc/conform.nvim",
 		config = function()
 			-- Format keybinding.
-			vim.keymap.set("n", "<Leader>cf", ":Format<CR>", { noremap = true })
+			vim.keymap.set("n", "<Leader>cf", function()
+				require("conform").format()
+			end)
 
 			-- Automatically install formatters via Mason.
 			ENSURE_INSTALLED("lua", "stylua")
@@ -848,35 +937,105 @@ local lazy_plugins = {
 			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "prettierd")
 			ENSURE_INSTALLED("html,css,scss", "prettierd")
 			ENSURE_INSTALLED("c,cpp,cuda", "clang-format")
-			ENSURE_INSTALLED("tex", "latexindent")
+			-- NOTE: need to install this via cargo or brew
+			-- ENSURE_INSTALLED("tex", "tex-fmt")
 			ENSURE_INSTALLED("markdown", "prettierd")
 
 			-- Configure formatters.
-			local util = require("formatter.util")
-			require("formatter").setup({
-				logging = true,
-				log_level = vim.log.levels.WARN,
-				filetype = {
-					-- What's available:
-					-- https://github.com/mhartington/formatter.nvim/tree/master/lua/formatter/filetypes
-					lua = { require("formatter.filetypes.lua").stylua },
-					python = {
-						require("formatter.filetypes.python").ruff,
-						require("formatter.filetypes.python").isort,
-					},
-					typescript = { require("formatter.filetypes.typescript").prettierd },
-					javascript = { require("formatter.filetypes.javascript").prettierd },
-					-- html = { require("formatter.filetypes.html").prettierd },
-					css = { require("formatter.filetypes.css").prettierd },
-					scss = { require("formatter.filetypes.css").prettierd },
-					markdown = { require("formatter.filetypes.markdown").prettierd },
-					cpp = { require("formatter.filetypes.cpp").clangformat },
-					tex = { require("formatter.filetypes.latex").latexindent },
-					["*"] = { require("formatter.filetypes.any").remove_trailing_whitespace },
+			require("conform").setup({
+				formatters_by_ft = {
+					lua = { "stylua" },
+					python = { "ruff_format", "isort" },
+					typescript = { "prettierd" },
+					javascript = { "prettierd" },
+					css = { "prettierd" },
+					scss = { "prettierd" },
+					markdown = { "prettierd" },
+					cpp = { "clang-format" },
+					tex = { "tex-fmt" },
+					quarto = { "injected" }, -- TODO: would like to format markdown-parts with prettierd; hard to get it to recognize parser...
+					["*"] = { "trim_whitespace", "trim_newlines" },
+
+					-- You can customize some of the format options for the filetype (:help conform.format)
+					-- rust = { "rustfmt", lsp_format = "fallback" },
+					-- Conform will run the first available formatter
+					-- javascript = { "prettierd", "prettier", stop_after_first = true },
 				},
 			})
+
+			-- Customize the "injected" formatter
+			require("conform").formatters.injected = {
+				-- Set the options field
+				options = {
+					-- Set to true to ignore errors
+					ignore_errors = false,
+					-- Map of treesitter language to file extension
+					-- A temporary file name with this extension will be generated during formatting
+					-- because some formatters care about the filename.
+					lang_to_ext = {
+						bash = "sh",
+						c_sharp = "cs",
+						elixir = "exs",
+						javascript = "js",
+						julia = "jl",
+						latex = "tex",
+						markdown = "md",
+						python = "py",
+						ruby = "rb",
+						rust = "rs",
+						teal = "tl",
+						r = "r",
+						typescript = "ts",
+					},
+					-- Map of treesitter language to formatters to use
+					-- (defaults to the value from formatters_by_ft)
+					lang_to_formatters = {},
+				},
+			}
 		end,
 	},
+	-- {
+	-- 	"mhartington/formatter.nvim",
+	-- 	config = function()
+	-- 		-- Format keybinding.
+	-- 		vim.keymap.set("n", "<Leader>cf", ":Format<CR>", { noremap = true })
+	--
+	-- 		-- Automatically install formatters via Mason.
+	-- 		ENSURE_INSTALLED("lua", "stylua")
+	-- 		ENSURE_INSTALLED("python", "isort")
+	-- 		ENSURE_INSTALLED("python", "ruff")
+	-- 		ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "prettierd")
+	-- 		ENSURE_INSTALLED("html,css,scss", "prettierd")
+	-- 		ENSURE_INSTALLED("c,cpp,cuda", "clang-format")
+	-- 		ENSURE_INSTALLED("tex", "latexindent")
+	-- 		ENSURE_INSTALLED("markdown", "prettierd")
+	--
+	-- 		-- Configure formatters.
+	-- 		local util = require("formatter.util")
+	-- 		require("formatter").setup({
+	-- 			logging = true,
+	-- 			log_level = vim.log.levels.WARN,
+	-- 			filetype = {
+	-- 				-- What's available:
+	-- 				-- https://github.com/mhartington/formatter.nvim/tree/master/lua/formatter/filetypes
+	-- 				lua = { require("formatter.filetypes.lua").stylua },
+	-- 				python = {
+	-- 					require("formatter.filetypes.python").ruff,
+	-- 					require("formatter.filetypes.python").isort,
+	-- 				},
+	-- 				typescript = { require("formatter.filetypes.typescript").prettierd },
+	-- 				javascript = { require("formatter.filetypes.javascript").prettierd },
+	-- 				-- html = { require("formatter.filetypes.html").prettierd },
+	-- 				css = { require("formatter.filetypes.css").prettierd },
+	-- 				scss = { require("formatter.filetypes.css").prettierd },
+	-- 				markdown = { require("formatter.filetypes.markdown").prettierd },
+	-- 				cpp = { require("formatter.filetypes.cpp").clangformat },
+	-- 				tex = { require("formatter.filetypes.latex").latexindent },
+	-- 				["*"] = { require("formatter.filetypes.any").remove_trailing_whitespace },
+	-- 			},
+	-- 		})
+	-- 	end,
+	-- },
 	-- Language servers.
 	{
 		"williamboman/mason-lspconfig.nvim",
@@ -1146,7 +1305,7 @@ local lazy_plugins = {
 			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "eslint-lsp")
 			ENSURE_INSTALLED("tex", "texlab")
 			ENSURE_INSTALLED("c,cpp,cuda", "clangd")
-			ENSURE_INSTALLED("quarto", "marksman")
+			-- ENSURE_INSTALLED("quarto", "marksman")
 
 			-- TODO: Need to debug texlab diagnostics...
 			-- Texlab supports a clean command.
@@ -1213,11 +1372,11 @@ local lazy_plugins = {
 			-- })
 			require("lspconfig").lua_ls.setup({ capabilities = capabilities })
 			require("lspconfig").ts_ls.setup({ capabilities = capabilities })
-			require("lspconfig").marksman.setup({
-				capabilities = capabilities,
-				filetypes = { "quarto" },
-				root_dir = require("lspconfig.util").root_pattern(".git", ".marksman.toml", "_quarto.yml"),
-			})
+			-- require("lspconfig").marksman.setup({
+			-- 	capabilities = capabilities,
+			-- 	filetypes = { "quarto" },
+			-- 	root_dir = require("lspconfig.util").root_pattern(".git", ".marksman.toml", "_quarto.yml"),
+			-- })
 			require("lspconfig").html.setup({ capabilities = capabilities })
 			require("lspconfig").cssls.setup({ capabilities = capabilities })
 			require("lspconfig").eslint.setup({ capabilities = capabilities })

@@ -51,6 +51,8 @@ c.InteractiveShellApp.exec_lines = [
     "matplotlib.rcParams['figure.facecolor'] = (1, 1, 1, 1)",
     "matplotlib.rcParams['figure.figsize'] = [9.6, 7.2]",
     "sys.breakpointhook = set_trace",
+    "import treescope",
+    # "treescope.basic_interactive_setup(autovisualize_arrays=True)",  # currently no sixel support
 ]
 
 ## A list of dotted module names of IPython extensions to load.
