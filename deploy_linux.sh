@@ -105,6 +105,8 @@ chmod +x $cdir/install_tmux_ubuntu.sh
 # install other software
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 sudo apt-get install ripgrep
+sudo apt-get install imagemagick
+sudo apt-get install libmagickwand-dev
 
 # TODO: install conda
 # currently just configure it
