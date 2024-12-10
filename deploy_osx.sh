@@ -60,12 +60,11 @@ ln -s $cdir/latex_highlights.scm ~/.config/nvim/bundle/nvim-treesitter/queries/l
 ln -s $cdir/plugins.lua ~/.config/nvim/lua/plugins.lua
 
 # for ipython / jupyter
+# We make a config for terminal use + define an alias. Then launchers like quarto can use the clean default
 ln -s $cdir/.jupyter/jupyter_qtconsole_config.py ~/.jupyter/jupyter_qtconsole_config.py
 ln -s $cdir/.ipython/sam_utility.py ~/.ipython/sam_utility.py
-ln -s $cdir/.ipython/profile_default/ipython_config.py ~/.ipython/profile_default/ipython_config.py
-ln -s $cdir/.ipython/profile_default/ipython_kernel_config.py ~/.ipython/profile_default/ipython_kernel_config.py
-ln -s $cdir/.ipython/profile_term/ipython_config.py ~/.ipython/profile_term/ipython_config.py
-ln -s $cdir/.ipython/profile_term/ipython_kernel_config.py ~/.ipython/profile_term/ipython_kernel_config.py
+ln -s $cdir/.ipython/profile_term/ipython_config.py ~/.ipython/profile_default/ipython_config.py
+ln -s $cdir/.ipython/profile_term/ipython_kernel_config.py ~/.ipython/profile_default/ipython_kernel_config.py
 
 # for keyboard remapping
 cp $cdir/keyremap_windowskb.sh ~/keyremap_windowskb.sh
