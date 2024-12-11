@@ -73,7 +73,7 @@ cat $cdir/.bashrc >> ~/.bashrc
 
 # etc
 ln -s $cdir/.vim/python_imports.txt ~/.vim/python_skeleton.py
-ln -s $cdir/.ipython/profile_default/ipython_config.py ~/.ipython/profile_default/ipython_config.py
+ln -s $cdir/.ipython/profile_default/ipython_config.py ~/.ipython/profile_term/ipython_config.py
 ln -s $cdir/.vim/colors/wombat256mod.vim ~/.vim/colors/wombat256mod.vim
 ln -s $cdir/.vim/snippets/python.json ~/.vim/snippets/python.json
 ln -s $cdir/scripts/dev-tmux ~/scripts/dev-tmux
