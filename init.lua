@@ -710,8 +710,10 @@ local lazy_plugins = {
 			vim.g.molten_output_win_max_height = 20
 			vim.g.molten_auto_open_output = false
 			vim.g.molten_wrap_output = true
-			vim.g.molten_virt_text_output = false
+			vim.g.molten_virt_text_output = true
 			vim.g.molten_virt_lines_off_by_1 = true
+			vim.g.molten_image_location = "float"
+			vim.g.molten_auto_init_behavior = "raise"  -- quarto integration will try to start 10+ kernels for some reason
 
 			vim.keymap.set(
 				"n",
@@ -734,6 +736,8 @@ local lazy_plugins = {
 			)
 			vim.keymap.set("n", "<leader>oc", ":MoltenHideOutput<CR>", { desc = "close output window", silent = true })
 			vim.keymap.set("n", "<leader>md", ":MoltenDelete<CR>", { desc = "delete Molten cell", silent = true })
+			vim.keymap.set("n", "<leader>mk", ":MoltenInterrupt<CR>", { desc = "interrupt running Molten cell", silent = true })
+			vim.keymap.set("n", "<leader>mi", ":MoltenInit<CR>", { desc = "Initialize Molten kernel", silent = true })
 
 			-- if you work with html outputs:
 			vim.keymap.set(
@@ -774,11 +778,13 @@ local lazy_plugins = {
 				codeRunner = {
 					enabled = true,
 					default_method = "molten",
+					-- ft_runners = { python = "molten" },
+					-- never_run = { "markdown", "yaml" },
 				},
 			})
 
-			-- require('otter').
-
+			-- NOTE: A weird behavior of these is that they run all cells *matching the language of the current cell*
+			-- So they'll try to "run" markdown cells unless you run in a python cell always
 			local runner = require("quarto.runner")
 			vim.keymap.set("n", "<leader>rc", runner.run_cell, { desc = "run cell", silent = true })
 			vim.keymap.set("n", "<leader>ra", runner.run_above, { desc = "run cell and above", silent = true })
