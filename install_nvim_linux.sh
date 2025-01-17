@@ -8,5 +8,5 @@ if [ ! -f /usr/bin/nvim ]; then
     wget https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
     sudo chmod +x nvim.appimage
     sudo mv nvim.appimage /usr/bin/nvim
-    sudo apt-get install fuse libfuse2
+    sudo apt-get install libfuse2
 fi

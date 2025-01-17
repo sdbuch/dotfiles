@@ -3,6 +3,12 @@
 
 if [ ! -f /usr/local/bin/tmux ]; then
     echo "tmux not found, installing..."
+    # need some prereqs
+    sudo apt install libevent-dev
+    sudo apt install bison
+    sudo apt install ncurses-dev
+    sudo apt install build-essential
+
     wget https://github.com/tmux/tmux/releases/download/3.5a/tmux-3.5a.tar.gz
     sudo chmod +x tmux-3.5a.tar.gz
     tar -zxf tmux-3.5a.tar.gz
