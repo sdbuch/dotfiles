@@ -7,7 +7,7 @@ fixssh() {
 }
 
 # Path adds
-export PATH=$PATH:~/scripts
+export PATH="$HOME/.local/bin/:$PATH:~/scripts"
 # Vim as default editor
 export EDITOR=nvim
 

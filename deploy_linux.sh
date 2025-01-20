@@ -63,6 +63,13 @@ mln $cdir/scripts/dev-tmux ~/scripts/dev-tmux
 
 # Install zsh locally if not already installed
 if ! command -v zsh &> /dev/null; then
+    # we need ncurses-dev for this
+    if ! dpkg -l | grep -q libncurses-dev; then
+        echo "Installing ncurses-dev (requires sudo)"
+        sudo apt-get install -y ncurses-dev
+    fi
+
+    # install
     wget https://sourceforge.net/projects/zsh/files/zsh/5.9/zsh-5.9.tar.xz
     tar xf zsh-5.9.tar.xz
     cd zsh-5.9
@@ -132,8 +139,11 @@ fi
 
 # Install Miniconda if not already installed
 if [ ! -d ~/miniconda3 ]; then
-    curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-    bash Miniconda3-latest-Linux-x86_64.sh -b
+    MINICONDA_SCRIPT="Miniconda3-latest-Linux-x86_64.sh"
+    curl -O https://repo.anaconda.com/miniconda/$MINICONDA_SCRIPT
+    bash $MINICONDA_SCRIPT -b
     ~/miniconda3/bin/conda init zsh
     ~/miniconda3/bin/conda init bash
+    # Clean up the installer script
+    rm $MINICONDA_SCRIPT
 fi
