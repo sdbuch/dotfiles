@@ -91,7 +91,7 @@ if [ ! -d ~/.oh-my-zsh ]; then
     if [ ! -f ~/zsh_install.sh ]; then
         curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o ~/zsh_install.sh
     fi
-    SHELL="$HOME/.local/bin/zsh" ZSH="" sh ~/zsh_install.sh --keep-zshrc
+    SHELL="$HOME/.local/bin/zsh" ZSH="" sh ~/zsh_install.sh --keep-zshrc --unattended
 fi
 
 # Install Node.js using nvm if not present
