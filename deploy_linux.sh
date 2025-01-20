@@ -4,10 +4,15 @@
 
 # Parse command line arguments
 INSTALL_SIXEL=false
+INSTALL_MINIMAL=false
 for arg in "$@"; do
     case $arg in
         --sixel)
             INSTALL_SIXEL=true
+            shift
+            ;;
+        --minimal)
+            INSTALL_MINIMAL=true
             shift
             ;;
     esac
@@ -61,37 +66,39 @@ mln $cdir/.vim/colors/wombat256mod.vim ~/.vim/colors/wombat256mod.vim
 mln $cdir/.vim/snippets/python.json ~/.vim/snippets/python.json
 mln $cdir/scripts/dev-tmux ~/scripts/dev-tmux
 
-# Install zsh locally if not already installed
-if ! command -v zsh &> /dev/null; then
-    # we need ncurses-dev for this
-    if ! dpkg -l | grep -q libncurses-dev; then
-        echo "Installing ncurses-dev (requires sudo)"
-        sudo apt-get install -y ncurses-dev
+if [ "$INSTALL_MINIMAL" = false ]; then
+    # Install zsh locally if not already installed
+    if ! command -v zsh &> /dev/null; then
+        # we need ncurses-dev for this
+        if ! dpkg -l | grep -q libncurses-dev; then
+            echo "Installing ncurses-dev (requires sudo)"
+            sudo apt-get install -y ncurses-dev
+        fi
+
+        # install
+        wget https://sourceforge.net/projects/zsh/files/zsh/5.9/zsh-5.9.tar.xz
+        tar xf zsh-5.9.tar.xz
+        cd zsh-5.9
+        ./configure --prefix="$HOME/.local"
+        make
+        make install
+        cd ..
+        rm -rf zsh-5.9 zsh-5.9.tar.xz
+
+        # Add local zsh to shells if needed
+        echo "$HOME/.local/bin/zsh" >> ~/.shells
+
+        # Update shell startup to use local zsh
+        echo '[ -f "$HOME/.local/bin/zsh" ] && exec "$HOME/.local/bin/zsh"' >> ~/.bashrc
     fi
 
-    # install
-    wget https://sourceforge.net/projects/zsh/files/zsh/5.9/zsh-5.9.tar.xz
-    tar xf zsh-5.9.tar.xz
-    cd zsh-5.9
-    ./configure --prefix="$HOME/.local"
-    make
-    make install
-    cd ..
-    rm -rf zsh-5.9 zsh-5.9.tar.xz
-
-    # Add local zsh to shells if needed
-    echo "$HOME/.local/bin/zsh" >> ~/.shells
-
-    # Update shell startup to use local zsh
-    echo '[ -f "$HOME/.local/bin/zsh" ] && exec "$HOME/.local/bin/zsh"' >> ~/.bashrc
-fi
-
-# Install oh-my-zsh if not present (using local zsh)
-if [ ! -d ~/.oh-my-zsh ]; then
-    if [ ! -f ~/zsh_install.sh ]; then
-        curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o ~/zsh_install.sh
+    # Install oh-my-zsh if not present (using local zsh)
+    if [ ! -d ~/.oh-my-zsh ]; then
+        if [ ! -f ~/zsh_install.sh ]; then
+            curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o ~/zsh_install.sh
+        fi
+        SHELL="$HOME/.local/bin/zsh" ZSH="" sh ~/zsh_install.sh --keep-zshrc --unattended
     fi
-    SHELL="$HOME/.local/bin/zsh" ZSH="" sh ~/zsh_install.sh --keep-zshrc --unattended
 fi
 
 # Install Node.js using nvm if not present
@@ -102,7 +109,11 @@ if ! command -v node &> /dev/null; then
     nvm install node
     # Global npm packages (installed to ~/.local)
     npm config set prefix ~/.local
-    npm install -g tree-sitter-cli typewritten
+    if [ "$INSTALL_MINIMAL" = true ]; then
+        npm install -g tree-sitter-cli
+    else
+        npm install -g tree-sitter-cli typewritten
+    fi
 fi
 
 # Install ripgrep locally if not present
@@ -113,21 +124,23 @@ if ! command -v rg &> /dev/null; then
     rm -rf ripgrep-13.0.0-x86_64-unknown-linux-musl*
 fi
 
-# Install oh-my-zsh plugins
-if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-vi-mode ]; then
-    git clone https://github.com/jeffreytse/zsh-vi-mode ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-vi-mode
-fi
+if [ "$INSTALL_MINIMAL" = false ]; then
+    # Install oh-my-zsh plugins
+    if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-vi-mode ]; then
+        git clone https://github.com/jeffreytse/zsh-vi-mode ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-vi-mode
+    fi
 
-if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions ]; then
-    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+    if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions ]; then
+        git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+    fi
 fi
 
 # Install neovim from custom script
 chmod +x $cdir/install_nvim_linux.sh
 ./install_nvim_linux.sh
 
-# Only install tmux and related packages if --sixel option is provided
-if [ "$INSTALL_SIXEL" = true ]; then
+# Only install tmux and related packages if --sixel option is provided and --minimal is not
+if [ "$INSTALL_SIXEL" = true ] && [ "$INSTALL_MINIMAL" = false ]; then
     chmod +x $cdir/install_tmux_ubuntu.sh
     ./install_tmux_ubuntu.sh
 fi
