@@ -1,6 +1,17 @@
 #!/bin/sh
 # Setup script for Ubuntu development environment
-# Creates necessary symlinks and installs required packages
+# Creates necessary directories and symlinks
+
+# Parse command line arguments
+INSTALL_SIXEL=false
+for arg in "$@"; do
+    case $arg in
+        --sixel)
+            INSTALL_SIXEL=true
+            shift
+            ;;
+    esac
+done
 
 # Helper for creating directories while symlinking if they don't exist
 mln() {
@@ -8,6 +19,10 @@ mln() {
 }
 
 cdir=$(pwd)
+
+# Ensure ~/.local/bin exists and is in PATH
+mkdir -p ~/.local/bin
+export PATH="$HOME/.local/bin:$PATH"
 
 # Create directory structure for vim/neovim
 mkdir -p ~/.vim/{colors,snippets}
@@ -46,25 +61,49 @@ mln $cdir/.vim/colors/wombat256mod.vim ~/.vim/colors/wombat256mod.vim
 mln $cdir/.vim/snippets/python.json ~/.vim/snippets/python.json
 mln $cdir/scripts/dev-tmux ~/scripts/dev-tmux
 
-# Install zsh and oh-my-zsh if not already installed
+# Install zsh locally if not already installed
 if ! command -v zsh &> /dev/null; then
-    sudo apt-get install zsh
+    wget https://sourceforge.net/projects/zsh/files/zsh/5.9/zsh-5.9.tar.xz
+    tar xf zsh-5.9.tar.xz
+    cd zsh-5.9
+    ./configure --prefix="$HOME/.local"
+    make
+    make install
+    cd ..
+    rm -rf zsh-5.9 zsh-5.9.tar.xz
+
+    # Add local zsh to shells if needed
+    echo "$HOME/.local/bin/zsh" >> ~/.shells
+
+    # Update shell startup to use local zsh
+    echo '[ -f "$HOME/.local/bin/zsh" ] && exec "$HOME/.local/bin/zsh"' >> ~/.bashrc
 fi
 
+# Install oh-my-zsh if not present (using local zsh)
 if [ ! -d ~/.oh-my-zsh ]; then
     if [ ! -f ~/zsh_install.sh ]; then
         curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o ~/zsh_install.sh
     fi
-    ZSH="" sh ~/zsh_install.sh --keep-zshrc
-    sudo chsh -s $(which zsh) $USER
+    SHELL="$HOME/.local/bin/zsh" ZSH="" sh ~/zsh_install.sh --keep-zshrc
 fi
 
-# Install Node.js if not present
+# Install Node.js using nvm if not present
 if ! command -v node &> /dev/null; then
-    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-    sudo apt install nodejs
-    # Global npm packages
-    sudo npm install -g tree-sitter-cli typewritten
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    nvm install node
+    # Global npm packages (installed to ~/.local)
+    npm config set prefix ~/.local
+    npm install -g tree-sitter-cli typewritten
+fi
+
+# Install ripgrep locally if not present
+if ! command -v rg &> /dev/null; then
+    curl -LO https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz
+    tar xf ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz
+    cp ripgrep-13.0.0-x86_64-unknown-linux-musl/rg ~/.local/bin/
+    rm -rf ripgrep-13.0.0-x86_64-unknown-linux-musl*
 fi
 
 # Install oh-my-zsh plugins
@@ -76,25 +115,25 @@ if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions ]; then
     git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 fi
 
-# Install neovim and tmux from custom scripts
+# Install neovim from custom script
 chmod +x $cdir/install_nvim_linux.sh
 ./install_nvim_linux.sh
 
-chmod +x $cdir/install_tmux_ubuntu.sh
-./install_tmux_ubuntu.sh
+# Only install tmux and related packages if --sixel option is provided
+if [ "$INSTALL_SIXEL" = true ]; then
+    chmod +x $cdir/install_tmux_ubuntu.sh
+    ./install_tmux_ubuntu.sh
+fi
 
 # Install tmux plugin manager if not present
 if [ ! -d ~/.tmux/plugins/tpm ]; then
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 fi
 
-# Install additional development tools
-sudo apt-get install -y ripgrep imagemagick libmagickwand-dev lua5.1 liblua5.1-0-dev universal-ctags
-
 # Install Miniconda if not already installed
 if [ ! -d ~/miniconda3 ]; then
-    curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh 
-    bash Miniconda3-latest-Linux-x86_64.sh -b  # -b flag for batch mode, no user input needed
+    curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    bash Miniconda3-latest-Linux-x86_64.sh -b
     ~/miniconda3/bin/conda init zsh
     ~/miniconda3/bin/conda init bash
 fi

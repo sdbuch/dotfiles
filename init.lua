@@ -1097,7 +1097,7 @@ local lazy_plugins = {
 			require("copilot").setup({
 				suggestion = { enabled = false },
 				panel = {
-					enabled = true,
+					enabled = false,
 				},
 				filetypes = {
 					markdown = true, -- overrides default
@@ -1204,10 +1204,9 @@ local lazy_plugins = {
 					{ name = "emoji" },
 					{ name = "path" },
 					{ name = "luasnip" }, -- For luasnip users.
-					-- { name = "otter" }, -- For quarto (installed above)
 				}, {
 					{ name = "buffer" },
-					{ name = "copilot" },
+					-- { name = "copilot" },
 				}),
 				-- {
 				-- 	{ name = "buffer" },
@@ -1361,8 +1360,8 @@ local lazy_plugins = {
 						analysis = {
 							autoSearchPaths = true,
 							useLibraryCodeForTypes = true,
-							-- diagnosticMode = 'openFilesOnly',
-							diagnosticMode = "workspace",
+							diagnosticMode = 'openFilesOnly',
+							-- diagnosticMode = "workspace",
 						},
 					},
 				},

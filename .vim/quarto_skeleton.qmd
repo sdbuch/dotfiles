@@ -1,6 +1,9 @@
 ---
 title:
 author: Sam Buchanan
+format:
+    html:
+        code-fold: show
 ---
 
 ## Code imports

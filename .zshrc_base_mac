@@ -13,8 +13,6 @@ export PATH=${PATH}:~/bin
 export PATH=${PATH}:~/scripts
 export GEM_HOME="$HOME/.gem"
 
-# for image.nvim luarocks
-export DYLD_FALLBACK_LIBRARY_PATH="$(brew --prefix)/lib:$DYLD_FALLBACK_LIBRARY_PATH"
 
 
 ## first: OH-MY-ZSH CONFIG
@@ -145,6 +143,9 @@ HISTFILESIZE=200000
 
 # Brew thing
 eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# for image.nvim luarocks
+export DYLD_FALLBACK_LIBRARY_PATH="$(brew --prefix)/lib:$DYLD_FALLBACK_LIBRARY_PATH"
 
 # Gstreamer setup...
 export GST_PLUGIN_PATH="/opt/homebrew/lib/gstreamer-1.0"
