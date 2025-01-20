@@ -313,7 +313,7 @@ local lazy_plugins = {
 		ft = { "tex" },
 	},
 	-- ctags support for tex
-	{ "ludovicchabant/vim-gutentags" },
+	{ "ludovicchabant/vim-gutentags", ft = "tex" },
 	-- Notification helper!
 	{
 		"rcarriga/nvim-notify",
@@ -713,7 +713,7 @@ local lazy_plugins = {
 			vim.g.molten_virt_text_output = true
 			vim.g.molten_virt_lines_off_by_1 = true
 			vim.g.molten_image_location = "float"
-			vim.g.molten_auto_init_behavior = "raise"  -- quarto integration will try to start 10+ kernels for some reason
+			vim.g.molten_auto_init_behavior = "raise" -- quarto integration will try to start 10+ kernels for some reason
 
 			vim.keymap.set(
 				"n",
@@ -736,7 +736,12 @@ local lazy_plugins = {
 			)
 			vim.keymap.set("n", "<leader>oc", ":MoltenHideOutput<CR>", { desc = "close output window", silent = true })
 			vim.keymap.set("n", "<leader>md", ":MoltenDelete<CR>", { desc = "delete Molten cell", silent = true })
-			vim.keymap.set("n", "<leader>mk", ":MoltenInterrupt<CR>", { desc = "interrupt running Molten cell", silent = true })
+			vim.keymap.set(
+				"n",
+				"<leader>mk",
+				":MoltenInterrupt<CR>",
+				{ desc = "interrupt running Molten cell", silent = true }
+			)
 			vim.keymap.set("n", "<leader>mi", ":MoltenInit<CR>", { desc = "Initialize Molten kernel", silent = true })
 
 			-- if you work with html outputs:
@@ -1360,7 +1365,7 @@ local lazy_plugins = {
 						analysis = {
 							autoSearchPaths = true,
 							useLibraryCodeForTypes = true,
-							diagnosticMode = 'openFilesOnly',
+							diagnosticMode = "openFilesOnly",
 							-- diagnosticMode = "workspace",
 						},
 					},
