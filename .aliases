@@ -6,16 +6,16 @@ alias lt='ls -FlasGrt'
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
-alias ls='ls -G'
+# alias ls='ls -G'
 
 # latex
 alias cp-sam-macros='cp ~/projects/github/dotfiles/sam_macros.def . && cp ~/projects/github/dotfiles/sam_macros_nofontspec.def . && cp ~/projects/github/dotfiles/sam_macros_common.def .'
 
 # tmux
 # NOTE: these are redundant with oh-my-zsh
-alias tmuxa='tmux attach-session -t'
-alias tmuxk='tmux kill-session -t'
-alias tmuxl='tmux ls'
+alias ta='tmux attach-session -t'
+alias tk='tmux kill-session -t'
+alias tl='tmux ls'
 
 #ipython
 alias ipyterm='ipython --profile=term'
