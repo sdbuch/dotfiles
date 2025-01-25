@@ -78,7 +78,7 @@ zstyle :omz:plugins:iterm2 shell-integration yes
 
 # config for keychain
 zstyle :omz:plugins:keychain agents gpg,ssh
-zstyle :omz:plugins:keychain identities id_ed25519 hwagyesa-github
+zstyle :omz:plugins:keychain identities id_ed25519 hwagyesa-github google_compute_engine
 
 # Config for zsh-vi-mode
 export ZVM_VI_EDITOR=nvim
@@ -93,11 +93,17 @@ export LANG=en_US.UTF-8
 #ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#6A5E59,bg=#312C2B"
 #ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#6A5E59"
 
+# Tab completion for ssh hosts in .ssh/config file
+zstyle ':completion:*:hosts' hosts $( cat ~/.ssh/config 2>/dev/null | grep '^Host ' | cut -d ' ' -f 2 )
+
 ## second: STANDARD CONFIG
 # User specific aliases
 
 if [ -f ~/.aliases ]; then
   . ~/.aliases
+fi
+if [ -f ~/.aliases_local ]; then
+  . ~/.aliases_local
 fi
 
 # User functions
