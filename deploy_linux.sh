@@ -40,7 +40,7 @@ mln $cdir/.gitconfig_linux ~/.gitconfig
 mln $cdir/.gitignore_global ~/.gitignore_global
 git config --global core.excludesfile ~/.gitignore_global
 mln $cdir/.vimrc ~/.vimrc
-mln $cdir/.aliases ~/.aliases
+mln $cdir/.aliases ~/.bash_aliases
 mln $cdir/.dircolors ~/.dircolors
 mln $cdir/.tmux.conf ~/.tmux.conf
 mln $cdir/.inputrc ~/.inputrc
