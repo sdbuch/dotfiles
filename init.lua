@@ -260,6 +260,9 @@ local lazy_plugins = {
 	-- Color scheme.
 	{
 		"sainnhe/sonokai",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		priority = 1000,
 		config = function()
 			vim.cmd.colorscheme("sonokai")
@@ -282,6 +285,9 @@ local lazy_plugins = {
 	-- Statusline.
 	{
 		"nvim-lualine/lualine.nvim",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		opts = {
 			options = {
 				icons_enabled = false,
@@ -310,13 +316,25 @@ local lazy_plugins = {
 	-- close environments in tex
 	{
 		"sdbuch/closeb",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		ft = { "tex" },
 	},
 	-- ctags support for tex
-	{ "ludovicchabant/vim-gutentags", ft = "tex" },
+	{
+		"ludovicchabant/vim-gutentags",
+		cond = function()
+			return not vim.g.vscode
+		end,
+		ft = "tex",
+	},
 	-- Notification helper!
 	{
 		"rcarriga/nvim-notify",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		opts = {
 			icons = {
 				DEBUG = "(!)",
@@ -330,6 +348,9 @@ local lazy_plugins = {
 	-- Syntax highlighting.
 	{
 		"nvim-treesitter/nvim-treesitter",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		build = ":TSUpdate",
 		config = function()
 			---@diagnostic disable-next-line: missing-fields
@@ -402,6 +423,9 @@ local lazy_plugins = {
 	-- folding
 	{
 		"kevinhwang91/nvim-ufo",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		dependencies = { "kevinhwang91/promise-async" },
 
 		config = function()
@@ -441,6 +465,9 @@ local lazy_plugins = {
 	-- Show indentation guides.
 	{
 		"lukas-reineke/indent-blankline.nvim",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		config = function()
 			vim.api.nvim_set_hl(0, "IblIndent", { fg = "#573757" })
 			vim.api.nvim_set_hl(0, "IblScope", { fg = "#555585" })
@@ -451,6 +478,9 @@ local lazy_plugins = {
 	-- requires ripgrep (brew install ripgrep)
 	{
 		"nvim-telescope/telescope.nvim",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		tag = "0.1.4",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
@@ -485,6 +515,9 @@ local lazy_plugins = {
 	-- Tagbar-style code overview.
 	{
 		"stevearc/aerial.nvim",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		config = function()
 			require("aerial").setup()
 			vim.keymap.set("n", "<F8>", "<cmd>AerialToggle!<CR>")
@@ -503,6 +536,9 @@ local lazy_plugins = {
 	-- Web-based Markdown preview.
 	{
 		"iamcco/markdown-preview.nvim",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
 		ft = { "markdown" },
 		build = function()
@@ -520,6 +556,9 @@ local lazy_plugins = {
 	-- File browser.
 	{
 		"nvim-neo-tree/neo-tree.nvim",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		branch = "v3.x",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
@@ -565,6 +604,9 @@ local lazy_plugins = {
 	-- debugger
 	{
 		"mfussenegger/nvim-dap",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		config = function()
 			vim.keymap.set("n", "<F5>", ":lua require('dap').continue()<CR>")
 			vim.keymap.set("n", "<F10>", function()
@@ -636,6 +678,9 @@ local lazy_plugins = {
 	-- python debugger extension
 	{
 		"mfussenegger/nvim-dap-python",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		config = function()
 			require("dap-python").setup("python", { console = "externalTerminal" })
 			require("dap-python").test_runner = "pytest"
@@ -652,6 +697,9 @@ local lazy_plugins = {
 	-- debugger virtual text
 	{
 		"theHamsta/nvim-dap-virtual-text",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		config = function()
 			require("nvim-dap-virtual-text").setup({
 				commented = true,
@@ -662,6 +710,9 @@ local lazy_plugins = {
 	-- python repl integration
 	{
 		"jpalardy/vim-slime",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		ft = { "python" },
 		init = function()
 			vim.g.slime_target = "tmux"
@@ -673,6 +724,9 @@ local lazy_plugins = {
 	-- inline images (requires imagemagick)
 	{
 		"3rd/image.nvim",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		opts = {
 			backend = "kitty",
 			integrations = {
@@ -701,6 +755,9 @@ local lazy_plugins = {
 	-- ipynb-like experience
 	{
 		"benlubas/molten-nvim",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
 		dependencies = { "3rd/image.nvim" },
 		build = ":UpdateRemotePlugins",
@@ -756,6 +813,9 @@ local lazy_plugins = {
 	-- quarto
 	{
 		"quarto-dev/quarto-nvim",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		dependencies = {
 			{
 				"jmbuhr/otter.nvim",
@@ -804,6 +864,9 @@ local lazy_plugins = {
 	-- automatic docstring printing
 	{
 		"kkoomen/vim-doge",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		build = ":call doge#install()",
 		config = function()
 			-- pnemonic: (p)rint (d)oc (s)tring
@@ -823,6 +886,9 @@ local lazy_plugins = {
 	-- Misc visuals from mini.nvim.
 	{
 		"echasnovski/mini.nvim",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		config = function()
 			require("mini.animate").setup({
 				cursor = { enable = false },
@@ -906,6 +972,9 @@ local lazy_plugins = {
 	-- TODO: probably needs to be debugged + hotkeys
 	{
 		"alexghergh/nvim-tmux-navigation",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		config = function()
 			local nvim_tmux_nav = require("nvim-tmux-navigation")
 			nvim_tmux_nav.setup({
@@ -922,6 +991,9 @@ local lazy_plugins = {
 	-- Package management.
 	{
 		"williamboman/mason.nvim",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		opts = {
 			ui = {
 				icons = {
@@ -935,6 +1007,9 @@ local lazy_plugins = {
 	-- Formatting.
 	{
 		"stevearc/conform.nvim",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		config = function()
 			-- Format keybinding.
 			vim.keymap.set("n", "<Leader>cf", function()
@@ -1005,57 +1080,21 @@ local lazy_plugins = {
 			}
 		end,
 	},
-	-- {
-	-- 	"mhartington/formatter.nvim",
-	-- 	config = function()
-	-- 		-- Format keybinding.
-	-- 		vim.keymap.set("n", "<Leader>cf", ":Format<CR>", { noremap = true })
-	--
-	-- 		-- Automatically install formatters via Mason.
-	-- 		ENSURE_INSTALLED("lua", "stylua")
-	-- 		ENSURE_INSTALLED("python", "isort")
-	-- 		ENSURE_INSTALLED("python", "ruff")
-	-- 		ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "prettierd")
-	-- 		ENSURE_INSTALLED("html,css,scss", "prettierd")
-	-- 		ENSURE_INSTALLED("c,cpp,cuda", "clang-format")
-	-- 		ENSURE_INSTALLED("tex", "latexindent")
-	-- 		ENSURE_INSTALLED("markdown", "prettierd")
-	--
-	-- 		-- Configure formatters.
-	-- 		local util = require("formatter.util")
-	-- 		require("formatter").setup({
-	-- 			logging = true,
-	-- 			log_level = vim.log.levels.WARN,
-	-- 			filetype = {
-	-- 				-- What's available:
-	-- 				-- https://github.com/mhartington/formatter.nvim/tree/master/lua/formatter/filetypes
-	-- 				lua = { require("formatter.filetypes.lua").stylua },
-	-- 				python = {
-	-- 					require("formatter.filetypes.python").ruff,
-	-- 					require("formatter.filetypes.python").isort,
-	-- 				},
-	-- 				typescript = { require("formatter.filetypes.typescript").prettierd },
-	-- 				javascript = { require("formatter.filetypes.javascript").prettierd },
-	-- 				-- html = { require("formatter.filetypes.html").prettierd },
-	-- 				css = { require("formatter.filetypes.css").prettierd },
-	-- 				scss = { require("formatter.filetypes.css").prettierd },
-	-- 				markdown = { require("formatter.filetypes.markdown").prettierd },
-	-- 				cpp = { require("formatter.filetypes.cpp").clangformat },
-	-- 				tex = { require("formatter.filetypes.latex").latexindent },
-	-- 				["*"] = { require("formatter.filetypes.any").remove_trailing_whitespace },
-	-- 			},
-	-- 		})
-	-- 	end,
-	-- },
 	-- Language servers.
 	{
 		"williamboman/mason-lspconfig.nvim",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		config = true,
 	},
 	-- Snippets.
 	-- TODO: Need to port some of these
 	{
 		"L3MON4D3/LuaSnip",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		-- follow latest release.
 		version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
 		-- install jsregexp (optional!).
@@ -1069,6 +1108,9 @@ local lazy_plugins = {
 	},
 	{
 		"smjonas/snippet-converter.nvim",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		-- SnippetConverter uses semantic versioning. Example: use version = "1.*" to avoid breaking changes on version 1.
 		-- Uncomment the next line to follow stable releases only.
 		-- tag = "*",
@@ -1098,6 +1140,9 @@ local lazy_plugins = {
 	-- Completion sources.
 	{
 		"zbirenbaum/copilot.lua",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		config = function()
 			require("copilot").setup({
 				suggestion = { enabled = false },
@@ -1111,9 +1156,18 @@ local lazy_plugins = {
 			vim.keymap.set("n", "<Leader>C", ":Copilot panel<CR>", {})
 		end,
 	},
-	{ "zbirenbaum/copilot-cmp", config = true },
+	{
+		"zbirenbaum/copilot-cmp",
+		cond = function()
+			return not vim.g.vscode
+		end,
+		config = true,
+	},
 	{
 		"hrsh7th/nvim-cmp",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		dependencies = {
 			{ "hrsh7th/cmp-nvim-lsp" },
 			{ "hrsh7th/cmp-buffer" },
@@ -1292,6 +1346,9 @@ local lazy_plugins = {
 	-- Configure LSPs
 	{
 		"neovim/nvim-lspconfig",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		dependencies = { { "folke/neodev.nvim", config = true } },
 		config = function()
 			-- Dim LSP errors.
@@ -1487,6 +1544,9 @@ local lazy_plugins = {
 	-- View errors
 	{
 		"folke/trouble.nvim",
+		cond = function()
+			return not vim.g.vscode
+		end,
 		cmd = "Trouble",
 		keys = {
 			{
@@ -1582,9 +1642,10 @@ local lazy_plugins = {
 	},
 }
 
-local lazy_opts = {
-	-- We don't want to install custom fonts, so we'll switch to Unicode icons.
+require("lazy").setup({
+	spec = lazy_plugins,
 	ui = {
+		-- We don't want to install custom fonts, so we'll switch to Unicode icons.
 		icons = {
 			cmd = "⌘",
 			config = "🛠",
@@ -1605,5 +1666,4 @@ local lazy_opts = {
 	rocks = {
 		hererocks = true, -- recommended if you do not have global installation of Lua 5.1.
 	},
-}
-require("lazy").setup(lazy_plugins, lazy_opts)
+})
