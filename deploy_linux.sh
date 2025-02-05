@@ -149,14 +149,3 @@ fi
 if [ ! -d ~/.tmux/plugins/tpm ]; then
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 fi
-
-# Install Miniconda if not already installed
-if [ ! -d ~/miniconda3 ]; then
-    MINICONDA_SCRIPT="Miniconda3-latest-Linux-x86_64.sh"
-    curl -O https://repo.anaconda.com/miniconda/$MINICONDA_SCRIPT
-    bash $MINICONDA_SCRIPT -b
-    ~/miniconda3/bin/conda init zsh
-    ~/miniconda3/bin/conda init bash
-    # Clean up the installer script
-    rm $MINICONDA_SCRIPT
-fi
