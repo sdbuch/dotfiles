@@ -526,6 +526,7 @@ local lazy_plugins = {
 	-- Git helpers.
 	{ "tpope/vim-fugitive" },
 	{ "lewis6991/gitsigns.nvim", config = true },
+	{ "sindrets/diffview.nvim" },
 	-- Comments. By default, bound to `gcc`.
 	{ "numToStr/Comment.nvim", config = true },
 	-- Motions.
@@ -713,9 +714,10 @@ local lazy_plugins = {
 		cond = function()
 			return not vim.g.vscode
 		end,
-		ft = { "python" },
+		ft = { "python", "quarto" },
 		init = function()
 			vim.g.slime_target = "tmux"
+			vim.g.slime_default_config = { socket_name = "default", target_pane = "0" }
 			-- vim.g.slime_python_ipython = 1
 			vim.g.slime_bracketed_paste = 1
 			vim.g.slime_preserve_curpos = 1

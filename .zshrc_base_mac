@@ -96,6 +96,21 @@ export LANG=en_US.UTF-8
 # Tab completion for ssh hosts in .ssh/config file
 zstyle ':completion:*:hosts' hosts $( cat ~/.ssh/config 2>/dev/null | grep '^Host ' | cut -d ' ' -f 2 )
 
+# Bash completion (used for hydra completion) (TODO: doesn't work)
+autoload -Uz bashcompinit && bashcompinit
+
+# completion for uv run
+eval "$(uv generate-shell-completion zsh)"
+
+_uv_run_mod() {
+    if [[ "$words[2]" == "run" && "$words[CURRENT]" != -* ]]; then
+        _arguments '*:filename:_files'
+    else
+        _uv "$@"
+    fi
+}
+compdef _uv_run_mod uv
+
 ## second: STANDARD CONFIG
 # User specific aliases
 
@@ -158,15 +173,15 @@ export GST_PLUGIN_PATH="/opt/homebrew/lib/gstreamer-1.0"
 export LIBGS="/opt/homebrew/Cellar/ghostscript/10.01.2/lib/libgs.dylib"
 
 
-# PATH management with anaconda, for brew
-export PATHO=$PATH
-brew () {
-  export PATH="$PATHO"
-  # echo "Anaconda removed from path"
-  command brew "$@"
-  export PATH="/Users/sdbuch/anaconda3/bin:$PATHO"
-  # echo "Anaconda restored to path"
-}
+# # PATH management with anaconda, for brew
+# export PATHO=$PATH
+# brew () {
+#   export PATH="$PATHO"
+#   # echo "Anaconda removed from path"
+#   command brew "$@"
+#   export PATH="/Users/sdbuch/anaconda3/bin:$PATHO"
+#   # echo "Anaconda restored to path"
+# }
 # additional PATH management with brew + tmux
 # This is suboptimal because it's hardcoded our conda directory. 
 # But there seems to be an issue with the conda setup script,
@@ -175,9 +190,9 @@ brew () {
 # We always want it to be at the start of the path, to take 
 # precedence over brew's python. So just hardcode it here for 
 # tmux sessions where we inherit PATH, then call this script again
-if [ -n "$TMUX" ]; then
-    export PATH="/Users/sdbuch/anaconda3/bin:$PATH"
-fi
+# if [ -n "$TMUX" ]; then
+#     export PATH="/Users/sdbuch/anaconda3/bin:$PATH"
+# fi
 
 # config for ruby
 # source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
