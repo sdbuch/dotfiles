@@ -1033,7 +1033,8 @@ local lazy_plugins = {
 			require("conform").setup({
 				formatters_by_ft = {
 					lua = { "stylua" },
-					python = { "ruff_format", "isort" },
+					-- python = { "ruff_format", "isort" },
+					python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
 					typescript = { "prettierd" },
 					javascript = { "prettierd" },
 					css = { "prettierd" },
