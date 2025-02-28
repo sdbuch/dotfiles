@@ -40,5 +40,6 @@ alias gitd='git difftool'
 # alias gita='git add'
 
 # uv
-alias uvim='uv run nvim'
+PACKAGES=alias uvim='uv run nvim'
 alias upyterm='uv run ipython --profile=term'
+alias uinit='uv init; uv add jax matplotlib treescope matplotlib-backend-sixel einops'
