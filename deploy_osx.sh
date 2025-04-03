@@ -9,8 +9,10 @@ mkdir ~/.config/nvim/lua/lualine
 mkdir ~/.config/nvim/lua/lualine/themes
 mkdir ~/.config/nvim/snippets
 mkdir ~/scripts
+mkdir ~/.ctags.d
 
 # config files
+ln -s $cdir/latex.ctags ~/.ctags.d/latex.ctags
 ln -s $cdir/.gitconfig ~/.gitconfig
 ln -s $cdir/.gitignore_global ~/.gitignore_global
 ln -s $cdir/.latexmkrc ~/.latexmkrc

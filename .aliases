@@ -40,6 +40,8 @@ alias gitd='git difftool'
 # alias gita='git add'
 
 # uv
-PACKAGES=alias uvim='uv run nvim'
+alias uvim='uv run nvim'
 alias upyterm='uv run ipython --profile=term'
-alias uinit='uv init; uv add jax matplotlib treescope matplotlib-backend-sixel einops'
+alias uinit='uv init; uv add jax matplotlib treescope matplotlib-backend-sixel einops pynvim jupyter_client debugpy pytest ipykernel'
+
+alias action="source .venv/bin/activate"

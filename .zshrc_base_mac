@@ -11,6 +11,7 @@ export PATH=${PATH}:/opt/homebrew/lib
 export PATH=${PATH}:~/projects/github/keychain
 export PATH=${PATH}:~/bin
 export PATH=${PATH}:~/scripts
+export PATH=${PATH}:~/.local/bin
 export GEM_HOME="$HOME/.gem"
 
 

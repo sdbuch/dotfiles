@@ -53,7 +53,8 @@
 \newcommand{\vscrr}{\bm{\mathscr{r}}}
 
 % Accenting
-%\newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
+\let\overbar\relax
+\newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
 \let\underbar\relax
 \newcommand{\underbar}[1]{\mkern 1.5mu\underline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
 \newcommand{\conj}[1]{\overbar{#1}}
@@ -157,18 +158,11 @@
 % misc operators
 \newcommand{\mem}{\mathrm{mem}}
 \newcommand{\softmax}{\operatorname{\mathrm{softmax}}}
-%\newcommand{\equid}{\overset{\mathrm{d}}{\equiv}}
 \newcommand{\equid}{\overset{d}{=}}
 \newcommand{\xor}{\oplus}
 \newcommand{\bigxor}{\bigoplus}
-%\let\max\relax
-%\newcommand{\max}{\operatorname{max}}
-%\let\min\relax
-%\newcommand{\min}{\operatorname{min}}
 \newcommand{\minimize}[1]{\underset{#1}{\operatorname{minimize}}}
 \newcommand{\maximize}[1]{\underset{#1}{\operatorname{maximize}}}
-%\newcommand{\argmin}[1]{\underset{#1}{\operatorname{arg\,min}}}
-%\newcommand{\argmax}[1]{\underset{#1}{\operatorname{arg\,max}}}
 \newcommand{\argmin}{\mathop{\mathrm{arg\,min}}}
 \newcommand{\argmax}{\mathop{\mathrm{arg\,max}}}
 \newcommand{\orth}{\operatorname{orth}}
@@ -212,9 +206,9 @@
 \let\vec\relax
 \newcommand{\vect}{\operatorname{vec}}
 \newcommand{\vec}{\operatorname{vec}}
-\newcommand{\Sym}{\operatorname{sym}} 
-\newcommand{\Symm}{\operatorname{sym}} 
-\newcommand{\Skew}{\operatorname{skew}} 
+\newcommand{\Sym}{\operatorname{sym}}
+\newcommand{\Symm}{\operatorname{sym}}
+\newcommand{\Skew}{\operatorname{skew}}
 \newcommand{\rank}{\operatorname{rank}}
 \newcommand{\krank}{\operatorname{krank}}
 \newcommand{\sign}{\operatorname{sign}}
