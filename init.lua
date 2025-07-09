@@ -9,7 +9,7 @@
 vim.g.mapleader = ","
 
 -- turn off mouse
-vim.o.mouse = ""
+-- vim.o.mouse = ""
 
 -- vim visual
 vim.wo.relativenumber = true
