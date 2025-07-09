@@ -40,6 +40,9 @@ vim.opt.expandtab = true
 -- Latex globals
 vim.g.tex_flavor = "latex"
 vim.g.gutentags_resolve_symlinks = 0
+-- Improve tag search behavior
+vim.opt.iskeyword:append('-')  -- Add hyphen to keyword characters
+vim.opt.tagcase = 'match'      -- Make tag search case-sensitive
 
 -- Matchup settings
 vim.g.matchup_surround_enabled = 1 -- surround support (ds% and cs%)

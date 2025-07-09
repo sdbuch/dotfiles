@@ -1,3 +1,1 @@
---langdef=latex
---langmap=latex:.tex,.latex
---regex-latex=/\\begin\{(theorem|lemma|proposition|definition|corollary|result|assumption)\}\{[^}]*\}\{([^}]*)\}/\2/t,theorem/i
+--regex-Tex=/\\begin\{(theorem|lemma|proposition|definition|corollary|result|assumption)\}\{[^}]*\}\{([^}]*)\}/\2/t,theorem/i

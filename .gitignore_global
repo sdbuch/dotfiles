@@ -42,7 +42,6 @@ __pycache__*
 *.nav
 *.snm
 *.toc
-*.lock
 *(busy)
 *.pkl
 *.pth
