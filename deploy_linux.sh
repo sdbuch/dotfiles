@@ -45,7 +45,8 @@ mln $cdir/.aliases ~/.bash_aliases
 mln $cdir/.dircolors ~/.dircolors
 mln $cdir/.tmux.conf ~/.tmux.conf
 mln $cdir/.inputrc ~/.inputrc
-mln $cdir/CLAUDE.md ~/.claude/CLAUDE.md
+mln $cdir/.claude/CLAUDE.md ~/.claude/CLAUDE.md
+mln $cdir/.claude/settings.json ~/.claude/settings.json
 
 # Initialize zshrc if it doesn't exist
 if [ ! -f ~/.zshrc ]; then

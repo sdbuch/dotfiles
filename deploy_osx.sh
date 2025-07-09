@@ -13,7 +13,8 @@ mkdir ~/.ctags.d
 mkdir ~/.claude
 
 # claude
-ln -s $cdir/CLAUDE.md ~/.claude/CLAUDE.md
+ln -s $cdir/.claude/CLAUDE.md ~/.claude/CLAUDE.md
+ln -s $cdir/.claude/settings.json ~/.claude/settings.json
 
 # config files
 ln -s $cdir/latex.ctags ~/.ctags.d/latex.ctags
