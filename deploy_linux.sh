@@ -34,6 +34,7 @@ mkdir -p ~/.vim/{colors,snippets}
 mkdir -p ~/scripts
 # Neovim directory structure (v0.9.5)
 mkdir -p ~/.config/nvim/lua/lualine/themes
+mkdir -p ~/.claude
 
 # Set up config file symlinks
 mln $cdir/.gitconfig_linux ~/.gitconfig
@@ -44,6 +45,7 @@ mln $cdir/.aliases ~/.bash_aliases
 mln $cdir/.dircolors ~/.dircolors
 mln $cdir/.tmux.conf ~/.tmux.conf
 mln $cdir/.inputrc ~/.inputrc
+mln $cdir/CLAUDE.md ~/.claude/CLAUDE.md
 
 # Initialize zshrc if it doesn't exist
 if [ ! -f ~/.zshrc ]; then

@@ -10,6 +10,10 @@ mkdir ~/.config/nvim/lua/lualine/themes
 mkdir ~/.config/nvim/snippets
 mkdir ~/scripts
 mkdir ~/.ctags.d
+mkdir ~/.claude
+
+# claude
+ln -s $cdir/CLAUDE.md ~/.claude/CLAUDE.md
 
 # config files
 ln -s $cdir/latex.ctags ~/.ctags.d/latex.ctags
@@ -98,8 +102,3 @@ chmod +x $cdir/install_nvim_osx.sh
 # tmux
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ln -s $cdir/scripts/dev-tmux ~/scripts/dev-tmux
-
-# TODO: install conda
-# currently just configure it
-~/miniconda3/bin/conda init zsh
-~/miniconda3/bin/conda init
