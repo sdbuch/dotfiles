@@ -11,7 +11,7 @@ if ! command -v nvim &> /dev/null; then
     cd "$TEMP_DIR"
 
     # Download nvim appimage
-    wget https://github.com/neovim/neovim/releases/download/v0.10.3/nvim.appimage
+    wget -O nvim.appimage https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.appimage
     chmod +x nvim.appimage
 
     # Extract the appimage
