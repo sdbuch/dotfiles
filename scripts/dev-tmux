@@ -2,5 +2,5 @@
 tmux new-session -d -x - -y -
 # tmux set-option remain-on-exit on
 tmux split-window -b -h -l 40%
-tmux split-window -v -l 20% gpustat -cp --watch
+tmux split-window -v -l 20% uv run gpustat -cp --watch
 tmux -2 attach-session -d

@@ -99,9 +99,13 @@ export EDITOR=nvim
 
 # for CUDA
 export CUDA_HOME=/usr/local/cuda
+# export CUDA_HOME=/usr
 
 # CUDNN library path
 export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+
+# CUDA path
+export PATH="${PATH}:/usr/local/cuda/bin"
 
 # function to fix ssh stuff in tmux after reconnecting
 fixssh() {
