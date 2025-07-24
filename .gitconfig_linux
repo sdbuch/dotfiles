@@ -2,7 +2,7 @@
 	name = sdbuch
 	email = 19997120+sdbuch@users.noreply.github.com
 [core]
-	excludesfile = $HOME/.gitignore_global
+	excludesfile = /home/sam/.gitignore_global
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
