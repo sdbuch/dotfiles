@@ -4,6 +4,8 @@
 --------------------------------------------------------
 ------            SETTINGS/COMMANDS              -------
 --------------------------------------------------------
+---
+-- vim.opt.shada = ""
 
 -- Leader config
 vim.g.mapleader = ","
@@ -41,8 +43,8 @@ vim.opt.expandtab = true
 vim.g.tex_flavor = "latex"
 vim.g.gutentags_resolve_symlinks = 0
 -- Improve tag search behavior
-vim.opt.iskeyword:append('-')  -- Add hyphen to keyword characters
-vim.opt.tagcase = 'match'      -- Make tag search case-sensitive
+vim.opt.iskeyword:append("-") -- Add hyphen to keyword characters
+vim.opt.tagcase = "match" -- Make tag search case-sensitive
 
 -- Matchup settings
 vim.g.matchup_surround_enabled = 1 -- surround support (ds% and cs%)
@@ -504,7 +506,7 @@ local lazy_plugins = {
 
 			-- Bindings.
 			local builtin = require("telescope.builtin")
-			vim.keymap.set("n", "<C-p>", function()
+			vim.keymap.set("n", "<Leader>ff", function()
 				builtin.find_files({ cwd = vim.b["Telescope#repository_root"] })
 			end)
 			vim.keymap.set("n", "<Leader>fg", function()
@@ -518,9 +520,6 @@ local lazy_plugins = {
 	-- Tagbar-style code overview.
 	{
 		"stevearc/aerial.nvim",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		config = function()
 			require("aerial").setup()
 			vim.keymap.set("n", "<F8>", "<cmd>AerialToggle!<CR>")
@@ -789,6 +788,12 @@ local lazy_plugins = {
 				":noautocmd MoltenEnterOutput<CR>",
 				{ desc = "open output window", silent = true }
 			)
+			vim.keymap.set(
+				"n",
+				"<leader>oh",
+				":MoltenHideOutput<CR>",
+				{ desc = "hide output window", silent = true }
+			)
 			vim.keymap.set("n", "<leader>re", ":MoltenReevaluateCell<CR>", { desc = "re-eval cell", silent = true })
 			vim.keymap.set(
 				"v",
@@ -823,12 +828,9 @@ local lazy_plugins = {
 		end,
 		dependencies = {
 			{
-				"jmbuhr/otter.nvim",
-				config = function()
-					require("otter").setup({
-						lsp = { diagnostic_update_events = { "BufWritePost", "InsertLeave", "TextChanged" } },
-					})
-				end,
+				"sdbuch/otter.nvim",
+				branch = "experimental-re",
+				opts = {},
 			},
 			{ "nvim-treesitter/nvim-treesitter" },
 		},
@@ -836,6 +838,7 @@ local lazy_plugins = {
 			local quarto = require("quarto")
 			quarto.setup({
 				lspFeatures = {
+					enabled = true,
 					languages = { "python" },
 					chunks = "all",
 					diagnostics = { -- Need to configure options here for otter (above)
@@ -853,17 +856,130 @@ local lazy_plugins = {
 				},
 			})
 
-			-- NOTE: A weird behavior of these is that they run all cells *matching the language of the current cell*
-			-- So they'll try to "run" markdown cells unless you run in a python cell always
+			-- ---------------------------------------------------------------
+			-- CODE RUNNER
+			-- ---------------------------------------------------------------
 			local runner = require("quarto.runner")
-			vim.keymap.set("n", "<leader>rc", runner.run_cell, { desc = "run cell", silent = true })
-			vim.keymap.set("n", "<leader>ra", runner.run_above, { desc = "run cell and above", silent = true })
+			vim.keymap.set({ "n", "i" }, "<C-CR>", runner.run_cell, { desc = "run cell", silent = true })
+			vim.keymap.set({ "n", "i" }, "<C-S-CR>", runner.run_above, { desc = "run cell and above", silent = true })
+			vim.keymap.set("n", "<leader>rb", runner.run_below, { desc = "run cell and below", silent = true })
 			vim.keymap.set("n", "<leader>rA", runner.run_all, { desc = "run all cells", silent = true })
 			vim.keymap.set("n", "<leader>rl", runner.run_line, { desc = "run line", silent = true })
 			vim.keymap.set("v", "<leader>rv", runner.run_range, { desc = "run visual range", silent = true })
 			vim.keymap.set("n", "<leader>RA", function()
 				runner.run_all(true)
 			end, { desc = "run all cells of all languages", silent = true })
+
+			-- Function to insert Python code block
+			local function insert_python_code_block()
+				local current_line = vim.api.nvim_win_get_cursor(0)[1]
+				local current_col = vim.api.nvim_win_get_cursor(0)[2]
+
+				-- Insert the code block lines
+				vim.api.nvim_buf_set_lines(0, current_line - 1, current_line - 1, false, {
+					"```{python}",
+					"",
+					"```",
+				})
+
+				-- Position cursor on the blank line (second line of the inserted block)
+				vim.api.nvim_win_set_cursor(0, { current_line + 1, 0 })
+			end
+
+			-- Create the keymap
+			vim.keymap.set({ "n", "i" }, "<C-S-o>", insert_python_code_block, { desc = "Insert Python code block" })
+
+			-- ---------------------------------------------------------------
+			-- CODE NAVIGATION
+			-- ---------------------------------------------------------------
+			local M = {}
+
+			local ok_otter, otterkeeper = pcall(require, "otter.keeper")
+			if not ok_otter then
+				vim.notify("[chunk_navigation] otter.nvim is required for code chunk navigation.", vim.log.levels.ERROR)
+				return M
+			end
+
+			local ok_config, quarto_config = pcall(require, "quarto.config")
+			local config = ok_config and quarto_config.config or { codeRunner = { never_run = {} } }
+
+			-- Flatten and sort the code-chunk list for the current buffer.
+			local function get_sorted_chunks(buf)
+				-- Ensure the cache is current.
+				otterkeeper.sync_raft(buf)
+				local raft = otterkeeper.rafts[buf]
+				if not raft or not raft.code_chunks then
+					vim.notify(
+						"[chunk_navigation] Code runner is not initialised for this buffer.",
+						vim.log.levels.WARN
+					)
+					return nil
+				end
+
+				local chunks = {}
+				for lang, lang_chunks in pairs(raft.code_chunks) do
+					if not vim.tbl_contains(config.codeRunner.never_run or {}, lang) then
+						for _, cell in ipairs(lang_chunks) do
+							table.insert(chunks, cell)
+						end
+					end
+				end
+
+				table.sort(chunks, function(a, b)
+					return a.range.from[1] < b.range.from[1]
+				end)
+
+				return chunks
+			end
+
+			-- Move cursor to the first line of the supplied cell.
+			local function jump_to_cell(cell)
+				if not cell then
+					return
+				end
+				vim.api.nvim_win_set_cursor(0, { cell.range.from[1] + 1, 0 })
+			end
+
+			-- Jump to the next code chunk.
+			function M.goto_next()
+				local buf = vim.api.nvim_get_current_buf()
+				local chunks = get_sorted_chunks(buf)
+				if not chunks then
+					return
+				end
+
+				local cur_line = vim.api.nvim_win_get_cursor(0)[1] - 1
+				for _, cell in ipairs(chunks) do
+					if cell.range.from[1] > cur_line then
+						jump_to_cell(cell)
+						return
+					end
+				end
+				vim.notify("[chunk_navigation] No next code chunk.", vim.log.levels.INFO)
+			end
+
+			-- Jump to the previous code chunk.
+			function M.goto_prev()
+				local buf = vim.api.nvim_get_current_buf()
+				local chunks = get_sorted_chunks(buf)
+				if not chunks then
+					return
+				end
+
+				local cur_line = vim.api.nvim_win_get_cursor(0)[1] - 1
+				for i = #chunks, 1, -1 do
+					local cell = chunks[i]
+					if cell.range.from[1] < cur_line then
+						jump_to_cell(cell)
+						return
+					end
+				end
+				vim.notify("[chunk_navigation] No previous code chunk.", vim.log.levels.INFO)
+			end
+
+			vim.keymap.set('n', '<C-S-j>', M.goto_next, { desc = 'Jump to next code chunk' })
+			vim.keymap.set('n', '<C-S-k>', M.goto_prev, { desc = 'Jump to previous code chunk' })
+
 		end,
 	},
 	-- automatic docstring printing
@@ -1053,6 +1169,27 @@ local lazy_plugins = {
 					-- Conform will run the first available formatter
 					-- javascript = { "prettierd", "prettier", stop_after_first = true },
 				},
+				formatters = {
+					-- Configure ruff_fix to not remove unused imports
+					ruff_fix = {
+						args = {
+							"check",
+							"--fix",
+							"--select",
+							"E,W,F",
+							"--ignore",
+							"F401",
+							"--stdin-filename",
+							"$FILENAME",
+							"--quiet",
+							"-",
+						},
+					},
+					-- Configure ruff_organize_imports to not remove unused imports
+					ruff_organize_imports = {
+						args = { "check", "--select", "I", "--fix", "--stdin-filename", "$FILENAME", "--quiet", "-" },
+					},
+				},
 			})
 
 			-- Customize the "injected" formatter
@@ -1089,10 +1226,6 @@ local lazy_plugins = {
 	-- Language servers.
 	{
 		"williamboman/mason-lspconfig.nvim",
-		cond = function()
-			return not vim.g.vscode
-		end,
-		config = true,
 	},
 	-- Snippets.
 	-- TODO: Need to port some of these
@@ -1144,31 +1277,6 @@ local lazy_plugins = {
 		end,
 	},
 	-- Completion sources.
-	{
-		"zbirenbaum/copilot.lua",
-		cond = function()
-			return not vim.g.vscode
-		end,
-		config = function()
-			require("copilot").setup({
-				suggestion = { enabled = false },
-				panel = {
-					enabled = false,
-				},
-				filetypes = {
-					markdown = true, -- overrides default
-				},
-			})
-			vim.keymap.set("n", "<Leader>C", ":Copilot panel<CR>", {})
-		end,
-	},
-	{
-		"zbirenbaum/copilot-cmp",
-		cond = function()
-			return not vim.g.vscode
-		end,
-		config = true,
-	},
 	{
 		"hrsh7th/nvim-cmp",
 		cond = function()
@@ -1243,7 +1351,7 @@ local lazy_plugins = {
 					-- end, { "i", "s" }),
 					["<S-Tab>"] = function(fallback)
 						if cmp.visible() then
-							cmp.select_prev_item()
+							cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
 						else
 							fallback()
 						end
@@ -1286,53 +1394,6 @@ local lazy_plugins = {
 					{ name = "buffer" },
 				}),
 			})
-
-			-- LaTeX: disable copilot
-			function table.shallow_copy(t)
-				local t2 = {}
-				for k, v in pairs(t) do
-					t2[k] = v
-				end
-				return t2
-			end
-			local sources = table.shallow_copy(cmp.get_config().sources)
-			for i = #sources, 1, -1 do
-				if sources[i].name == "copilot" then
-					table.remove(sources, i)
-				end
-			end
-			cmp.setup.filetype("tex", { sources = sources })
-
-			-- command to toggle copilot.
-			_G.toggle_buffer_source = function()
-				local sources = cmp.get_config().sources
-				local buffer_enabled = false
-
-				-- Check if buffer source is enabled
-				for _, source in ipairs(sources) do
-					if source.name == "copilot" then
-						buffer_enabled = true
-						break
-					end
-				end
-
-				if buffer_enabled then
-					-- Disable buffer source
-					cmp.setup({
-						sources = vim.tbl_filter(function(source)
-							return source.name ~= "copilot"
-						end, sources),
-					})
-					print("Copilot disabled.")
-				else
-					-- Enable buffer source
-					table.insert(sources, { name = "copilot" })
-					cmp.setup({ sources = sources })
-					print("Copilot enabled.")
-				end
-			end
-			-- Map the copilot toggle function to <leader>ct
-			vim.keymap.set("n", "<leader>ct", ":lua toggle_buffer_source()<CR>", { noremap = true, silent = true })
 
 			-- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
 			cmp.setup.cmdline({ "/", "?" }, {
@@ -1530,7 +1591,7 @@ local lazy_plugins = {
 					vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
 					vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
 					vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-					-- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+					vim.keymap.set("n", "<leader><C-k>", vim.lsp.buf.signature_help, opts)
 					vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, opts)
 					vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, opts)
 					vim.keymap.set("n", "<space>wl", function()

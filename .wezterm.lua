@@ -15,6 +15,39 @@ config.window_padding = {
   bottom = '0px',
 }
 
+
+-- key remappings
+config.keys = {
+  -- Send Ctrl+Enter as a distinct key sequence
+  {
+    key = 'Enter',
+    mods = 'CTRL',
+    action = wezterm.action.SendString('\x1b[13;5u'),
+   -- Ctrl+Shift+Enter
+  },
+  {
+    key = 'Enter',
+    mods = 'CTRL|SHIFT',
+    action = wezterm.action.SendString('\x1b[13;6u'),
+  },
+  {
+    key = 'k',
+    mods = 'CTRL|SHIFT',
+    action = wezterm.action.SendString('\x1b[75;6u'), -- K is ASCII 75
+  },
+  {
+    key = 'j',
+    mods = 'CTRL|SHIFT',
+    action = wezterm.action.SendString('\x1b[74;6u'), -- J is ASCII 74
+  },
+  {
+    key = 'o',
+    mods = 'CTRL|SHIFT',
+    action = wezterm.action.SendString('\x1b[79;6u'), -- J is ASCII 74
+  },
+}
+
+
 -- fonts
 config.font_size = 20
 config.warn_about_missing_glyphs = true
