@@ -534,6 +534,12 @@ local lazy_plugins = {
 	-- Motions.
 	{ "kylechui/nvim-surround", config = true },
 	{ "andymass/vim-matchup" },
+	-- Matching Parentheses
+	{
+		"windwp/nvim-autopairs",
+		event = "InsertEnter",
+		config = true,
+	},
 	-- Persist the cursor position when we close a file.
 	{ "farmergreg/vim-lastplace" },
 	-- Web-based Markdown preview.
@@ -768,7 +774,7 @@ local lazy_plugins = {
 		init = function()
 			-- these are examples, not defaults. Please see the readme
 			vim.g.molten_image_provider = "image.nvim"
-			vim.g.molten_output_win_max_height = 20
+			vim.g.molten_output_win_max_height = 40
 			vim.g.molten_auto_open_output = false
 			vim.g.molten_wrap_output = true
 			vim.g.molten_virt_text_output = true
@@ -788,12 +794,6 @@ local lazy_plugins = {
 				":noautocmd MoltenEnterOutput<CR>",
 				{ desc = "open output window", silent = true }
 			)
-			vim.keymap.set(
-				"n",
-				"<leader>oh",
-				":MoltenHideOutput<CR>",
-				{ desc = "hide output window", silent = true }
-			)
 			vim.keymap.set("n", "<leader>re", ":MoltenReevaluateCell<CR>", { desc = "re-eval cell", silent = true })
 			vim.keymap.set(
 				"v",
@@ -802,7 +802,7 @@ local lazy_plugins = {
 				{ desc = "execute visual selection", silent = true }
 			)
 			vim.keymap.set("n", "<leader>oc", ":MoltenHideOutput<CR>", { desc = "close output window", silent = true })
-			vim.keymap.set("n", "<leader>md", ":MoltenDelete<CR>", { desc = "delete Molten cell", silent = true })
+			vim.keymap.set("n", "<C-BS>", ":MoltenDelete<CR>", { desc = "delete Molten cell", silent = true })
 			vim.keymap.set(
 				"n",
 				"<leader>mk",
@@ -810,7 +810,6 @@ local lazy_plugins = {
 				{ desc = "interrupt running Molten cell", silent = true }
 			)
 			vim.keymap.set("n", "<leader>mi", ":MoltenInit<CR>", { desc = "Initialize Molten kernel", silent = true })
-
 			-- if you work with html outputs:
 			vim.keymap.set(
 				"n",
@@ -860,8 +859,8 @@ local lazy_plugins = {
 			-- CODE RUNNER
 			-- ---------------------------------------------------------------
 			local runner = require("quarto.runner")
-			vim.keymap.set({ "n", "i" }, "<C-CR>", runner.run_cell, { desc = "run cell", silent = true })
-			vim.keymap.set({ "n", "i" }, "<C-S-CR>", runner.run_above, { desc = "run cell and above", silent = true })
+			vim.keymap.set({ "n", "i" }, "<C-S-CR>", runner.run_cell, { desc = "run cell", silent = true })
+			vim.keymap.set({ "n", "i" }, "<C-CR>", runner.run_above, { desc = "run cell and above", silent = true })
 			vim.keymap.set("n", "<leader>rb", runner.run_below, { desc = "run cell and below", silent = true })
 			vim.keymap.set("n", "<leader>rA", runner.run_all, { desc = "run all cells", silent = true })
 			vim.keymap.set("n", "<leader>rl", runner.run_line, { desc = "run line", silent = true })
@@ -977,9 +976,8 @@ local lazy_plugins = {
 				vim.notify("[chunk_navigation] No previous code chunk.", vim.log.levels.INFO)
 			end
 
-			vim.keymap.set('n', '<C-S-j>', M.goto_next, { desc = 'Jump to next code chunk' })
-			vim.keymap.set('n', '<C-S-k>', M.goto_prev, { desc = 'Jump to previous code chunk' })
-
+			vim.keymap.set("n", "<C-S-j>", M.goto_next, { desc = "Jump to next code chunk" })
+			vim.keymap.set("n", "<C-S-k>", M.goto_prev, { desc = "Jump to previous code chunk" })
 		end,
 	},
 	-- automatic docstring printing
@@ -1153,7 +1151,7 @@ local lazy_plugins = {
 				formatters_by_ft = {
 					lua = { "stylua" },
 					-- python = { "ruff_format", "isort" },
-					python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
+					python = { "ruff_format", "ruff_fix", "ruff_organize_imports" },
 					typescript = { "prettierd" },
 					javascript = { "prettierd" },
 					css = { "prettierd" },
@@ -1170,7 +1168,12 @@ local lazy_plugins = {
 					-- javascript = { "prettierd", "prettier", stop_after_first = true },
 				},
 				formatters = {
-					-- Configure ruff_fix to not remove unused imports
+					-- For formatting
+					ruff_format = {
+						args = { "format", "--line-length", "100", "--stdin-filename", "$FILENAME", "-" },
+					},
+
+					-- For linting
 					ruff_fix = {
 						args = {
 							"check",
@@ -1178,7 +1181,9 @@ local lazy_plugins = {
 							"--select",
 							"E,W,F",
 							"--ignore",
-							"F401",
+							"F401,F821,E402",
+							"--line-length",
+							"100",
 							"--stdin-filename",
 							"$FILENAME",
 							"--quiet",

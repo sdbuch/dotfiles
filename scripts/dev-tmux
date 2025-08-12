@@ -1,6 +1,15 @@
 #!/bin/sh
-tmux new-session -d -x - -y -
+BASE_NAME="${1:-dev}"
+SESSION_NAME="${BASE_NAME}-0"
+COUNTER=1
+
+while tmux has-session -t "$SESSION_NAME" 2>/dev/null; do
+    SESSION_NAME="${BASE_NAME}-${COUNTER}"
+    COUNTER=$((COUNTER + 1))
+done
+
+tmux new-session -d -s "$SESSION_NAME" -x - -y -
 # tmux set-option remain-on-exit on
-tmux split-window -b -h -l 40%
-tmux split-window -v -l 20% uvx gpustat -cp --watch
-tmux -2 attach-session -d
+tmux split-window -t "$SESSION_NAME" -b -h -l 40%
+tmux split-window -t "$SESSION_NAME" -v -l 20% uvx gpustat -cp --watch
+tmux -2 attach-session -t "$SESSION_NAME" -d
