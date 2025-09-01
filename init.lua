@@ -135,6 +135,21 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.o.textwidth = 80
 	end,
 })
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "quarto",
+	callback = function()
+		vim.opt.formatoptions:append({ "t" })
+		vim.o.textwidth = 80
+		vim.opt_local.iskeyword = "@,48-57,_,192-255,-"
+		
+		-- Use vim.defer_fn to set these after other plugins
+		vim.defer_fn(function()
+			vim.opt_local.tabstop = 4
+			vim.opt_local.shiftwidth = 4
+			vim.opt_local.expandtab = true
+		end, 100)
+	end,
+})
 -- vim.api.nvim_create_autocmd('FileType', {
 -- 	pattern = 'python',
 -- 	callback = function ()
@@ -158,13 +173,6 @@ vim.api.nvim_create_user_command("Listings", ":r ~/.vim/listings_base.txt", {})
 vim.api.nvim_create_user_command("Overleaf", ":Git add . | Git commit -m asdf | Git push", {})
 
 -- New file templates
--- python
-vim.api.nvim_create_autocmd("BufNewFile", {
-	pattern = "*.py",
-	callback = function()
-		vim.cmd("0r ~/.vim/python_skeleton.py")
-	end,
-})
 -- quarto
 vim.api.nvim_create_autocmd("BufNewFile", {
 	pattern = "*.qmd",
@@ -265,9 +273,6 @@ local lazy_plugins = {
 	-- Color scheme.
 	{
 		"sainnhe/sonokai",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		priority = 1000,
 		config = function()
 			vim.cmd.colorscheme("sonokai")
@@ -290,9 +295,6 @@ local lazy_plugins = {
 	-- Statusline.
 	{
 		"nvim-lualine/lualine.nvim",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		opts = {
 			options = {
 				icons_enabled = false,
@@ -321,25 +323,16 @@ local lazy_plugins = {
 	-- close environments in tex
 	{
 		"sdbuch/closeb",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		ft = { "tex" },
 	},
 	-- ctags support for tex
 	{
 		"ludovicchabant/vim-gutentags",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		ft = "tex",
 	},
 	-- Notification helper!
 	{
 		"rcarriga/nvim-notify",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		opts = {
 			icons = {
 				DEBUG = "(!)",
@@ -353,9 +346,6 @@ local lazy_plugins = {
 	-- Syntax highlighting.
 	{
 		"nvim-treesitter/nvim-treesitter",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		build = ":TSUpdate",
 		config = function()
 			---@diagnostic disable-next-line: missing-fields
@@ -428,9 +418,6 @@ local lazy_plugins = {
 	-- folding
 	{
 		"kevinhwang91/nvim-ufo",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		dependencies = { "kevinhwang91/promise-async" },
 
 		config = function()
@@ -470,9 +457,6 @@ local lazy_plugins = {
 	-- Show indentation guides.
 	{
 		"lukas-reineke/indent-blankline.nvim",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		config = function()
 			vim.api.nvim_set_hl(0, "IblIndent", { fg = "#573757" })
 			vim.api.nvim_set_hl(0, "IblScope", { fg = "#555585" })
@@ -483,9 +467,6 @@ local lazy_plugins = {
 	-- requires ripgrep (brew install ripgrep)
 	{
 		"nvim-telescope/telescope.nvim",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		tag = "0.1.4",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
@@ -545,9 +526,6 @@ local lazy_plugins = {
 	-- Web-based Markdown preview.
 	{
 		"iamcco/markdown-preview.nvim",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
 		ft = { "markdown" },
 		build = function()
@@ -562,12 +540,22 @@ local lazy_plugins = {
 			})
 		end,
 	},
+	-- Image paste for markdown
+	{
+		"img-paste-devs/img-paste.vim",
+		ft = { "markdown" },
+		config = function()
+			vim.api.nvim_create_autocmd("FileType", {
+				pattern = "markdown",
+				callback = function()
+					vim.keymap.set("n", "<Leader>mdpi", ":call mdip#MarkdownClipboardImage()<CR>")
+				end,
+			})
+		end,
+	},
 	-- File browser.
 	{
 		"nvim-neo-tree/neo-tree.nvim",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		branch = "v3.x",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
@@ -613,9 +601,6 @@ local lazy_plugins = {
 	-- debugger
 	{
 		"mfussenegger/nvim-dap",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		config = function()
 			vim.keymap.set("n", "<F5>", ":lua require('dap').continue()<CR>")
 			vim.keymap.set("n", "<F10>", function()
@@ -687,9 +672,6 @@ local lazy_plugins = {
 	-- python debugger extension
 	{
 		"mfussenegger/nvim-dap-python",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		config = function()
 			require("dap-python").setup("python", { console = "externalTerminal" })
 			require("dap-python").test_runner = "pytest"
@@ -706,9 +688,6 @@ local lazy_plugins = {
 	-- debugger virtual text
 	{
 		"theHamsta/nvim-dap-virtual-text",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		config = function()
 			require("nvim-dap-virtual-text").setup({
 				commented = true,
@@ -716,32 +695,14 @@ local lazy_plugins = {
 			})
 		end,
 	},
-	-- python repl integration
-	{
-		"jpalardy/vim-slime",
-		cond = function()
-			return not vim.g.vscode
-		end,
-		ft = { "python", "quarto" },
-		init = function()
-			vim.g.slime_target = "tmux"
-			vim.g.slime_default_config = { socket_name = "default", target_pane = "0" }
-			-- vim.g.slime_python_ipython = 1
-			vim.g.slime_bracketed_paste = 1
-			vim.g.slime_preserve_curpos = 1
-		end,
-	},
 	-- inline images (requires imagemagick)
 	{
 		"3rd/image.nvim",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		opts = {
 			backend = "kitty",
 			integrations = {
 				markdown = {
-					filetypes = { "markdown", "vimwiki", "quarto" },
+					filetypes = { "vimwiki", "quarto", "markdown" },
 				},
 			},
 			max_width = 100, -- tweak to preference
@@ -750,6 +711,7 @@ local lazy_plugins = {
 			max_width_window_percentage = math.huge,
 			window_overlap_clear_enabled = true,
 			window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
+			hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.webp", "*.svg" }, -- exclude .gif files
 		},
 		-- This is on a preview branch...
 		-- config = function()
@@ -765,9 +727,6 @@ local lazy_plugins = {
 	-- ipynb-like experience
 	{
 		"benlubas/molten-nvim",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
 		dependencies = { "3rd/image.nvim" },
 		build = ":UpdateRemotePlugins",
@@ -810,6 +769,157 @@ local lazy_plugins = {
 				{ desc = "interrupt running Molten cell", silent = true }
 			)
 			vim.keymap.set("n", "<leader>mi", ":MoltenInit<CR>", { desc = "Initialize Molten kernel", silent = true })
+			vim.keymap.set("n", "<leader>mj", function()
+				local host = vim.fn.input("Enter host node: ")
+				if host and host ~= "" then
+					print("Getting token for host: " .. host .. "...")
+
+					-- Source ~/.aliases and get token using gtjtoken command
+					local cmd = "source ~/.aliases && gtjtoken -q " .. vim.fn.shellescape(host)
+					local token_result = vim.fn.system(cmd)
+					local token = vim.trim(token_result)
+
+					if vim.v.shell_error ~= 0 or token == "" then
+						print("Failed to get token for host: " .. host)
+						print("Command output: " .. token_result)
+						return
+					end
+
+					local url = "http://127.0.0.1:8888/lab?token=" .. token
+					print("Connecting to Jupyter kernel at " .. host .. "...")
+					local success, error = pcall(vim.cmd, "MoltenInit " .. url)
+					if success then
+						print("Successfully connected to Jupyter kernel on " .. host .. "!")
+					else
+						print("Failed to connect to Jupyter kernel: " .. tostring(error))
+					end
+				else
+					print("Connection cancelled - no host provided")
+				end
+			end, { desc = "Connect to remote Jupyter kernel via host", silent = false })
+
+			-- Function to paste Molten output at cursor
+			local function paste_molten_output()
+				-- Generate temp file path
+				local temp_file = vim.fn.tempname() .. ".json"
+
+				-- Save Molten outputs to temp file (silently)
+				local save_success, save_error = pcall(function()
+					-- Temporarily override vim.notify to suppress Molten messages
+					local original_notify = vim.notify
+					vim.notify = function(msg, level, opts)
+						-- Only suppress [Molten] messages
+						if type(msg) == "string" and msg:match("^%[Molten%]") then
+							return
+						end
+						-- Pass through other notifications
+						return original_notify(msg, level, opts)
+					end
+
+					-- Execute the command
+					vim.cmd("MoltenSave " .. temp_file)
+
+					-- Wait a brief moment for any scheduled notifications to complete
+					vim.wait(50)
+
+					-- Restore original notify function
+					vim.notify = original_notify
+				end)
+				if not save_success then
+					print("Failed to save Molten outputs: " .. tostring(save_error))
+					return
+				end
+
+				-- Read and parse JSON file
+				local file = io.open(temp_file, "r")
+				if not file then
+					print("Failed to read temp file: " .. temp_file)
+					return
+				end
+
+				local json_content = file:read("*all")
+				file:close()
+
+				-- Clean up temp file
+				os.remove(temp_file)
+
+				local ok, data = pcall(vim.fn.json_decode, json_content)
+				if not ok or not data or not data.cells then
+					print("Failed to parse JSON or no cells found")
+					return
+				end
+
+				-- Get current cursor position (1-indexed)
+				local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
+
+				-- Find closest cell to cursor position
+				local closest_cell = nil
+				local min_distance = math.huge
+
+				for _, cell in ipairs(data.cells) do
+					if cell.span and cell.span.begin and cell.span.begin.lineno then
+						local cell_line = cell.span.begin.lineno + 1 -- JSON is 0-indexed, convert to 1-indexed
+						local distance = math.abs(cursor_line - cell_line)
+						if distance < min_distance then
+							min_distance = distance
+							closest_cell = cell
+						end
+					end
+				end
+
+				if not closest_cell or not closest_cell.chunks then
+					print("No suitable cell found near cursor")
+					return
+				end
+
+				-- Function to strip ANSI escape sequences
+				local function strip_ansi(text)
+					-- Remove ANSI escape sequences (ESC[...m)
+					return text:gsub("\27%[[0-9;]*m", "")
+				end
+
+				-- Extract text/plain content from all chunks
+				local output_lines = {}
+				for _, chunk in ipairs(closest_cell.chunks) do
+					if chunk.data and chunk.data["text/plain"] then
+						-- Split content by lines and add to output
+						local content = chunk.data["text/plain"]
+						-- Strip ANSI escape sequences and split by \n but filter out empty lines
+						content = strip_ansi(content)
+						for line in content:gmatch("[^\n]*") do
+							if line ~= "" then
+								table.insert(output_lines, line)
+							end
+						end
+					end
+				end
+
+				if #output_lines == 0 then
+					print("No text output found in closest cell")
+					return
+				end
+
+				-- Format as code block with Output: header inside
+				local formatted_content = { "```", "Output:" }
+				for _, line in ipairs(output_lines) do
+					table.insert(formatted_content, line)
+				end
+				table.insert(formatted_content, "```")
+
+				-- Insert at cursor position
+				local current_line = vim.api.nvim_win_get_cursor(0)[1]
+				vim.api.nvim_buf_set_lines(0, current_line - 1, current_line - 1, false, formatted_content)
+
+				print("Pasted output from cell at line " .. (closest_cell.span.begin.lineno + 1))
+			end
+
+			-- Set up keymap for normal mode only
+			vim.keymap.set(
+				"n",
+				"<leader>op",
+				paste_molten_output,
+				{ desc = "Paste closest Molten output at cursor", silent = false }
+			)
 			-- if you work with html outputs:
 			vim.keymap.set(
 				"n",
@@ -822,13 +932,11 @@ local lazy_plugins = {
 	-- quarto
 	{
 		"quarto-dev/quarto-nvim",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		dependencies = {
 			{
 				"sdbuch/otter.nvim",
 				branch = "experimental-re",
+				-- "jmbuhr/otter.nvim",
 				opts = {},
 			},
 			{ "nvim-treesitter/nvim-treesitter" },
@@ -876,7 +984,7 @@ local lazy_plugins = {
 
 				-- Insert the code block lines
 				vim.api.nvim_buf_set_lines(0, current_line - 1, current_line - 1, false, {
-					"```{python}",
+					"```python",
 					"",
 					"```",
 				})
@@ -916,8 +1024,30 @@ local lazy_plugins = {
 				end
 
 				local chunks = {}
+				-- Only include actual code languages, not markup
+				local code_languages = {
+					"python",
+					"r",
+					"julia",
+					"bash",
+					"sh",
+					"javascript",
+					"typescript",
+					"lua",
+					"sql",
+					"scala",
+					"rust",
+					"go",
+					"cpp",
+					"c",
+				}
+
 				for lang, lang_chunks in pairs(raft.code_chunks) do
-					if not vim.tbl_contains(config.codeRunner.never_run or {}, lang) then
+					-- Only include if it's a code language and not in never_run list
+					if
+						vim.tbl_contains(code_languages, lang)
+						and not vim.tbl_contains(config.codeRunner.never_run or {}, lang)
+					then
 						for _, cell in ipairs(lang_chunks) do
 							table.insert(chunks, cell)
 						end
@@ -980,34 +1110,11 @@ local lazy_plugins = {
 			vim.keymap.set("n", "<C-S-k>", M.goto_prev, { desc = "Jump to previous code chunk" })
 		end,
 	},
-	-- automatic docstring printing
-	{
-		"kkoomen/vim-doge",
-		cond = function()
-			return not vim.g.vscode
-		end,
-		build = ":call doge#install()",
-		config = function()
-			-- pnemonic: (p)rint (d)oc (s)tring
-			vim.keymap.set("n", "<Leader>pds", "<Plug>(doge-generate)")
-
-			-- Interactive mode comment todo-jumping
-			vim.keymap.set("n", "<TAB>", "<Plug>(doge-comment-jump-forward)")
-			vim.keymap.set("n", "<S-TAB>", "<Plug>(doge-comment-jump-backward)")
-			vim.keymap.set("i", "<TAB>", "<Plug>(doge-comment-jump-forward)")
-			vim.keymap.set("i", "<S-TAB>", "<Plug>(doge-comment-jump-backward)")
-			vim.keymap.set("x", "<TAB>", "<Plug>(doge-comment-jump-forward)")
-			vim.keymap.set("x", "<S-TAB>", "<Plug>(doge-comment-jump-backward)")
-		end,
-	},
 	-- Automatically set indentation settings.
 	{ "NMAC427/guess-indent.nvim", config = true },
 	-- Misc visuals from mini.nvim.
 	{
 		"echasnovski/mini.nvim",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		config = function()
 			require("mini.animate").setup({
 				cursor = { enable = false },
@@ -1091,9 +1198,6 @@ local lazy_plugins = {
 	-- TODO: probably needs to be debugged + hotkeys
 	{
 		"alexghergh/nvim-tmux-navigation",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		config = function()
 			local nvim_tmux_nav = require("nvim-tmux-navigation")
 			nvim_tmux_nav.setup({
@@ -1110,9 +1214,6 @@ local lazy_plugins = {
 	-- Package management.
 	{
 		"williamboman/mason.nvim",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		opts = {
 			ui = {
 				icons = {
@@ -1126,9 +1227,6 @@ local lazy_plugins = {
 	-- Formatting.
 	{
 		"stevearc/conform.nvim",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		config = function()
 			-- Format keybinding.
 			vim.keymap.set("n", "<Leader>cf", function()
@@ -1156,6 +1254,7 @@ local lazy_plugins = {
 					javascript = { "prettierd" },
 					css = { "prettierd" },
 					scss = { "prettierd" },
+					json = { "prettierd" },
 					markdown = { "prettierd" },
 					cpp = { "clang-format" },
 					tex = { "tex-fmt" },
@@ -1170,7 +1269,7 @@ local lazy_plugins = {
 				formatters = {
 					-- For formatting
 					ruff_format = {
-						args = { "format", "--line-length", "100", "--stdin-filename", "$FILENAME", "-" },
+						args = { "format", "--stdin-filename", "$FILENAME", "-" },
 					},
 
 					-- For linting
@@ -1178,12 +1277,12 @@ local lazy_plugins = {
 						args = {
 							"check",
 							"--fix",
-							"--select",
-							"E,W,F",
-							"--ignore",
-							"F401,F821,E402",
-							"--line-length",
-							"100",
+							-- "--select",
+							-- "E,W,F",
+							-- "--ignore",
+							-- "F401,F821,E402",
+							-- "--line-length",
+							-- "100",
 							"--stdin-filename",
 							"$FILENAME",
 							"--quiet",
@@ -1236,9 +1335,6 @@ local lazy_plugins = {
 	-- TODO: Need to port some of these
 	{
 		"L3MON4D3/LuaSnip",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		-- follow latest release.
 		version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
 		-- install jsregexp (optional!).
@@ -1250,43 +1346,9 @@ local lazy_plugins = {
 			})
 		end,
 	},
-	{
-		"smjonas/snippet-converter.nvim",
-		cond = function()
-			return not vim.g.vscode
-		end,
-		-- SnippetConverter uses semantic versioning. Example: use version = "1.*" to avoid breaking changes on version 1.
-		-- Uncomment the next line to follow stable releases only.
-		-- tag = "*",
-		config = function()
-			local template = {
-				-- name = "t1", (optionally give your template a name to refer to it in the `ConvertSnippets` command)
-				sources = {
-					vsnip = {
-						vim.fn.stdpath("config") .. "/snippets",
-					},
-				},
-				output = {
-					-- Specify the output formats and paths
-					vscode_luasnip = {
-						vim.fn.stdpath("config") .. "/luasnip_snippets",
-					},
-				},
-			}
-
-			require("snippet_converter").setup({
-				templates = { template },
-				-- To change the default settings (see configuration section in the documentation)
-				-- settings = {},
-			})
-		end,
-	},
 	-- Completion sources.
 	{
 		"hrsh7th/nvim-cmp",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		dependencies = {
 			{ "hrsh7th/cmp-nvim-lsp" },
 			{ "hrsh7th/cmp-buffer" },
@@ -1418,9 +1480,6 @@ local lazy_plugins = {
 	-- Configure LSPs
 	{
 		"neovim/nvim-lspconfig",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		dependencies = { { "folke/neodev.nvim", config = true } },
 		config = function()
 			-- Dim LSP errors.
@@ -1616,9 +1675,6 @@ local lazy_plugins = {
 	-- View errors
 	{
 		"folke/trouble.nvim",
-		cond = function()
-			return not vim.g.vscode
-		end,
 		cmd = "Trouble",
 		keys = {
 			{

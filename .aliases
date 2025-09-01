@@ -17,31 +17,263 @@ alias ta='tmux attach-session -t'
 alias tk='tmux kill-session -t'
 alias tl='tmux ls'
 
-#ipython
-alias ipyterm='ipython --profile=term'
-
 # nvim vs. vim
 alias vim='nvim'
-
-# conda
-alias cee='conda env export > environment.yml'
-alias cec='conda env create -f environment.yml'
-
-# etc
-alias mex='/Applications/MATLAB.app/bin/mex'
-alias rpi='arp -a -n | grep b8:27:eb:'
-alias qtconsole='jupyter qtconsole'
-
-# git
-# Some of these commented, redundant with oh-my-zsh git plugin
-alias gitd='git difftool'
-# alias gitc='git commit -m'
-# alias gits='git status'
-# alias gita='git add'
 
 # uv
 alias uvim='uv run nvim'
 alias upyterm='uv run ipython --profile=term'
-alias uinit='uv init; uv add jax matplotlib treescope matplotlib-backend-sixel einops pynvim jupyter_client debugpy pytest ipykernel'
+alias uinit='uv init; uv add jax matplotlib treescope matplotlib-backend-sixel einops pynvim jupyter_client debugpy pytest ipykernel requests websocket-client'
 
 alias action="source .venv/bin/activate"
+
+#
+# gcloud / tpus
+#
+
+# Command shorthands
+alias gtd="gcloud compute tpus tpu-vm delete"
+alias gti="gcloud compute tpus tpu-vm describe"
+alias gts="gcloud compute tpus tpu-vm stop"
+alias gtl="gcloud compute tpus tpu-vm list"
+alias gtqd="gcloud compute tpus queued-resources delete"
+alias gtqi="gcloud compute tpus queued-resources describe"
+alias gtssh="gcloud compute tpus tpu-vm ssh --ssh-flag='-A -o ForwardAgent=yes'"
+alias gtscp="gcloud compute tpus tpu-vm scp"
+function gtcom() {
+    # Check if we have at least source and tpu_name
+    if [ $# -lt 2 ]; then
+        echo "Usage: gtcom <tpu_name> <command> [additional_flags]"
+        echo "Examples:"
+        echo "  gtcom tpu-v4-32 'echo hi'"
+        echo "  gtcom tpu-v4-32 'echo hi' --worker=all"
+        return 1
+    fi
+
+    # Get source and tpu_name
+    local tpu_name="$1"
+    local command="$2"
+    shift 2
+
+    # Build the command with any additional args
+    gtssh "$tpu_name" --command="$command" "$@"
+}
+
+# Create or queue standard configs
+alias gtc6x1="gcloud compute tpus tpu-vm create tpu-v6e-8 --spot --zone=us-east1-d --accelerator-type=v6e-8 --version=v2-alpha-tpuv6e"
+alias gtc6x8="gcloud compute tpus tpu-vm create tpu-v6e-64 --spot --zone=us-east1-d --accelerator-type=v6e-64 --version=v2-alpha-tpuv6e"
+# For these, need to manually append --spot if want preemptible
+alias gtc4x1="gcloud compute tpus tpu-vm create tpu-v4-8 --zone=us-central2-b --accelerator-type=v4-8 --version=tpu-ubuntu2204-base"
+alias gtc4x2="gcloud compute tpus tpu-vm create tpu-v4-16 --zone=us-central2-b --accelerator-type=v4-8 --version=tpu-ubuntu2204-base"
+alias gtc4x8="gcloud compute tpus tpu-vm create tpu-v4-64 --zone=us-central2-b --accelerator-type=v4-64 --version=tpu-ubuntu2204-base"
+alias gtqc4x1="gcloud compute tpus queued-resources create tpu-v4-8 --node-id=tpu-v4-8 --project=tpus-447923 --zone=us-central2-b --accelerator-type=v4-8 --runtime-version=tpu-ubuntu2204-base --metadata-from-file='startup-script=/Users/sdbuch/projects/github/nanocrate/deploy/startup.sh'"
+alias gtqc4x4="gcloud compute tpus queued-resources create tpu-v4-32 --node-id=tpu-v4-32 --project=tpus-447923 --zone=us-central2-b --accelerator-type=v4-32 --runtime-version=tpu-ubuntu2204-base --metadata-from-file='startup-script=/Users/sdbuch/projects/github/nanocrate/deploy/startup.sh'"
+
+# Set up a jupyter kernel on a remote tpu VM, exposing a server
+# (Could modify this for more general hosts. Using gcloud cli here.)
+gtjsetup() {
+    local host_name="$1"
+    local port="${2:-8888}"
+    local session_name="${3:-jupyter}"
+
+    # Validate arguments
+    if [ -z "$host_name" ]; then
+        echo "❌ Error: Host name is required!"
+        echo "Usage: tpu_setup <host_name> [port] [session_name]"
+        echo "Example: tpu_setup my-tpu-vm-0 8888 my_jupyter"
+        return 1
+    fi
+
+    echo "🚀 Setting up TPU Jupyter environment on $host_name..."
+    echo "   Port: $port"
+    echo "   Session: $session_name"
+    echo ""
+
+    # Create the setup script that will be executed remotely
+    local setup_script=$(cat << 'EOF'
+set -e
+
+# Source environment to get uv and other tools in PATH
+if [ -f "$HOME/.local/bin/env" ]; then
+    source "$HOME/.local/bin/env"
+elif [ -f "$HOME/.bashrc" ]; then
+    # Force source bashrc even in non-interactive mode
+    source "$HOME/.bashrc" || true
+fi
+
+# Verify uv is available
+if ! command -v uv &> /dev/null; then
+    echo "❌ Error: uv command not found in PATH"
+    echo "Current PATH: $PATH"
+    echo "Trying to find uv..."
+    find "$HOME" -name "uv" -type f 2>/dev/null | head -5
+    exit 1
+fi
+
+echo "📁 Creating scratch directory..."
+mkdir -p scratch
+cd scratch
+
+echo "🔧 Initializing uv project..."
+uv init
+
+echo "📦 Adding jupyter..."
+uv add jupyter
+
+# Check if tmux session already exists
+if tmux has-session -t "$1" 2>/dev/null; then
+    echo "⚠️  tmux session '$1' already exists!"
+    echo "   You can attach with: tmux attach -t $1"
+    echo "   Or kill it with: tmux kill-session -t $1"
+    exit 1
+fi
+
+echo "🖥️  Starting tmux session '$1' with Jupyter Lab on port $2..."
+tmux new-session -d -s "$1" -c "$(pwd)"
+
+# Send jupyter command to tmux session
+tmux send-keys -t "$1" "uv run jupyter lab --no-browser --port=$2 --ip=0.0.0.0 --allow-root" Enter
+
+# Wait for jupyter to start
+echo "⏳ Waiting for Jupyter to start..."
+sleep 3
+
+# Get the token from jupyter server list
+echo "🔑 Getting Jupyter token..."
+TOKEN_INFO=$(uv run jupyter server list 2>/dev/null || echo "")
+if [[ "$TOKEN_INFO" =~ token=([a-zA-Z0-9]+) ]]; then
+    TOKEN="${BASH_REMATCH[1]}"
+    echo "✅ Setup complete on $(hostname)!"
+    echo ""
+    echo "🔑 Jupyter Token: $TOKEN"
+else
+    echo "✅ Setup complete on $(hostname)!"
+    echo "⚠️  Could not extract token automatically"
+    echo "📊 Server info:"
+    echo "$TOKEN_INFO"
+fi
+EOF
+    )
+
+    # Execute the setup script on the remote host
+    echo "🔗 Connecting to $host_name and running setup..."
+    if echo "$setup_script" | gtcom "$host_name" "bash -s $session_name $port"; then
+        echo ""
+        echo "🎉 Remote setup completed successfully!"
+        echo ""
+        echo "📝 Next steps:"
+        local tunnel_spec="${port}:localhost:${port}"
+        echo "   1. Set up SSH tunnel:"
+        echo "      gtssh $host_name --ssh-flag='-L $tunnel_spec'"
+        echo "   2. Open http://localhost:$port in your browser"
+        echo ""
+        echo "💡 Tip: You can use gtjtunnel $host_name $port to create the tunnel"
+        echo "💡 Tip: You can use gtjtoken $host_name to see the access token"
+    else
+        echo "❌ Setup failed on remote host!"
+        return 1
+    fi
+}
+
+# Helper function to create SSH tunnel
+gtjtunnel() {
+    local host_name="$1"
+    local port="${2:-8888}"
+
+    if [ -z "$host_name" ]; then
+        echo "❌ Error: Host name is required!"
+        echo "Usage: tpu_tunnel <host_name> [port]"
+        echo "Example: tpu_tunnel my-tpu-vm-0 8888"
+        return 1
+    fi
+
+    echo "🔗 Creating SSH tunnel to $host_name:$port..."
+    echo "   Local access: http://localhost:$port"
+    echo "   Press Ctrl+C to close tunnel"
+    echo ""
+
+    local tunnel_spec="${port}:localhost:${port}"
+    gtssh "$host_name" --ssh-flag="-L $tunnel_spec"
+}
+
+# Get token
+gtjtoken() {
+    local quiet=false
+    local host_name=""
+
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --quiet|-q)
+                quiet=true
+                shift
+                ;;
+            *)
+                host_name="$1"
+                shift
+                ;;
+        esac
+    done
+
+    if [ -z "$host_name" ]; then
+        if [ "$quiet" = false ]; then
+            echo "❌ Error: Host name is required!"
+            echo "Usage: gtjtoken [--quiet|-q] <host_name>"
+            echo "Example: gtjtoken my-tpu-vm-0"
+            echo "Example: gtjtoken --quiet my-tpu-vm-0"
+        fi
+        return 1
+    fi
+
+    if [ "$quiet" = false ]; then
+        echo "🔑 Getting Jupyter token from $host_name..."
+    fi
+
+    # Get the raw output
+    local token_script='
+if [ -f "$HOME/.local/bin/env" ]; then
+    source "$HOME/.local/bin/env"
+elif [ -f "$HOME/.bashrc" ]; then
+    source "$HOME/.bashrc" || true
+fi
+cd scratch
+uv run jupyter server list
+'
+
+    # Pass --quiet to gtcom when in quiet mode
+    local output
+    if [ "$quiet" = true ]; then
+        output=$(echo "$token_script" | gtcom "$host_name" "bash -s" 2>/dev/null)
+    else
+        output=$(echo "$token_script" | gtcom "$host_name" "bash -s")
+    fi
+
+    # Extract token using sed
+    local token=$(echo "$output" | sed -n 's/.*token=\([a-f0-9]*\).*/\1/p')
+
+    if [ -n "$token" ]; then
+        if [ "$quiet" = false ]; then
+            echo "🔑 Token: $token"
+        else
+            echo "$token"
+        fi
+    else
+        # Try grep as fallback
+        local grep_result=$(echo "$output" | grep -o "token=[a-f0-9]*")
+        if [ -n "$grep_result" ]; then
+            local token_from_grep=$(echo "$grep_result" | cut -d'=' -f2)
+            if [ "$quiet" = false ]; then
+                echo "🔑 Token (from grep): $token_from_grep"
+            else
+                echo "$token_from_grep"
+            fi
+        else
+            if [ "$quiet" = false ]; then
+                echo "❌ Failed with grep too. Manual extraction needed."
+                echo "Look for 'token=' in the output above."
+            fi
+            # In quiet mode, output empty string on error
+            return 1
+        fi
+    fi
+}

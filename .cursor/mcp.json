@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "openreview": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/Users/sdbuch/projects/github/openreview-mcp",
+        "run",
+        "main.py"
+      ]
+    }
+  }
+}

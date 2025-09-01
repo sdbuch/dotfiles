@@ -52,7 +52,7 @@ config.keys = {
 }
 
 -- fonts
-config.font_size = 20
+config.font_size = 26   -- Optimized for 3840x2160
 config.warn_about_missing_glyphs = true
 config.freetype_load_target = "HorizontalLcd" -- https://wezfurlong.org/wezterm/config/lua/config/freetype_load_target.html
 config.freetype_load_target = "Light" -- https://github.com/wez/wezterm/issues/639

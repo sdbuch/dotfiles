@@ -11,10 +11,14 @@ mkdir ~/.config/nvim/snippets
 mkdir ~/scripts
 mkdir ~/.ctags.d
 mkdir ~/.claude
+mkdir ~/.cursor
 
 # claude
 ln -s $cdir/.claude/CLAUDE.md ~/.claude/CLAUDE.md
 ln -s $cdir/.claude/settings.json ~/.claude/settings.json
+
+# cursor
+ln -s $cdir/.cursor/mcp.json ~/.cursor/mcp.json
 
 # config files
 ln -s $cdir/latex.ctags ~/.ctags.d/latex.ctags
