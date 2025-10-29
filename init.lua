@@ -138,10 +138,10 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "quarto",
 	callback = function()
-		vim.opt.formatoptions:append({ "t" })
-		vim.o.textwidth = 80
+		-- vim.opt.formatoptions:append({ "t" })
+		vim.o.textwidth = 88
 		vim.opt_local.iskeyword = "@,48-57,_,192-255,-"
-		
+
 		-- Use vim.defer_fn to set these after other plugins
 		vim.defer_fn(function()
 			vim.opt_local.tabstop = 4
@@ -188,10 +188,10 @@ vim.cmd([[nnoremap <silent> <leader>gs :Neotree float git_status<CR>]])
 vim.cmd([[nnoremap <silent> <leader>sb :Neotree toggle show buffers right<CR>]])
 vim.cmd([[nnoremap <silent> <leader>of :Neotree float reveal_file=<cfile> reveal_force_cwd<CR>]])
 
--- Texlab LSP commands
-vim.cmd([[nnoremap <silent> <Leader>ll  :TexlabBuild<CR>]])
-vim.cmd([[nnoremap <silent> <Leader>lc  :TexlabClean<CR>]])
-vim.cmd([[nnoremap <silent> <Leader>lv  :TexlabForward<CR>]])
+-- Texlab LSP commands (Neovim 0.11+ uses Lsp prefix)
+vim.cmd([[nnoremap <silent> <Leader>ll  :LspTexlabBuild<CR>]])
+vim.cmd([[nnoremap <silent> <Leader>lc  :LspTexlabCleanArtifacts<CR>]])
+vim.cmd([[nnoremap <silent> <Leader>lv  :LspTexlabForward<CR>]])
 
 --------------------------------------------------------
 ------                  PLUGINS                  -------
@@ -1506,26 +1506,14 @@ local lazy_plugins = {
 			-- ENSURE_INSTALLED("quarto", "marksman")
 
 			-- TODO: Need to debug texlab diagnostics...
-			-- Texlab supports a clean command.
-			-- Patch in a function that implements this, and add it to config below
-			local util = require("lspconfig.util")
-			local function buf_clean(bufnr)
-				bufnr = util.validate_bufnr(bufnr)
-				local texlab_client = util.get_active_client_by_name(bufnr, "texlab")
-				local params = {
-					command = "texlab.cleanArtifacts",
-					arguments = { { uri = vim.uri_from_bufnr(bufnr) } },
-				}
-				if texlab_client then
-					texlab_client.request("workspace/executeCommand", params)
-					print("Clean Success")
-				else
-					print("method textDocument/clean is not supported by any servers active on the current buffer")
-				end
-			end
+			-- Texlab custom dependency graph function that saves to file
 			local function buf_dependency_graph(bufnr)
-				bufnr = util.validate_bufnr(bufnr)
-				local texlab_client = util.get_active_client_by_name(bufnr, "texlab")
+				bufnr = bufnr or vim.api.nvim_get_current_buf()
+				local texlab_client = nil
+				for _, client in pairs(vim.lsp.get_clients({ bufnr = bufnr, name = "texlab" })) do
+					texlab_client = client
+					break
+				end
 				local params = {
 					command = "texlab.showDependencyGraph",
 				}
@@ -1546,7 +1534,7 @@ local lazy_plugins = {
 
 			-- Set up lspconfig.
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
-			require("lspconfig").pyright.setup({
+			vim.lsp.config('pyright', {
 				capabilities = capabilities,
 				settings = {
 					python = {
@@ -1559,6 +1547,7 @@ local lazy_plugins = {
 					},
 				},
 			})
+			vim.lsp.enable('pyright')
 			-- -- Custom setup for ruff-lsp
 			-- local on_attach = function(client, bufnr)
 			-- 	-- Disable hover in favor of Pyright
@@ -1568,18 +1557,24 @@ local lazy_plugins = {
 			-- 	capabilities = capabilities,
 			-- 	on_attach = on_attach,
 			-- })
-			require("lspconfig").lua_ls.setup({ capabilities = capabilities })
-			require("lspconfig").ts_ls.setup({ capabilities = capabilities })
+			vim.lsp.config('lua_ls', { capabilities = capabilities })
+			vim.lsp.enable('lua_ls')
+			vim.lsp.config('ts_ls', { capabilities = capabilities })
+			vim.lsp.enable('ts_ls')
 			-- require("lspconfig").marksman.setup({
 			-- 	capabilities = capabilities,
 			-- 	filetypes = { "quarto" },
 			-- 	root_dir = require("lspconfig.util").root_pattern(".git", ".marksman.toml", "_quarto.yml"),
 			-- })
-			require("lspconfig").html.setup({ capabilities = capabilities })
-			require("lspconfig").cssls.setup({ capabilities = capabilities })
-			require("lspconfig").eslint.setup({ capabilities = capabilities })
-			require("lspconfig").rust_analyzer.setup({ capabilities = capabilities })
-			require("lspconfig").texlab.setup({
+			vim.lsp.config('html', { capabilities = capabilities })
+			vim.lsp.enable('html')
+			vim.lsp.config('cssls', { capabilities = capabilities })
+			vim.lsp.enable('cssls')
+			vim.lsp.config('eslint', { capabilities = capabilities })
+			vim.lsp.enable('eslint')
+			vim.lsp.config('rust_analyzer', { capabilities = capabilities })
+			vim.lsp.enable('rust_analyzer')
+			vim.lsp.config('texlab', {
 				-- cmd = { 'texlab', '-vvvv', '--log-file', '/Users/sdbuch/.local/state/nvim/texlab.log' },
 				capabilities = capabilities,
 				settings = {
@@ -1604,21 +1599,19 @@ local lazy_plugins = {
 					},
 				},
 				commands = {
-					TexlabClean = {
-						function()
-							buf_clean(0)
-						end,
-						description = "Clean files in project in current buffer",
-					},
+					-- Keep custom TexlabDependencyGraph that writes to file
+					-- (nvim-lspconfig's version only shows a notification)
 					TexlabDependencyGraph = {
 						function()
 							buf_dependency_graph(0)
 						end,
-						description = "Print dependency graph for current project",
+						description = "Write dependency graph to ./.dependency file",
 					},
 				},
 			})
-			require("lspconfig").clangd.setup({ capabilities = capabilities })
+			vim.lsp.enable('texlab')
+			vim.lsp.config('clangd', { capabilities = capabilities })
+			vim.lsp.enable('clangd')
 
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),

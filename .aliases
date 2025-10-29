@@ -23,7 +23,64 @@ alias vim='nvim'
 # uv
 alias uvim='uv run nvim'
 alias upyterm='uv run ipython --profile=term'
-alias uinit='uv init; uv add jax matplotlib treescope matplotlib-backend-sixel einops pynvim jupyter_client debugpy pytest ipykernel requests websocket-client'
+# uinit - Initialize a uv project with common dependencies and ruff configuration
+uinit() {
+    echo "🚀 Initializing uv project..."
+    uv init
+
+    echo "📦 Adding dependencies..."
+    uv add \
+        jax \
+        matplotlib \
+        treescope \
+        matplotlib-backend-sixel \
+        einops \
+        pynvim \
+        jupyter_client \
+        debugpy \
+        pytest \
+        ipykernel \
+        requests \
+        websocket-client
+
+    echo "🔧 Adding ruff configuration to pyproject.toml..."
+    cat >> pyproject.toml << 'EOF'
+
+[tool.ruff]
+# Basic configuration
+line-length = 100
+
+# Rule selection
+select = ["E", "W", "F"]  # Error, Warning, and Pyflakes rules
+
+# Rules to ignore
+ignore = [
+    "F401",  # Unused import
+    "F821",  # Undefined name
+    "E402",  # Module level import not at top of file
+    "F841",  # Local variable assigned but not used
+]
+
+[tool.ruff.lint]
+# Enable fix mode (equivalent to --fix flag)
+fixable = ["ALL"]
+unfixable = []
+
+# Additional lint configuration can go here
+# select and ignore can also be specified here instead of under [tool.ruff]
+EOF
+
+    echo "✨ Project initialized successfully!"
+    echo "📁 Current project structure:"
+    ls -la
+
+    echo ""
+    echo "🎯 Next steps:"
+    echo "  • Edit src/$(basename "$PWD")/main.py to start coding"
+    echo "  • Run 'uv run python -m src.$(basename "$PWD").main' to execute"
+    echo "  • Run 'uv run ruff check --fix .' to lint and fix code"
+    echo "  • Run 'uv run pytest' to run tests"
+}
 
 alias action="source .venv/bin/activate"
 
@@ -59,15 +116,23 @@ function gtcom() {
     gtssh "$tpu_name" --command="$command" "$@"
 }
 
+# Startup script location
+STARTUP_SCRIPT="/Users/sdbuch/projects/github/baremetal-gpt/deploy/startup.sh"
+
 # Create or queue standard configs
-alias gtc6x1="gcloud compute tpus tpu-vm create tpu-v6e-8 --spot --zone=us-east1-d --accelerator-type=v6e-8 --version=v2-alpha-tpuv6e"
-alias gtc6x8="gcloud compute tpus tpu-vm create tpu-v6e-64 --spot --zone=us-east1-d --accelerator-type=v6e-64 --version=v2-alpha-tpuv6e"
+# NOTE: v6e (trillium) specifies chip count; v4 specifies core count (2x chip count)
+alias gtc6x1="gcloud compute tpus tpu-vm create tpu-v6e-8 --spot --zone=us-east1-d --accelerator-type=v6e-8 --version=v2-alpha-tpuv6e --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+alias gtc6x8="gcloud compute tpus tpu-vm create tpu-v6e-64 --spot --zone=us-east1-d --accelerator-type=v6e-64 --version=v2-alpha-tpuv6e --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+
 # For these, need to manually append --spot if want preemptible
-alias gtc4x1="gcloud compute tpus tpu-vm create tpu-v4-8 --zone=us-central2-b --accelerator-type=v4-8 --version=tpu-ubuntu2204-base"
-alias gtc4x2="gcloud compute tpus tpu-vm create tpu-v4-16 --zone=us-central2-b --accelerator-type=v4-8 --version=tpu-ubuntu2204-base"
-alias gtc4x8="gcloud compute tpus tpu-vm create tpu-v4-64 --zone=us-central2-b --accelerator-type=v4-64 --version=tpu-ubuntu2204-base"
-alias gtqc4x1="gcloud compute tpus queued-resources create tpu-v4-8 --node-id=tpu-v4-8 --project=tpus-447923 --zone=us-central2-b --accelerator-type=v4-8 --runtime-version=tpu-ubuntu2204-base --metadata-from-file='startup-script=/Users/sdbuch/projects/github/nanocrate/deploy/startup.sh'"
-alias gtqc4x4="gcloud compute tpus queued-resources create tpu-v4-32 --node-id=tpu-v4-32 --project=tpus-447923 --zone=us-central2-b --accelerator-type=v4-32 --runtime-version=tpu-ubuntu2204-base --metadata-from-file='startup-script=/Users/sdbuch/projects/github/nanocrate/deploy/startup.sh'"
+alias gtc4x1="gcloud compute tpus tpu-vm create tpu-v4-8 --zone=us-central2-b --accelerator-type=v4-8 --version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+alias gtc4x2="gcloud compute tpus tpu-vm create tpu-v4-16 --zone=us-central2-b --accelerator-type=v4-8 --version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+alias gtc4x8="gcloud compute tpus tpu-vm create tpu-v4-64 --zone=us-central2-b --accelerator-type=v4-64 --version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+
+# Queued resources with startup script
+alias gtqc4x1="gcloud compute tpus queued-resources create tpu-v4-8 --node-id=tpu-v4-8 --project=tpus-447923 --zone=us-central2-b --accelerator-type=v4-8 --runtime-version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+alias gtqc4x4="gcloud compute tpus queued-resources create tpu-v4-32 --node-id=tpu-v4-32 --project=tpus-447923 --zone=us-central2-b --accelerator-type=v4-32 --runtime-version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+alias gtqc4x8="gcloud compute tpus queued-resources create tpu-v4-64 --node-id=tpu-v4-64 --project=tpus-447923 --zone=us-central2-b --accelerator-type=v4-64 --runtime-version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
 
 # Set up a jupyter kernel on a remote tpu VM, exposing a server
 # (Could modify this for more general hosts. Using gcloud cli here.)
