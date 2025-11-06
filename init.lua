@@ -707,240 +707,6 @@ local lazy_plugins = {
 			})
 		end,
 	},
-	-- inline images (requires imagemagick)
-	ENABLE_IMAGE_SUPPORT and {
-		"3rd/image.nvim",
-		opts = {
-			backend = "kitty",
-			integrations = {
-				markdown = {
-					filetypes = { "vimwiki", "quarto", "markdown" },
-				},
-			},
-			max_width = 100, -- tweak to preference
-			max_height = 12, -- ^
-			max_height_window_percentage = math.huge, -- this is necessary for a good experience
-			max_width_window_percentage = math.huge,
-			window_overlap_clear_enabled = true,
-			window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
-			hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.webp", "*.svg" }, -- exclude .gif files
-		},
-		-- This is on a preview branch...
-		-- config = function()
-		-- 	vim.keymap.set("n", "<leader>it", function()
-		-- 		if require("image").is_enabled() then
-		-- 			require("image").disable()
-		-- 		else
-		-- 			require("image").enable()
-		-- 		end
-		-- 	end)
-		-- end,
-	} or nil,
-	-- ipynb-like experience
-	ENABLE_IMAGE_SUPPORT and {
-		"benlubas/molten-nvim",
-		version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
-		dependencies = { "3rd/image.nvim" },
-		build = ":UpdateRemotePlugins",
-		init = function()
-			-- these are examples, not defaults. Please see the readme
-			vim.g.molten_image_provider = "image.nvim"
-			vim.g.molten_output_win_max_height = 40
-			vim.g.molten_auto_open_output = false
-			vim.g.molten_wrap_output = true
-			vim.g.molten_virt_text_output = true
-			vim.g.molten_virt_lines_off_by_1 = true
-			vim.g.molten_image_location = "float"
-			vim.g.molten_auto_init_behavior = "raise" -- quarto integration will try to start 10+ kernels for some reason
-
-			vim.keymap.set(
-				"n",
-				"<leader>e",
-				":MoltenEvaluateOperator<CR>",
-				{ desc = "evaluate operator", silent = true }
-			)
-			vim.keymap.set(
-				"n",
-				"<leader>oo",
-				":noautocmd MoltenEnterOutput<CR>",
-				{ desc = "open output window", silent = true }
-			)
-			vim.keymap.set("n", "<leader>re", ":MoltenReevaluateCell<CR>", { desc = "re-eval cell", silent = true })
-			vim.keymap.set(
-				"v",
-				"<leader>ve",
-				":<C-u>MoltenEvaluateVisual<CR>gv",
-				{ desc = "execute visual selection", silent = true }
-			)
-			vim.keymap.set("n", "<leader>oc", ":MoltenHideOutput<CR>", { desc = "close output window", silent = true })
-			vim.keymap.set("n", "<C-BS>", ":MoltenDelete<CR>", { desc = "delete Molten cell", silent = true })
-			vim.keymap.set(
-				"n",
-				"<leader>mk",
-				":MoltenInterrupt<CR>",
-				{ desc = "interrupt running Molten cell", silent = true }
-			)
-			vim.keymap.set("n", "<leader>mi", ":MoltenInit<CR>", { desc = "Initialize Molten kernel", silent = true })
-			vim.keymap.set("n", "<leader>mj", function()
-				local host = vim.fn.input("Enter host node: ")
-				if host and host ~= "" then
-					print("Getting token for host: " .. host .. "...")
-
-					-- Source ~/.aliases and get token using gtjtoken command
-					local cmd = "source ~/.aliases && gtjtoken -q " .. vim.fn.shellescape(host)
-					local token_result = vim.fn.system(cmd)
-					local token = vim.trim(token_result)
-
-					if vim.v.shell_error ~= 0 or token == "" then
-						print("Failed to get token for host: " .. host)
-						print("Command output: " .. token_result)
-						return
-					end
-
-					local url = "http://127.0.0.1:8888/lab?token=" .. token
-					print("Connecting to Jupyter kernel at " .. host .. "...")
-					local success, error = pcall(vim.cmd, "MoltenInit " .. url)
-					if success then
-						print("Successfully connected to Jupyter kernel on " .. host .. "!")
-					else
-						print("Failed to connect to Jupyter kernel: " .. tostring(error))
-					end
-				else
-					print("Connection cancelled - no host provided")
-				end
-			end, { desc = "Connect to remote Jupyter kernel via host", silent = false })
-
-			-- Function to paste Molten output at cursor
-			local function paste_molten_output()
-				-- Generate temp file path
-				local temp_file = vim.fn.tempname() .. ".json"
-
-				-- Save Molten outputs to temp file (silently)
-				local save_success, save_error = pcall(function()
-					-- Temporarily override vim.notify to suppress Molten messages
-					local original_notify = vim.notify
-					vim.notify = function(msg, level, opts)
-						-- Only suppress [Molten] messages
-						if type(msg) == "string" and msg:match("^%[Molten%]") then
-							return
-						end
-						-- Pass through other notifications
-						return original_notify(msg, level, opts)
-					end
-
-					-- Execute the command
-					vim.cmd("MoltenSave " .. temp_file)
-
-					-- Wait a brief moment for any scheduled notifications to complete
-					vim.wait(50)
-
-					-- Restore original notify function
-					vim.notify = original_notify
-				end)
-				if not save_success then
-					print("Failed to save Molten outputs: " .. tostring(save_error))
-					return
-				end
-
-				-- Read and parse JSON file
-				local file = io.open(temp_file, "r")
-				if not file then
-					print("Failed to read temp file: " .. temp_file)
-					return
-				end
-
-				local json_content = file:read("*all")
-				file:close()
-
-				-- Clean up temp file
-				os.remove(temp_file)
-
-				local ok, data = pcall(vim.fn.json_decode, json_content)
-				if not ok or not data or not data.cells then
-					print("Failed to parse JSON or no cells found")
-					return
-				end
-
-				-- Get current cursor position (1-indexed)
-				local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
-
-				-- Find closest cell to cursor position
-				local closest_cell = nil
-				local min_distance = math.huge
-
-				for _, cell in ipairs(data.cells) do
-					if cell.span and cell.span.begin and cell.span.begin.lineno then
-						local cell_line = cell.span.begin.lineno + 1 -- JSON is 0-indexed, convert to 1-indexed
-						local distance = math.abs(cursor_line - cell_line)
-						if distance < min_distance then
-							min_distance = distance
-							closest_cell = cell
-						end
-					end
-				end
-
-				if not closest_cell or not closest_cell.chunks then
-					print("No suitable cell found near cursor")
-					return
-				end
-
-				-- Function to strip ANSI escape sequences
-				local function strip_ansi(text)
-					-- Remove ANSI escape sequences (ESC[...m)
-					return text:gsub("\27%[[0-9;]*m", "")
-				end
-
-				-- Extract text/plain content from all chunks
-				local output_lines = {}
-				for _, chunk in ipairs(closest_cell.chunks) do
-					if chunk.data and chunk.data["text/plain"] then
-						-- Split content by lines and add to output
-						local content = chunk.data["text/plain"]
-						-- Strip ANSI escape sequences and split by \n but filter out empty lines
-						content = strip_ansi(content)
-						for line in content:gmatch("[^\n]*") do
-							if line ~= "" then
-								table.insert(output_lines, line)
-							end
-						end
-					end
-				end
-
-				if #output_lines == 0 then
-					print("No text output found in closest cell")
-					return
-				end
-
-				-- Format as code block with Output: header inside
-				local formatted_content = { "```", "Output:" }
-				for _, line in ipairs(output_lines) do
-					table.insert(formatted_content, line)
-				end
-				table.insert(formatted_content, "```")
-
-				-- Insert at cursor position
-				local current_line = vim.api.nvim_win_get_cursor(0)[1]
-				vim.api.nvim_buf_set_lines(0, current_line - 1, current_line - 1, false, formatted_content)
-
-				print("Pasted output from cell at line " .. (closest_cell.span.begin.lineno + 1))
-			end
-
-			-- Set up keymap for normal mode only
-			vim.keymap.set(
-				"n",
-				"<leader>op",
-				paste_molten_output,
-				{ desc = "Paste closest Molten output at cursor", silent = false }
-			)
-			-- if you work with html outputs:
-			vim.keymap.set(
-				"n",
-				"<leader>ob",
-				":MoltenOpenInBrowser<CR>",
-				{ desc = "open output in browser", silent = true }
-			)
-		end,
-	} or nil,
 	-- quarto
 	{
 		"quarto-dev/quarto-nvim",
@@ -1797,8 +1563,245 @@ local lazy_config = {
 	},
 }
 
--- for image.nvim + imagemagick luarocks install
+-- Add conditional plugins based on feature flags
 if ENABLE_IMAGE_SUPPORT then
+	-- inline images (requires imagemagick)
+	table.insert(lazy_plugins, {
+		"3rd/image.nvim",
+		opts = {
+			backend = "kitty",
+			integrations = {
+				markdown = {
+					filetypes = { "vimwiki", "quarto", "markdown" },
+				},
+			},
+			max_width = 100, -- tweak to preference
+			max_height = 12, -- ^
+			max_height_window_percentage = math.huge, -- this is necessary for a good experience
+			max_width_window_percentage = math.huge,
+			window_overlap_clear_enabled = true,
+			window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
+			hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.webp", "*.svg" }, -- exclude .gif files
+		},
+		-- This is on a preview branch...
+		-- config = function()
+		-- 	vim.keymap.set("n", "<leader>it", function()
+		-- 		if require("image").is_enabled() then
+		-- 			require("image").disable()
+		-- 		else
+		-- 			require("image").enable()
+		-- 		end
+		-- 	end)
+		-- end,
+	})
+
+	-- ipynb-like experience
+	table.insert(lazy_plugins, {
+		"benlubas/molten-nvim",
+		version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
+		dependencies = { "3rd/image.nvim" },
+		build = ":UpdateRemotePlugins",
+		init = function()
+			-- these are examples, not defaults. Please see the readme
+			vim.g.molten_image_provider = "image.nvim"
+			vim.g.molten_output_win_max_height = 40
+			vim.g.molten_auto_open_output = false
+			vim.g.molten_wrap_output = true
+			vim.g.molten_virt_text_output = true
+			vim.g.molten_virt_lines_off_by_1 = true
+			vim.g.molten_image_location = "float"
+			vim.g.molten_auto_init_behavior = "raise" -- quarto integration will try to start 10+ kernels for some reason
+
+			vim.keymap.set(
+				"n",
+				"<leader>e",
+				":MoltenEvaluateOperator<CR>",
+				{ desc = "evaluate operator", silent = true }
+			)
+			vim.keymap.set(
+				"n",
+				"<leader>oo",
+				":noautocmd MoltenEnterOutput<CR>",
+				{ desc = "open output window", silent = true }
+			)
+			vim.keymap.set("n", "<leader>re", ":MoltenReevaluateCell<CR>", { desc = "re-eval cell", silent = true })
+			vim.keymap.set(
+				"v",
+				"<leader>ve",
+				":<C-u>MoltenEvaluateVisual<CR>gv",
+				{ desc = "execute visual selection", silent = true }
+			)
+			vim.keymap.set("n", "<leader>oc", ":MoltenHideOutput<CR>", { desc = "close output window", silent = true })
+			vim.keymap.set("n", "<C-BS>", ":MoltenDelete<CR>", { desc = "delete Molten cell", silent = true })
+			vim.keymap.set(
+				"n",
+				"<leader>mk",
+				":MoltenInterrupt<CR>",
+				{ desc = "interrupt running Molten cell", silent = true }
+			)
+			vim.keymap.set("n", "<leader>mi", ":MoltenInit<CR>", { desc = "Initialize Molten kernel", silent = true })
+			vim.keymap.set("n", "<leader>mj", function()
+				local host = vim.fn.input("Enter host node: ")
+				if host and host ~= "" then
+					print("Getting token for host: " .. host .. "...")
+
+					-- Source ~/.aliases and get token using gtjtoken command
+					local cmd = "source ~/.aliases && gtjtoken -q " .. vim.fn.shellescape(host)
+					local token_result = vim.fn.system(cmd)
+					local token = vim.trim(token_result)
+
+					if vim.v.shell_error ~= 0 or token == "" then
+						print("Failed to get token for host: " .. host)
+						print("Command output: " .. token_result)
+						return
+					end
+
+					local url = "http://127.0.0.1:8888/lab?token=" .. token
+					print("Connecting to Jupyter kernel at " .. host .. "...")
+					local success, error = pcall(vim.cmd, "MoltenInit " .. url)
+					if success then
+						print("Successfully connected to Jupyter kernel on " .. host .. "!")
+					else
+						print("Failed to connect to Jupyter kernel: " .. tostring(error))
+					end
+				else
+					print("Connection cancelled - no host provided")
+				end
+			end, { desc = "Connect to remote Jupyter kernel via host", silent = false })
+
+			-- Function to paste Molten output at cursor
+			local function paste_molten_output()
+				-- Generate temp file path
+				local temp_file = vim.fn.tempname() .. ".json"
+
+				-- Save Molten outputs to temp file (silently)
+				local save_success, save_error = pcall(function()
+					-- Temporarily override vim.notify to suppress Molten messages
+					local original_notify = vim.notify
+					vim.notify = function(msg, level, opts)
+						-- Only suppress [Molten] messages
+						if type(msg) == "string" and msg:match("^%[Molten%]") then
+							return
+						end
+						-- Pass through other notifications
+						return original_notify(msg, level, opts)
+					end
+
+					-- Execute the command
+					vim.cmd("MoltenSave " .. temp_file)
+
+					-- Wait a brief moment for any scheduled notifications to complete
+					vim.wait(50)
+
+					-- Restore original notify function
+					vim.notify = original_notify
+				end)
+				if not save_success then
+					print("Failed to save Molten outputs: " .. tostring(save_error))
+					return
+				end
+
+				-- Read and parse JSON file
+				local file = io.open(temp_file, "r")
+				if not file then
+					print("Failed to read temp file: " .. temp_file)
+					return
+				end
+
+				local json_content = file:read("*all")
+				file:close()
+
+				-- Clean up temp file
+				os.remove(temp_file)
+
+				local ok, data = pcall(vim.fn.json_decode, json_content)
+				if not ok or not data or not data.cells then
+					print("Failed to parse JSON or no cells found")
+					return
+				end
+
+				-- Get current cursor position (1-indexed)
+				local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
+
+				-- Find closest cell to cursor position
+				local closest_cell = nil
+				local min_distance = math.huge
+
+				for _, cell in ipairs(data.cells) do
+					if cell.span and cell.span.begin and cell.span.begin.lineno then
+						local cell_line = cell.span.begin.lineno + 1 -- JSON is 0-indexed, convert to 1-indexed
+						local distance = math.abs(cursor_line - cell_line)
+						if distance < min_distance then
+							min_distance = distance
+							closest_cell = cell
+						end
+					end
+				end
+
+				if not closest_cell or not closest_cell.chunks then
+					print("No suitable cell found near cursor")
+					return
+				end
+
+				-- Function to strip ANSI escape sequences
+				local function strip_ansi(text)
+					-- Remove ANSI escape sequences (ESC[...m)
+					return text:gsub("\27%[[0-9;]*m", "")
+				end
+
+				-- Extract text/plain content from all chunks
+				local output_lines = {}
+				for _, chunk in ipairs(closest_cell.chunks) do
+					if chunk.data and chunk.data["text/plain"] then
+						-- Split content by lines and add to output
+						local content = chunk.data["text/plain"]
+						-- Strip ANSI escape sequences and split by \n but filter out empty lines
+						content = strip_ansi(content)
+						for line in content:gmatch("[^\n]*") do
+							if line ~= "" then
+								table.insert(output_lines, line)
+							end
+						end
+					end
+				end
+
+				if #output_lines == 0 then
+					print("No text output found in closest cell")
+					return
+				end
+
+				-- Format as code block with Output: header inside
+				local formatted_content = { "```", "Output:" }
+				for _, line in ipairs(output_lines) do
+					table.insert(formatted_content, line)
+				end
+				table.insert(formatted_content, "```")
+
+				-- Insert at cursor position
+				local current_line = vim.api.nvim_win_get_cursor(0)[1]
+				vim.api.nvim_buf_set_lines(0, current_line - 1, current_line - 1, false, formatted_content)
+
+				print("Pasted output from cell at line " .. (closest_cell.span.begin.lineno + 1))
+			end
+
+			-- Set up keymap for normal mode only
+			vim.keymap.set(
+				"n",
+				"<leader>op",
+				paste_molten_output,
+				{ desc = "Paste closest Molten output at cursor", silent = false }
+			)
+			-- if you work with html outputs:
+			vim.keymap.set(
+				"n",
+				"<leader>ob",
+				":MoltenOpenInBrowser<CR>",
+				{ desc = "open output in browser", silent = true }
+			)
+		end,
+	})
+
+	-- for image.nvim + imagemagick luarocks install
 	lazy_config.rocks = {
 		hererocks = true, -- recommended if you do not have global installation of Lua 5.1.
 	}

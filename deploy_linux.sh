@@ -58,6 +58,9 @@ fi
 # Neovim configuration symlinks
 mln $cdir/init.lua ~/.config/nvim/init.lua
 mln $cdir/latex_highlights.scm ~/.config/nvim/bundle/nvim-treesitter/queries/latex/highlights.scm
+# Create local_config.lua if it doesn't exist (for machine-specific settings)
+touch $cdir/local_config.lua
+mln $cdir/local_config.lua ~/.config/nvim/lua/local_config.lua
 
 # Append bashrc contents
 cat $cdir/.bashrc >> ~/.bashrc

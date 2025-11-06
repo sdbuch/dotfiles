@@ -70,6 +70,9 @@ ln -s $cdir/.vim/snippets/python.json ~/.config/nvim/snippets/python.json
 ln -s $cdir/init.lua ~/.config/nvim/init.lua
 ln -s $cdir/latex_highlights.scm ~/.config/nvim/bundle/nvim-treesitter/queries/latex/highlights.scm
 ln -s $cdir/plugins.lua ~/.config/nvim/lua/plugins.lua
+# Create local_config.lua if it doesn't exist (for machine-specific settings)
+touch $cdir/local_config.lua
+ln -s $cdir/local_config.lua ~/.config/nvim/lua/local_config.lua
 
 # for ipython / jupyter
 # We make a config for terminal use + define an alias. Then launchers like quarto can use the clean default
