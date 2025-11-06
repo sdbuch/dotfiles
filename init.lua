@@ -2,6 +2,18 @@
 -- borrowed from brentyi as usual
 
 --------------------------------------------------------
+------            FEATURE FLAGS                  -------
+--------------------------------------------------------
+-- Default feature flags
+local ENABLE_IMAGE_SUPPORT = false  -- Set to true to enable image.nvim and molten
+
+-- Load local overrides if they exist (this file is git-ignored)
+local ok, local_config = pcall(require, "local_config")
+if ok and local_config.ENABLE_IMAGE_SUPPORT ~= nil then
+	ENABLE_IMAGE_SUPPORT = local_config.ENABLE_IMAGE_SUPPORT
+end
+
+--------------------------------------------------------
 ------            SETTINGS/COMMANDS              -------
 --------------------------------------------------------
 ---
@@ -696,7 +708,7 @@ local lazy_plugins = {
 		end,
 	},
 	-- inline images (requires imagemagick)
-	{
+	ENABLE_IMAGE_SUPPORT and {
 		"3rd/image.nvim",
 		opts = {
 			backend = "kitty",
@@ -723,9 +735,9 @@ local lazy_plugins = {
 		-- 		end
 		-- 	end)
 		-- end,
-	},
+	} or nil,
 	-- ipynb-like experience
-	{
+	ENABLE_IMAGE_SUPPORT and {
 		"benlubas/molten-nvim",
 		version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
 		dependencies = { "3rd/image.nvim" },
@@ -928,7 +940,7 @@ local lazy_plugins = {
 				{ desc = "open output in browser", silent = true }
 			)
 		end,
-	},
+	} or nil,
 	-- quarto
 	{
 		"quarto-dev/quarto-nvim",
@@ -1763,7 +1775,7 @@ local lazy_plugins = {
 	},
 }
 
-require("lazy").setup({
+local lazy_config = {
 	spec = lazy_plugins,
 	ui = {
 		-- We don't want to install custom fonts, so we'll switch to Unicode icons.
@@ -1783,8 +1795,13 @@ require("lazy").setup({
 			lazy = "💤 ",
 		},
 	},
-	-- for image.nvim + imagemagick luarocks install
-	rocks = {
+}
+
+-- for image.nvim + imagemagick luarocks install
+if ENABLE_IMAGE_SUPPORT then
+	lazy_config.rocks = {
 		hererocks = true, -- recommended if you do not have global installation of Lua 5.1.
-	},
-})
+	}
+end
+
+require("lazy").setup(lazy_config)
