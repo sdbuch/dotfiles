@@ -5,7 +5,7 @@
 ------            FEATURE FLAGS                  -------
 --------------------------------------------------------
 -- Default feature flags
-local ENABLE_IMAGE_SUPPORT = false  -- Set to true to enable image.nvim and molten
+local ENABLE_IMAGE_SUPPORT = false -- Set to true to enable image.nvim and molten
 
 -- Load local overrides if they exist (this file is git-ignored)
 local ok, local_config = pcall(require, "local_config")
@@ -521,7 +521,7 @@ local lazy_plugins = {
 	-- Git helpers.
 	{ "tpope/vim-fugitive" },
 	{ "lewis6991/gitsigns.nvim", config = true },
-	{ "sindrets/diffview.nvim" },
+	{ "akinsho/git-conflict.nvim", version = "*", config = true },
 	-- Comments. By default, bound to `gcc`.
 	{ "numToStr/Comment.nvim", config = true },
 	-- Motions.
@@ -1271,6 +1271,7 @@ local lazy_plugins = {
 			-- Automatically install language servers via Mason.
 			-- TODO: some of these failing (wrong LSP identifiers?)
 			ENSURE_INSTALLED("python", "pyright")
+			ENSURE_INSTALLED("python", "ty")
 			ENSURE_INSTALLED("rust", "rust-analyzer")
 			-- ENSURE_INSTALLED("python", "ruff-lsp")
 			ENSURE_INSTALLED("lua", "lua-language-server")
@@ -1312,7 +1313,7 @@ local lazy_plugins = {
 
 			-- Set up lspconfig.
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
-			vim.lsp.config('pyright', {
+			vim.lsp.config("pyright", {
 				capabilities = capabilities,
 				settings = {
 					python = {
@@ -1325,7 +1326,15 @@ local lazy_plugins = {
 					},
 				},
 			})
-			vim.lsp.enable('pyright')
+			vim.lsp.enable("pyright")
+			-- vim.lsp.config("ty", {
+			-- 	settings = {
+			-- 		ty = {
+			-- 			-- ty language server settings go here
+			-- 		},
+			-- 	},
+			-- })
+			-- vim.lsp.enable("ty")
 			-- -- Custom setup for ruff-lsp
 			-- local on_attach = function(client, bufnr)
 			-- 	-- Disable hover in favor of Pyright
@@ -1335,24 +1344,24 @@ local lazy_plugins = {
 			-- 	capabilities = capabilities,
 			-- 	on_attach = on_attach,
 			-- })
-			vim.lsp.config('lua_ls', { capabilities = capabilities })
-			vim.lsp.enable('lua_ls')
-			vim.lsp.config('ts_ls', { capabilities = capabilities })
-			vim.lsp.enable('ts_ls')
+			vim.lsp.config("lua_ls", { capabilities = capabilities })
+			vim.lsp.enable("lua_ls")
+			vim.lsp.config("ts_ls", { capabilities = capabilities })
+			vim.lsp.enable("ts_ls")
 			-- require("lspconfig").marksman.setup({
 			-- 	capabilities = capabilities,
 			-- 	filetypes = { "quarto" },
 			-- 	root_dir = require("lspconfig.util").root_pattern(".git", ".marksman.toml", "_quarto.yml"),
 			-- })
-			vim.lsp.config('html', { capabilities = capabilities })
-			vim.lsp.enable('html')
-			vim.lsp.config('cssls', { capabilities = capabilities })
-			vim.lsp.enable('cssls')
-			vim.lsp.config('eslint', { capabilities = capabilities })
-			vim.lsp.enable('eslint')
-			vim.lsp.config('rust_analyzer', { capabilities = capabilities })
-			vim.lsp.enable('rust_analyzer')
-			vim.lsp.config('texlab', {
+			vim.lsp.config("html", { capabilities = capabilities })
+			vim.lsp.enable("html")
+			vim.lsp.config("cssls", { capabilities = capabilities })
+			vim.lsp.enable("cssls")
+			vim.lsp.config("eslint", { capabilities = capabilities })
+			vim.lsp.enable("eslint")
+			vim.lsp.config("rust_analyzer", { capabilities = capabilities })
+			vim.lsp.enable("rust_analyzer")
+			vim.lsp.config("texlab", {
 				-- cmd = { 'texlab', '-vvvv', '--log-file', '/Users/sdbuch/.local/state/nvim/texlab.log' },
 				capabilities = capabilities,
 				settings = {
@@ -1387,9 +1396,9 @@ local lazy_plugins = {
 					},
 				},
 			})
-			vim.lsp.enable('texlab')
-			vim.lsp.config('clangd', { capabilities = capabilities })
-			vim.lsp.enable('clangd')
+			vim.lsp.enable("texlab")
+			vim.lsp.config("clangd", { capabilities = capabilities })
+			vim.lsp.enable("clangd")
 
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),

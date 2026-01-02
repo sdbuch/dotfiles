@@ -5,16 +5,19 @@
 	helper = osxkeychain
 [core]
 	excludesfile = /Users/sdbuch/.gitignore_global
+	pager = diff-so-fancy | less --tabs=4 -RF
 [credential "https://git.overleaf.com"]
 	username = git
 	helper = cache
 [init]
 	defaultBranch = main
 [diff]
-    tool = nvimdiff
+	tool = nvimdiff
 [difftool]
-    prompt = false
+	prompt = false
 [difftool "nvimdiff"]
-    cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
+	cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
 [pull]
 	rebase = false
+[interactive]
+	diffFilter = diff-so-fancy --patch

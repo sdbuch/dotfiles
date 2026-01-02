@@ -1,9 +1,39 @@
 {
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(cat | jq -r '.tool_input.file_path // .tool_input.file // \"\"'); [[ \"$file\" == *.py ]] && uv run ruff format \"$file\" && uv run ruff check --fix \"$file\"; true"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/typecheck-python.sh"
+          }
+        ]
+      }
+    ]
+  },
   "permissions": {
     "allow": [
-      "Bash(uv:*)"
+      "Bash(uv:*)",
+      "WebSearch",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(diff:*)"
     ],
     "deny": []
-  },
-  "alwaysThinkingEnabled": false
+  }
 }

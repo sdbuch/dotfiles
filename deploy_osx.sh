@@ -1,7 +1,7 @@
 # cdir=$(pwd)
 cdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# make directories (for neovim)
+# make directories
 mkdir ~/.config
 mkdir ~/.config/nvim
 mkdir ~/.config/nvim/lua
@@ -11,11 +11,14 @@ mkdir ~/.config/nvim/snippets
 mkdir ~/scripts
 mkdir ~/.ctags.d
 mkdir ~/.claude
+mkdir ~/.claude/hooks
+mkdir ~/.claude/skills
 mkdir ~/.cursor
 
 # claude
 ln -s $cdir/.claude/CLAUDE.md ~/.claude/CLAUDE.md
 ln -s $cdir/.claude/settings.json ~/.claude/settings.json
+ln -s $cdir/.claude/hooks/typecheck-python.sh ~/.claude/hooks/typecheck-python.sh
 
 # cursor
 ln -s $cdir/.cursor/mcp.json ~/.cursor/mcp.json
