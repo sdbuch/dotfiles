@@ -1,6 +1,4 @@
-#!/bin/sh
-# Setup script for Ubuntu development environment
-# Creates necessary directories and symlinks
+#!/bin/bash
 
 # Parse command line arguments
 INSTALL_SIXEL=false
@@ -18,59 +16,56 @@ for arg in "$@"; do
     esac
 done
 
-# Helper for creating directories while symlinking if they don't exist
-mln() {
-    mkdir -p "$(dirname "$2")" && ln -s "$(realpath "$1")" "$2"
-}
-
-cdir=$(pwd)
+source "$(dirname "$0")/deploy_common.sh"
 
 # Ensure ~/.local/bin exists and is in PATH
 mkdir -p ~/.local/bin
 export PATH="$HOME/.local/bin:$PATH"
 
-# Create directory structure for vim/neovim
 mkdir -p ~/.vim/{colors,snippets}
 mkdir -p ~/scripts
-# Neovim directory structure (v0.9.5)
 mkdir -p ~/.config/nvim/lua/lualine/themes
-mkdir -p ~/.claude
+mkdir -p ~/.claude/hooks
+mkdir -p ~/.claude/skills
+mkdir -p ~/.claude/agents
 
-# Set up config file symlinks
-mln $cdir/.gitconfig_linux ~/.gitconfig
-mln $cdir/.gitignore_global ~/.gitignore_global
+# Config file symlinks
+mln "$DOTFILES_DIR/.gitconfig_linux" ~/.gitconfig
+mln "$DOTFILES_DIR/.gitignore_global" ~/.gitignore_global
 git config --global core.excludesfile ~/.gitignore_global
-mln $cdir/.vimrc ~/.vimrc
-mln $cdir/.aliases ~/.bash_aliases
-mln $cdir/.dircolors ~/.dircolors
-mln $cdir/.tmux.conf ~/.tmux.conf
-mln $cdir/.inputrc ~/.inputrc
-mln $cdir/.claude/CLAUDE.md ~/.claude/CLAUDE.md
-mln $cdir/.claude/settings.json ~/.claude/settings.json
+mln "$DOTFILES_DIR/.vimrc" ~/.vimrc
+mln "$DOTFILES_DIR/.aliases" ~/.bash_aliases
+mln "$DOTFILES_DIR/.dircolors" ~/.dircolors
+mln "$DOTFILES_DIR/.tmux.conf" ~/.tmux.conf
+mln "$DOTFILES_DIR/.inputrc" ~/.inputrc
+mln "$DOTFILES_DIR/.claude/CLAUDE.md" ~/.claude/CLAUDE.md
+mln "$DOTFILES_DIR/.claude/settings.json" ~/.claude/settings.json
+mln "$DOTFILES_DIR/.claude/hooks/typecheck-python.sh" ~/.claude/hooks/typecheck-python.sh
+mln "$DOTFILES_DIR/.claude/agents/deslop.md" ~/.claude/agents/deslop.md
 
-# Initialize zshrc if it doesn't exist
 if [ ! -f ~/.zshrc ]; then
-    echo ". $cdir/.zshrc_base_linux" > ~/.zshrc
+    echo ". $DOTFILES_DIR/.zshrc_base_linux" > ~/.zshrc
 else
     echo "File exists, not overwriting: ~/.zshrc"
 fi
 
-# Neovim configuration symlinks
-mln $cdir/init.lua ~/.config/nvim/init.lua
-mln $cdir/latex_highlights.scm ~/.config/nvim/bundle/nvim-treesitter/queries/latex/highlights.scm
-# Create local_config.lua if it doesn't exist (for machine-specific settings)
-touch $cdir/local_config.lua
-mln $cdir/local_config.lua ~/.config/nvim/lua/local_config.lua
+mln "$DOTFILES_DIR/init.lua" ~/.config/nvim/init.lua
+mln "$DOTFILES_DIR/latex_highlights.scm" ~/.config/nvim/bundle/nvim-treesitter/queries/latex/highlights.scm
+mln "$DOTFILES_DIR/plugins.lua" ~/.config/nvim/lua/plugins.lua
+touch "$DOTFILES_DIR/local_config.lua"
+mln "$DOTFILES_DIR/local_config.lua" ~/.config/nvim/lua/local_config.lua
 
-# Append bashrc contents
-cat $cdir/.bashrc >> ~/.bashrc
+if ! grep -q "# DOTFILES_SOURCED" ~/.bashrc 2>/dev/null; then
+    echo "# DOTFILES_SOURCED" >> ~/.bashrc
+    cat "$DOTFILES_DIR/.bashrc" >> ~/.bashrc
+fi
 
-# Additional config symlinks
-mln $cdir/.vim/python_imports.txt ~/.vim/python_skeleton.py
-mln $cdir/.ipython/profile_default/ipython_config.py ~/.ipython/profile_term/ipython_config.py
-mln $cdir/.vim/colors/wombat256mod.vim ~/.vim/colors/wombat256mod.vim
-mln $cdir/.vim/snippets/python.json ~/.vim/snippets/python.json
-mln $cdir/scripts/dev-tmux ~/scripts/dev-tmux
+# Vim config
+mln "$DOTFILES_DIR/.vim/python_imports.txt" ~/.vim/python_skeleton.py
+mln "$DOTFILES_DIR/.vim/colors/wombat256mod.vim" ~/.vim/colors/wombat256mod.vim
+mln "$DOTFILES_DIR/.vim/snippets/python.json" ~/.vim/snippets/python.json
+mln "$DOTFILES_DIR/scripts/dev-tmux" ~/scripts/dev-tmux
+mln "$DOTFILES_DIR/.ipython/profile_default/ipython_config.py" ~/.ipython/profile_default/ipython_config.py
 
 if [ "$INSTALL_MINIMAL" = false ]; then
     # Install zsh locally if not already installed
@@ -142,13 +137,13 @@ if [ "$INSTALL_MINIMAL" = false ]; then
 fi
 
 # Install neovim from custom script
-chmod +x $cdir/install_nvim_linux.sh
-./install_nvim_linux.sh
+chmod +x "$DOTFILES_DIR/install_nvim_linux.sh"
+"$DOTFILES_DIR/install_nvim_linux.sh"
 
 # Only install tmux and related packages if --sixel option is provided and --minimal is not
 if [ "$INSTALL_SIXEL" = true ] && [ "$INSTALL_MINIMAL" = false ]; then
-    chmod +x $cdir/install_tmux_ubuntu.sh
-    ./install_tmux_ubuntu.sh
+    chmod +x "$DOTFILES_DIR/install_tmux_ubuntu.sh"
+    "$DOTFILES_DIR/install_tmux_ubuntu.sh"
 fi
 
 # Install tmux plugin manager if not present
