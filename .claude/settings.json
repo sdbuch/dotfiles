@@ -1,4 +1,19 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(uv:*)",
+      "WebSearch",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(diff:*)"
+    ],
+    "deny": []
+  },
   "hooks": {
     "PostToolUse": [
       {
@@ -21,19 +36,5 @@
       }
     ]
   },
-  "permissions": {
-    "allow": [
-      "Bash(uv:*)",
-      "WebSearch",
-      "Bash(cat:*)",
-      "Bash(grep:*)",
-      "Bash(ls:*)",
-      "Bash(find:*)",
-      "Bash(head:*)",
-      "Bash(tail:*)",
-      "Bash(wc:*)",
-      "Bash(diff:*)"
-    ],
-    "deny": []
-  }
+  "model": "opus"
 }
