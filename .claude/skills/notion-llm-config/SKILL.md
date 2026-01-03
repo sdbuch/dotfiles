@@ -1,6 +1,6 @@
 ---
 name: notion-llm-config
-description: Manages the Notion LLM Config Table database tracking model configurations and parameters. Use when working with the LLM config table, adding models, updating model parameters, or querying model architecture details from sku_list.py.
+description: Manages the Notion LLM Config Table database tracking model configurations and parameters across multiple model providers. Use when working with the LLM config table, adding models, updating model parameters, or querying model architecture details.
 allowed-tools: mcp__notion__notion-search, mcp__notion__notion-fetch, mcp__notion__notion-create-pages, mcp__notion__notion-update-page, mcp__notion__notion-update-database, Read, Bash
 ---
 
@@ -10,9 +10,11 @@ allowed-tools: mcp__notion__notion-search, mcp__notion__notion-fetch, mcp__notio
 - **Database ID:** `ddfd95bd-109a-4ac6-955c-90541cc53d5e`
 - **Data Source ID:** `0a9fafd6-2cc2-4d6b-b6f0-3797ea777421`
 - **Location:** Family Notes workspace → "LLM config table"
-- **Purpose:** Track LLM model configurations, especially for Llama model family
+- **Purpose:** Track LLM model configurations across multiple providers (Llama, others to be added)
 
-## Data Source
+## Data Sources
+
+### Llama Models
 Primary source: `~/projects/github/llama-models/models/sku_list.py`
 - Contains all registered Llama models with architecture parameters
 - Constants: `LLAMA2_VOCAB_SIZE = 32000`, `LLAMA3_VOCAB_SIZE = 128256`
@@ -30,23 +32,27 @@ Primary source: `~/projects/github/llama-models/models/sku_list.py`
 - HuggingFace Repo, Variant
 
 ### Architecture Parameters
-- **d_hidden** = `dim` from arch_args (model hidden dimension)
-- **d_ff** = feed-forward hidden dim (complex calculation - see STATUS.md)
+- **d_hidden** = model hidden dimension (`dim` from Llama arch_args)
+- **d_ff** = feed-forward hidden dimension (see calculation formulas below)
+- **d_ff / d_hidden Ratio** = d_ff / d_hidden, rounded to 3 decimals
+  - Llama: 2.667 (3B), 3.125 (Guard INT4), 3.25 (405B), 3.469 (2-70b chat), 3.5 (most common), 4.0 (1B)
+  - Null for models without d_ff (Llama 4 has empty arch_args)
+- **Gated MLP** (checkbox) = gated MLP/activation (SwiGLU for Llama)
 - n_layers, n_heads, n_kv_heads, head_dim
-- FFN Dim Multiplier, Multiple Of, Norm Eps
+- Multiple Of, Norm Eps
 
 ### Tokenization
-- **Tokenizer** (select): "Llama 2 Tokenizer" (32k vocab) or "Llama 3 Tokenizer" (128k vocab)
-- **Vocab Size**: 32000 for Llama 2, 128256 for Llama 3+
+- **Tokenizer**: Llama 2 Tokenizer (32k vocab) or Llama 3 Tokenizer (128k vocab)
+- **Vocab Size**: 32000 (Llama 2), 128256 (Llama 3+)
 
 ### MoE Architecture
 - **Is MoE** (checkbox)
-- **Num Experts**: 16 (Scout) or 128 (Maverick)
-- **Top K Experts**: 1 (number of routed experts per token)
-- **MoE Routing**: "Token Choice" (not Expert Choice)
-- **Has Shared Expert**: Yes (Llama 4 has 1 shared + 1 routed expert per token)
-- **Activated Params (B)**: 17B for all Llama 4 models
-- **Total Params (B)**: 109B (Scout) or 400B (Maverick)
+- **Num Experts**: Llama 4: 16 (Scout), 128 (Maverick)
+- **Top K Experts**: Number of routed experts per token
+- **MoE Routing**: "Token Choice" (Llama 4) vs "Expert Choice"
+- **Has Shared Expert**: Llama 4 has 1 shared + 1 routed per token
+- **Activated Params (B)**: Llama 4: 17B
+- **Total Params (B)**: Llama 4: 109B (Scout), 400B (Maverick)
 
 ### RoPE Configuration
 - RoPE Theta, RoPE Freq Base
@@ -92,15 +98,14 @@ mcp__notion__notion-fetch({"id": "page-id-or-url"})
 ## Common Tasks
 
 ### Adding New Models
-#### Llama Models
-1. Parse sku_list.py to get model data
-2. Extract arch_args and calculate derived fields (head_dim, d_ff)
-3. Determine tokenizer based on model family
+1. Parse `~/projects/github/llama-models/models/sku_list.py` to get model data
+2. Extract arch_args and calculate derived fields (head_dim, d_ff using Llama formula, d_ff/d_hidden ratio)
+3. Determine tokenizer based on model family (see Llama Model Family Mappings)
 4. Set MoE fields for Llama 4 models
-5. Create pages in batches using `mcp__notion__notion-create-pages`
+5. Set "Gated MLP" to Yes (all Llama models use SwiGLU)
+6. Create pages in batches using `mcp__notion__notion-create-pages`
 
 ### Marking Representative Models
-#### Llama Models
 Representative "Main" models (user preference):
 - Llama 2: 7b chat, 70b chat
 - Llama 3.1: 8b instruct, 70b instruct, 405b instruct (FP8)
@@ -123,28 +128,35 @@ mcp__notion__notion-update-database({
 ### Pitfalls to Avoid
 1. **Don't clear existing fields** - Only specify properties you're updating
 2. **Column ordering** - Cannot be changed via API (view-level setting in UI)
-3. **Llama 4 models** - Have empty `arch_args={}` in sku_list.py, no d_hidden/d_ff available
-4. **Checkbox format** - Must use `"__YES__"` or `"__NO__"`, not boolean
+3. **Checkbox format** - Must use `"__YES__"` or `"__NO__"`, not boolean
+4. **Llama 4 models** - Have empty `arch_args={}` in sku_list.py, no d_hidden/d_ff available
 
-### Model Family Mappings
+### Llama Model Family Mappings
 - **llama2**: Llama 2 Tokenizer, 32k vocab
 - **llama3, llama3_1, llama3_2, llama3_3, llama4, safety**: Llama 3 Tokenizer, 128k vocab
 
-### MoE Architecture Notes
+#### Llama MoE Architecture (Llama 4 only)
 - Only Llama 4 models are MoE
 - Architecture: 1 shared expert (always active) + 1 routed expert (top_k=1)
 - Effective: 2 experts per token (shared + routed)
 - Routing: Token Choice (each token selects expert via router scores)
 
+#### Llama Gated MLP / Activation Function
+- All Llama models use gated MLP with SwiGLU activation
+- Implementation: `w2(F.silu(w1(x)) * w3(x))` (from `models/llama3/model.py`)
+- Uses 3 weight matrices (w1, w2, w3) instead of standard 2-matrix FFN
+- SwiGLU = Swish-Gated Linear Unit (Swish is same as SiLU)
+
 ## Calculation Formulas
 
-### Derived Fields
+### General Derived Fields
 ```python
-head_dim = dim / n_heads
-d_ff = complex_calculation  # See STATUS.md for details
+head_dim = d_hidden / n_heads
+d_ff_d_hidden_ratio = round(d_ff / d_hidden, 3)
 ```
 
-### d_ff Calculation (Complex - from actual Llama code)
+### Llama d_ff Calculation
+From actual Llama code (`models/llama3/model.py`):
 ```python
 # Initial: hidden_dim = 4 * dim
 hidden_dim = int(2 * hidden_dim / 3)  # = int(8 * dim / 3)
@@ -155,14 +167,22 @@ hidden_dim = multiple_of * ((hidden_dim + multiple_of - 1) // multiple_of)
 # Result is d_ff
 ```
 
-## Helpful Scripts Location
-Working directory: `~/projects/github/`
+## Helpful Scripts & References
+
+### Llama
+Working directory: `~/projects/github/llama-models/`
+
+**Scripts:**
 - Parse models: `parse_llama_models.py`
 - Prepare Notion data: `prepare_notion_data.py`
 - Update tokenizers: `update_tokenizers.py`
 - Bulk updates: `bulk_update_llama3.py`
+- Calculate d_ff: `fix_d_ff.py` (correct d_ff calculation using actual Llama formula)
+- Calculate ratios: `calculate_ratios.py` (d_ff/d_hidden ratios and gated MLP status)
+- Data files: `d_ff_corrections.json`, `complete_notion_updates.json`, `ratio_updates.json`
+- Documentation: `COMPLETION_SUMMARY.md` (d_ff update history), `STATUS.md` (current status)
 
-## References
+**References:**
 - Llama models repo: `~/projects/github/llama-models/`
 - Model definitions: `models/sku_list.py`
 - Architecture files: `models/llama{2,3,4}/args.py`

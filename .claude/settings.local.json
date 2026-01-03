@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:neovim.io)"
+      "WebFetch(domain:neovim.io)",
+      "Bash(python3:*)"
     ],
     "deny": [],
     "ask": []
