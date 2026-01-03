@@ -126,12 +126,14 @@ STARTUP_SCRIPT="/Users/sdbuch/projects/github/baremetal-gpt/deploy/startup.sh"
 # Create or queue standard configs
 # NOTE: v6e (trillium) specifies chip count; v4 specifies core count (2x chip count)
 alias gtc6x1="gcloud compute tpus tpu-vm create tpu-v6e-8 --spot --zone=us-east1-d --accelerator-type=v6e-8 --version=v2-alpha-tpuv6e --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
-alias gtc6x8="gcloud compute tpus tpu-vm create tpu-v6e-64 --spot --zone=us-east1-d --accelerator-type=v6e-64 --version=v2-alpha-tpuv6e --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+alias gtc6x4="gcloud compute tpus tpu-vm create tpu-v6e-64 --spot --zone=us-east1-d --accelerator-type=v6e-64 --version=v2-alpha-tpuv6e --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
 
 # For these, need to manually append --spot if want preemptible
 alias gtc4x1="gcloud compute tpus tpu-vm create tpu-v4-8 --zone=us-central2-b --accelerator-type=v4-8 --version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
-alias gtc4x2="gcloud compute tpus tpu-vm create tpu-v4-16 --zone=us-central2-b --accelerator-type=v4-8 --version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
-alias gtc4x8="gcloud compute tpus tpu-vm create tpu-v4-64 --zone=us-central2-b --accelerator-type=v4-64 --version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+alias gtc4x2="gcloud compute tpus tpu-vm create tpu-v4-16 --zone=us-central2-b --accelerator-type=v4-16 --version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+alias gtc4x3="gcloud compute tpus tpu-vm create tpu-v4-16 --zone=us-central2-b --accelerator-type=v4-16 --version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+alias gtc4x4="gcloud compute tpus tpu-vm create tpu-v4-64 --zone=us-central2-b --accelerator-type=v4-64 --version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+alias gtcs4x4="gcloud compute tpus tpu-vm create tpu-v4-64-spot --spot --zone=us-central2-b --accelerator-type=v4-64 --version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
 
 # Queued resources with startup script
 alias gtqc4x1="gcloud compute tpus queued-resources create tpu-v4-8 --node-id=tpu-v4-8 --project=tpus-447923 --zone=us-central2-b --accelerator-type=v4-8 --runtime-version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
