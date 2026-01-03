@@ -17,12 +17,15 @@ config.window_padding = {
 
 -- key remappings
 config.keys = {
-	-- Send Ctrl+Enter as a distinct key sequence
 	{
 		key = "Enter",
 		mods = "CTRL",
 		action = wezterm.action.SendString("\x1b[13;5u"),
-		-- Ctrl+Shift+Enter
+	},
+	{
+		key = "Enter",
+		mods = "SHIFT",
+		action = wezterm.action.SendString("\x1b\r"),
 	},
 	{
 		key = "Enter",
@@ -32,22 +35,22 @@ config.keys = {
 	{
 		key = "k",
 		mods = "CTRL|SHIFT",
-		action = wezterm.action.SendString("\x1b[75;6u"), -- K is ASCII 75
+		action = wezterm.action.SendString("\x1b[75;6u"),
 	},
 	{
 		key = "j",
 		mods = "CTRL|SHIFT",
-		action = wezterm.action.SendString("\x1b[74;6u"), -- J is ASCII 74
+		action = wezterm.action.SendString("\x1b[74;6u"),
 	},
 	{
 		key = "o",
 		mods = "CTRL|SHIFT",
-		action = wezterm.action.SendString("\x1b[79;6u"), -- J is ASCII 74
+		action = wezterm.action.SendString("\x1b[79;6u"),
 	},
 	{
 		key = "Backspace",
 		mods = "CTRL",
-		action = wezterm.action.SendString("\x1b[127;5u"), -- Backspace is ASCII 127
+		action = wezterm.action.SendString("\x1b[127;5u"),
 	},
 }
 
