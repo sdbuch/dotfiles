@@ -162,13 +162,15 @@ vim.api.nvim_create_autocmd("FileType", {
 		end, 100)
 	end,
 })
--- vim.api.nvim_create_autocmd('FileType', {
--- 	pattern = 'python',
--- 	callback = function ()
--- 		vim.opt.formatoptions:append({ 't' })
--- 		vim.o.textwidth = 88
--- 	end
--- })
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "python",
+	callback = function()
+		vim.o.textwidth = 88
+		vim.opt_local.tabstop = 2
+		vim.opt_local.shiftwidth = 2
+		vim.opt_local.expandtab = true
+	end,
+})
 
 -- template commands (python, tex stubs)
 vim.api.nvim_create_user_command("Article", ":r ~/.vim/article_base.txt", {})

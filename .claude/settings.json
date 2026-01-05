@@ -14,6 +14,7 @@
     ],
     "deny": []
   },
+  "model": "opus",
   "hooks": {
     "Notification": [
       {
@@ -42,7 +43,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "file=$(cat | jq -r '.tool_input.file_path // .tool_input.file // \"\"'); [[ \"$file\" == *.py ]] && uv run ruff format \"$file\" && uv run ruff check --fix \"$file\"; true"
+            "command": "file=$(cat | jq -r '.tool_input.file_path // .tool_input.file // \"\"'); has_proj() { d=\"$PWD\"; while [[ \"$d\" != \"/\" ]]; do [[ -f \"$d/pyproject.toml\" ]] && return 0; d=$(dirname \"$d\"); done; return 1; }; [[ \"$file\" == *.py ]] && { if has_proj; then uv run ruff format \"$file\" && uv run ruff check --fix \"$file\"; else uvx ruff format \"$file\" && uvx ruff check --fix \"$file\"; fi; }; true"
           }
         ]
       },
@@ -56,6 +57,5 @@
         ]
       }
     ]
-  },
-  "model": "opus"
+  }
 }
