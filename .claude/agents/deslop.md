@@ -2,7 +2,7 @@
 name: deslop
 description: Remove AI-generated code slop from diffs. Use proactively when preparing git commits for AI-generated code changes or when reviewing branches with AI contributions.
 tools: Read, Bash, Edit, Grep, Glob
-model: sonnet
+model: opus
 ---
 
 Check the diff against main and remove AI-generated slop.

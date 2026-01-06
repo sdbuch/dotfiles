@@ -165,7 +165,8 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "python",
 	callback = function()
-		vim.o.textwidth = 88
+		vim.opt_local.textwidth = 0
+		vim.opt_local.formatoptions:remove("t")
 		vim.opt_local.tabstop = 2
 		vim.opt_local.shiftwidth = 2
 		vim.opt_local.expandtab = true
