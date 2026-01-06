@@ -4,7 +4,19 @@
       "WebFetch(domain:neovim.io)",
       "Bash(python3:*)",
       "Bash(tree:*)",
-      "WebFetch(domain:arxiv.org)"
+      "WebFetch(domain:arxiv.org)",
+      "Bash(chmod:*)",
+      "Bash(command -v:*)",
+      "Bash(terminal-notifier:*)",
+      "Bash(./deploy_osx.sh:*)",
+      "Bash(bash:*)",
+      "Bash(tmux list-sessions:*)",
+      "Bash(tmux list-windows:*)",
+      "Bash(echo:*)",
+      "Bash(/opt/homebrew/bin/tmux list-sessions:*)",
+      "Bash(/usr/local/bin/tmux list-sessions:*)",
+      "Bash(/opt/homebrew/bin/tmux display-message:*)",
+      "Bash(/opt/homebrew/bin/tmux switch-client:*)"
     ],
     "deny": [],
     "ask": []

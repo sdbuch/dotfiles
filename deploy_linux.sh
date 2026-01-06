@@ -42,8 +42,11 @@ mln "$DOTFILES_DIR/.inputrc" ~/.inputrc
 mln "$DOTFILES_DIR/.claude/CLAUDE.md" ~/.claude/CLAUDE.md
 mln "$DOTFILES_DIR/.claude/settings.json" ~/.claude/settings.json
 mln "$DOTFILES_DIR/.claude/hooks/typecheck-python.sh" ~/.claude/hooks/typecheck-python.sh
+mln "$DOTFILES_DIR/.claude/hooks/ruff-python.sh" ~/.claude/hooks/ruff-python.sh
+mln "$DOTFILES_DIR/.claude/hooks/notify.sh" ~/.claude/hooks/notify.sh
 mln "$DOTFILES_DIR/.claude/agents/deslop.md" ~/.claude/agents/deslop.md
 mln "$DOTFILES_DIR/.claude/skills/notion-llm-config" ~/.claude/skills/notion-llm-config
+mln "$DOTFILES_DIR/.claude/skills/arxiv-html" ~/.claude/skills/arxiv-html
 
 if [ ! -f ~/.zshrc ]; then
     echo ". $DOTFILES_DIR/.zshrc_base_linux" > ~/.zshrc
