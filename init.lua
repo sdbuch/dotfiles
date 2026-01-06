@@ -28,6 +28,7 @@ vim.opt.scrolloff = 10
 vim.g.sonokai_style = "espresso"
 vim.g.sonokai_better_performance = 1
 vim.g.sonokai_spell_foreground = "colored"
+vim.g.sonokai_float_style = "dim"
 
 -- Use current file's parent as cwd.
 vim.opt.autochdir = true
@@ -500,7 +501,7 @@ local lazy_plugins = {
 	{ "farmergreg/vim-lastplace" },
 	-- Web-based Markdown preview.
 	{
-		"iamcco/markdown-preview.nvim",
+		"sdbuch/markdown-preview.nvim",
 		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
 		ft = { "markdown" },
 		build = function()
@@ -516,6 +517,10 @@ local lazy_plugins = {
 				katex = {},
 				mermaid = {},
 				disable_filename = 0,
+				highlight = {
+					enable = true,
+					theme = "monokai",
+				},
 			}
 			vim.g.mkdp_combine_preview = 1
 			vim.g.mkdp_combine_preview_auto_refresh = 1
