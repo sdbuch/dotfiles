@@ -25,6 +25,7 @@ export PATH="$HOME/.local/bin:$PATH"
 mkdir -p ~/.vim/{colors,snippets}
 mkdir -p ~/scripts
 mkdir -p ~/.config/nvim/lua/lualine/themes
+mkdir -p ~/.config/nvim/lua/config
 mkdir -p ~/.claude/hooks
 mkdir -p ~/.claude/skills
 mkdir -p ~/.claude/agents
@@ -55,6 +56,8 @@ mln "$DOTFILES_DIR/latex_highlights.scm" ~/.config/nvim/bundle/nvim-treesitter/q
 mln "$DOTFILES_DIR/plugins.lua" ~/.config/nvim/lua/plugins.lua
 touch "$DOTFILES_DIR/local_config.lua"
 mln "$DOTFILES_DIR/local_config.lua" ~/.config/nvim/lua/local_config.lua
+mln "$DOTFILES_DIR/lua/config/quarto.lua" ~/.config/nvim/lua/config/quarto.lua
+mln "$DOTFILES_DIR/lua/config/molten.lua" ~/.config/nvim/lua/config/molten.lua
 
 if ! grep -q "# DOTFILES_SOURCED" ~/.bashrc 2>/dev/null; then
     echo "# DOTFILES_SOURCED" >> ~/.bashrc

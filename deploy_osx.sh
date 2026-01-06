@@ -4,6 +4,7 @@ source "$(dirname "$0")/deploy_common.sh"
 
 # Create directory structure
 mkdir -p ~/.config/nvim/lua/lualine/themes
+mkdir -p ~/.config/nvim/lua/config
 mkdir -p ~/.config/nvim/snippets
 mkdir -p ~/.vim/{colors,snippets}
 mkdir -p ~/scripts
@@ -63,6 +64,8 @@ mln "$DOTFILES_DIR/latex_highlights.scm" ~/.config/nvim/bundle/nvim-treesitter/q
 mln "$DOTFILES_DIR/plugins.lua" ~/.config/nvim/lua/plugins.lua
 touch "$DOTFILES_DIR/local_config.lua"
 mln "$DOTFILES_DIR/local_config.lua" ~/.config/nvim/lua/local_config.lua
+mln "$DOTFILES_DIR/lua/config/quarto.lua" ~/.config/nvim/lua/config/quarto.lua
+mln "$DOTFILES_DIR/lua/config/molten.lua" ~/.config/nvim/lua/config/molten.lua
 mln "$DOTFILES_DIR/.jupyter/jupyter_qtconsole_config.py" ~/.jupyter/jupyter_qtconsole_config.py
 mln "$DOTFILES_DIR/.ipython/sam_utility.py" ~/.ipython/sam_utility.py
 mln "$DOTFILES_DIR/.ipython/profile_default/ipython_config.py" ~/.ipython/profile_default/ipython_config.py

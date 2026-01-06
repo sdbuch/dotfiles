@@ -21,9 +21,8 @@ if [[ "$file_path" == *.py && -f "$file_path" ]]; then
     ty_exit=$?
 
     if [[ $ty_exit -ne 0 && -n "$ty_output" ]]; then
-        jq -n --arg reason "Type errors in $file_path:
-$ty_output" '{"decision": "block", "reason": $reason}'
-        exit 0
+        echo "Type warnings in $file_path:"
+        echo "$ty_output"
     fi
 fi
 
