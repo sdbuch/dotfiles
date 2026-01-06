@@ -28,7 +28,6 @@ vim.opt.scrolloff = 10
 vim.g.sonokai_style = "espresso"
 vim.g.sonokai_better_performance = 1
 vim.g.sonokai_spell_foreground = "colored"
-vim.g.sonokai_float_style = "dim"
 
 -- Use current file's parent as cwd.
 vim.opt.autochdir = true
@@ -253,7 +252,20 @@ local lazy_plugins = {
 		"sainnhe/sonokai",
 		priority = 1000,
 		config = function()
+			vim.g.sonokai_colors_override = { bg_dim = { "#312c2b", "235" } }
 			vim.cmd.colorscheme("sonokai")
+			local function apply_custom_highlights()
+				vim.api.nvim_set_hl(0, "SignColumn", { bg = "#312c2b" })
+				vim.api.nvim_set_hl(0, "LineNr", { fg = "#6a5e59", bg = "#312c2b" })
+				vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#e4e3e1", bg = "#312c2b", bold = true })
+				vim.api.nvim_set_hl(0, "FoldColumn", { fg = "#6a5e59", bg = "#312c2b" })
+				vim.api.nvim_set_hl(0, "StatusLine", { fg = "#e4e3e1", bg = "#312c2b" })
+				vim.api.nvim_set_hl(0, "StatusLineNC", { fg = "#6a5e59", bg = "#312c2b" })
+				vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#6a5e59", bg = "#312c2b" })
+				vim.api.nvim_set_hl(0, "VertSplit", { fg = "#6a5e59", bg = "#312c2b" })
+			end
+			apply_custom_highlights()
+			vim.api.nvim_create_autocmd("ColorScheme", { callback = apply_custom_highlights })
 		end,
 		build = function()
 			local plugpath = vim.fn.stdpath("data") .. "/lazy"
@@ -383,7 +395,16 @@ local lazy_plugins = {
 				provider_selector = function()
 					return { "treesitter", "indent" }
 				end,
+				preview = {
+					win_config = {
+						winhighlight = "Normal:Normal,LineNr:UfoPreviewLineNr,CursorLineNr:UfoPreviewCursorLineNr,SignColumn:UfoPreviewSignColumn,FoldColumn:UfoPreviewFoldColumn",
+					},
+				},
 			})
+			vim.api.nvim_set_hl(0, "UfoPreviewLineNr", { fg = "#6a5e59", bg = "#312c2b" })
+			vim.api.nvim_set_hl(0, "UfoPreviewCursorLineNr", { fg = "#e4e3e1", bg = "#312c2b", bold = true })
+			vim.api.nvim_set_hl(0, "UfoPreviewSignColumn", { bg = "#312c2b" })
+			vim.api.nvim_set_hl(0, "UfoPreviewFoldColumn", { bg = "#312c2b" })
 
 			vim.keymap.set("n", "zR", require("ufo").openAllFolds)
 			vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
@@ -504,9 +525,7 @@ local lazy_plugins = {
 		"sdbuch/markdown-preview.nvim",
 		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
 		ft = { "markdown" },
-		build = function()
-			vim.fn["mkdp#util#install"]()
-		end,
+		build = "cd app && npx --yes yarn install",
 		config = function()
 			vim.g.mkdp_theme = "dark"
 			vim.g.mkdp_preview_options = {
@@ -917,16 +936,18 @@ local lazy_plugins = {
 			end
 
 			local cmp = require("cmp")
+			local bordered = cmp.config.window.bordered({
+				border = "rounded",
+				winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,CursorLine:PmenuSel,Search:None",
+				side_padding = 0,
+			})
 			cmp.setup({
 				snippet = {
 					expand = function(args)
 						require("luasnip").lsp_expand(args.body)
 					end,
 				},
-				window = {
-					completion = cmp.config.window.bordered(),
-					documentation = cmp.config.window.bordered(),
-				},
+				window = { completion = bordered, documentation = bordered },
 				mapping = cmp.mapping.preset.insert({
 					["<C-b>"] = cmp.mapping.scroll_docs(-4),
 					["<C-f>"] = cmp.mapping.scroll_docs(4),
@@ -994,8 +1015,6 @@ local lazy_plugins = {
 			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextWarn", { fg = "#5a5a30" })
 			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextInfo", { fg = "#303f5a" })
 			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextHint", { fg = "#305a35" })
-			vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#333333", bg = "#a7a7a7" })
-			vim.api.nvim_set_hl(0, "CursorLine", { bg = "#333333" })
 
 			ensure_installed("python", "pyright")
 			ensure_installed("python", "ty")

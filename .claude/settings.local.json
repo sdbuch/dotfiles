@@ -16,7 +16,11 @@
       "Bash(/opt/homebrew/bin/tmux list-sessions:*)",
       "Bash(/usr/local/bin/tmux list-sessions:*)",
       "Bash(/opt/homebrew/bin/tmux display-message:*)",
-      "Bash(/opt/homebrew/bin/tmux switch-client:*)"
+      "Bash(/opt/homebrew/bin/tmux switch-client:*)",
+      "Bash(nvim --version:*)",
+      "Bash(nvim:*)",
+      "Bash(luac:*)",
+      "Bash(lua:*)"
     ],
     "deny": [],
     "ask": []
