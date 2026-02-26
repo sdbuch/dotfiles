@@ -128,8 +128,8 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.o.textwidth = 88
 		vim.opt_local.iskeyword = "@,48-57,_,192-255,-"
 		vim.defer_fn(function()
-			vim.opt_local.tabstop = 4
-			vim.opt_local.shiftwidth = 4
+			vim.opt_local.tabstop = 2
+			vim.opt_local.shiftwidth = 2
 			vim.opt_local.expandtab = true
 		end, 100)
 	end,
@@ -334,6 +334,9 @@ local lazy_plugins = {
 	{
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter-textobjects",
+		},
 		config = function()
 			---@diagnostic disable-next-line: missing-fields
 			require("nvim-treesitter.configs").setup({
@@ -383,7 +386,49 @@ local lazy_plugins = {
 					enable = false,
 					disable = { "latex" },
 				},
+				-- treesitter-textobjects
+				textobjects = {
+					select = {
+						enable = true,
+						lookahead = true,
+						keymaps = {
+							["af"] = "@function.outer",
+							["if"] = "@function.inner",
+							["ac"] = "@class.outer",
+							["ic"] = "@class.inner",
+						},
+					},
+					move = {
+						enable = true,
+						set_jumps = true,
+						goto_next_end = {
+							["<leader>J"] = { query = { "@conditional.outer", "@loop.outer" } },
+							["<leader>j"] = { query = { "@function.outer", "@class.outer" } },
+						},
+						goto_previous_start = {
+							["<leader>K"] = { query = { "@conditional.outer", "@loop.outer" } },
+							["<leader>k"] = { query = { "@function.outer", "@class.outer" } },
+						},
+					},
+					-- lsp_interop = {
+					-- 	enable = true,
+					-- 	border = "rounded",
+					-- 	peek_definition_code = {
+					-- 		["<leader>fK"] = "@function.outer",
+					-- 		["<leader>cK"] = "@class.outer",
+					-- 	},
+					-- },
+				},
 			})
+
+			-- Repeatable movements with ;
+			local ts_repeat_move = require("nvim-treesitter.textobjects.repeatable_move")
+			vim.keymap.set({ "n", "x", "o" }, ";", ts_repeat_move.repeat_last_move)
+			-- Make builtin f, F, t, T repeatable with ;
+			vim.keymap.set({ "n", "x", "o" }, "f", ts_repeat_move.builtin_f_expr, { expr = true })
+			vim.keymap.set({ "n", "x", "o" }, "F", ts_repeat_move.builtin_F_expr, { expr = true })
+			vim.keymap.set({ "n", "x", "o" }, "t", ts_repeat_move.builtin_t_expr, { expr = true })
+			vim.keymap.set({ "n", "x", "o" }, "T", ts_repeat_move.builtin_T_expr, { expr = true })
 		end,
 	},
 	-- folding
@@ -507,8 +552,6 @@ local lazy_plugins = {
 	{ "tpope/vim-fugitive" },
 	{ "lewis6991/gitsigns.nvim", config = true },
 	{ "akinsho/git-conflict.nvim", version = "*", config = true },
-	-- Comments. By default, bound to `gcc`.
-	{ "numToStr/Comment.nvim", config = true },
 	-- Motions.
 	{ "kylechui/nvim-surround", config = true },
 	{ "andymass/vim-matchup" },
@@ -520,6 +563,8 @@ local lazy_plugins = {
 	},
 	-- Persist the cursor position when we close a file.
 	{ "farmergreg/vim-lastplace" },
+	-- Auto-reload buffers when files change on disk (useful with CLI agents).
+	{ "diogo464/hotreload.nvim", opts = {} },
 	-- Web-based Markdown preview.
 	{
 		"sdbuch/markdown-preview.nvim",
@@ -651,9 +696,9 @@ local lazy_plugins = {
 			vim.keymap.set("n", "<Leader>dl", function()
 				require("dap").run_last()
 			end)
-			vim.keymap.set({ "n", "v" }, "<Leader>K", function()
-				require("dap.ui.widgets").hover()
-			end)
+			-- vim.keymap.set({ "n", "v" }, "<Leader>K", function()
+			-- 	require("dap.ui.widgets").hover()
+			-- end)
 			vim.keymap.set({ "n", "v" }, "<Leader>dp", function()
 				require("dap").pause()
 			end)
@@ -711,7 +756,7 @@ local lazy_plugins = {
 		dependencies = {
 			{
 				"sdbuch/otter.nvim",
-				branch = "experimental-re",
+				branch = "experimental-re-v2",
 				opts = {},
 			},
 			{ "nvim-treesitter/nvim-treesitter" },
@@ -832,7 +877,6 @@ local lazy_plugins = {
 			end)
 
 			ensure_installed("lua", "stylua")
-			ensure_installed("python", "isort")
 			ensure_installed("python", "ruff")
 			ensure_installed("typescript,javascript,typescriptreact,javascriptreact", "prettierd")
 			ensure_installed("html,css,scss", "prettierd")
@@ -892,7 +936,9 @@ local lazy_plugins = {
 						r = "r",
 						typescript = "ts",
 					},
-					lang_to_formatters = {},
+					lang_to_formatters = {
+						python = { "ruff_format", "ruff_fix", "ruff_organize_imports" },
+					},
 				},
 			}
 		end,

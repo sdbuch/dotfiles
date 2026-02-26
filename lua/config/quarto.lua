@@ -1,6 +1,54 @@
 local M = {}
 
+-- Fix Neovim's built-in gc commenting for buffers with treesitter injections.
+-- _comment.lua iterates all filetypes for a treesitter language and takes the
+-- last non-empty commentstring, which is wrong when spurious filetypes (py,
+-- gyp, rmd) have incorrect commentstrings. This hook detects the actual
+-- language at the cursor and uses it directly.
+local original_get_option = vim.filetype.get_option
+vim.filetype.get_option = function(filetype, option)
+	if option ~= "commentstring" then
+		return original_get_option(filetype, option)
+	end
+
+	local ok, parser = pcall(vim.treesitter.get_parser, 0)
+	if not ok or not parser or not next(parser:children()) then
+		return original_get_option(filetype, option)
+	end
+
+	local cursor = vim.api.nvim_win_get_cursor(0)
+	local row, col = cursor[1] - 1, cursor[2]
+	local range = { row, col, row, col + 1 }
+
+	local lang = parser:lang()
+	local function find_deepest(tree)
+		for _, child in pairs(tree:children()) do
+			if child:contains(range) then
+				lang = child:lang()
+				find_deepest(child)
+			end
+		end
+	end
+	find_deepest(parser)
+
+	local cs = original_get_option(lang, "commentstring")
+	if cs and cs ~= "" then
+		return cs
+	end
+
+	return original_get_option(filetype, option)
+end
+
 function M.setup()
+	-- Kill rmd.vim's CursorMoved autocmd that only detects R code blocks
+	-- and sets wrong commentstring for all other languages
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = "quarto",
+		callback = function()
+			pcall(vim.api.nvim_del_augroup_by_name, "RmdCStr")
+		end,
+	})
+
 	local quarto = require("quarto")
 	quarto.setup({
 		lspFeatures = {
@@ -34,7 +82,7 @@ function M.setup()
 	local function insert_python_code_block()
 		local current_line = vim.api.nvim_win_get_cursor(0)[1]
 		vim.api.nvim_buf_set_lines(0, current_line - 1, current_line - 1, false, {
-			"```python",
+			"```{python}",
 			"",
 			"```",
 		})
@@ -48,8 +96,8 @@ function M.setup()
 		return
 	end
 
-	local ok_config, quarto_config = pcall(require, "quarto.config")
-	local config = ok_config and quarto_config.config or { codeRunner = { never_run = {} } }
+	pcall(require, "quarto.config")
+	local config = QuartoConfig or { codeRunner = { never_run = {} } }
 
 	local code_languages = {
 		"python",

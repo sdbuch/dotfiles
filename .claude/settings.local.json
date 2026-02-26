@@ -20,7 +20,8 @@
       "Bash(nvim --version:*)",
       "Bash(nvim:*)",
       "Bash(luac:*)",
-      "Bash(lua:*)"
+      "Bash(lua:*)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [],
     "ask": []

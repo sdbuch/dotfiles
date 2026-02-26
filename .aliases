@@ -26,7 +26,7 @@ alias upyterm='uv run ipython --profile=term'
 # uinit - Initialize a uv project with common dependencies and ruff configuration
 uinit() {
     echo "🚀 Initializing uv project..."
-    uv init
+    uv init --bare
 
     echo "📦 Adding dependencies..."
     uv add \
@@ -34,11 +34,8 @@ uinit() {
         matplotlib \
         treescope \
         matplotlib-backend-sixel \
-        einops \
         pynvim \
         jupyter_client \
-        debugpy \
-        pytest \
         ipykernel \
         requests \
         websocket-client
@@ -47,43 +44,26 @@ uinit() {
     cat >> pyproject.toml << 'EOF'
 
 [tool.ruff]
-# Basic configuration
 line-length = 88
 indent-width = 2
 
 [tool.ruff.format]
 indent-style = "space"
 
-# Rule selection
+[tool.ruff.lint]
+fixable = ["ALL"]
+unfixable = []
+
 select = ["E", "W", "F"]  # Error, Warning, and Pyflakes rules
 
-# Rules to ignore
 ignore = [
     "F401",  # Unused import
     "F821",  # Undefined name
     "E402",  # Module level import not at top of file
     "F841",  # Local variable assigned but not used
+    "E731",  # use a def, not a lambda
 ]
-
-[tool.ruff.lint]
-# Enable fix mode (equivalent to --fix flag)
-fixable = ["ALL"]
-unfixable = []
-
-# Additional lint configuration can go here
-# select and ignore can also be specified here instead of under [tool.ruff]
 EOF
-
-    echo "✨ Project initialized successfully!"
-    echo "📁 Current project structure:"
-    ls -la
-
-    echo ""
-    echo "🎯 Next steps:"
-    echo "  • Edit src/$(basename "$PWD")/main.py to start coding"
-    echo "  • Run 'uv run python -m src.$(basename "$PWD").main' to execute"
-    echo "  • Run 'uv run ruff check --fix .' to lint and fix code"
-    echo "  • Run 'uv run pytest' to run tests"
 }
 
 alias action="source .venv/bin/activate"
@@ -512,5 +492,7 @@ bookv2_sync_rev() {
 
 # Run command and copy both command + output to clipboard
 cprun() {
-    { echo "\$ $*"; "$@" 2>&1; } | tee /dev/tty | pbcopy
+    local cmd
+    cmd=$(printf '%q ' "$@")
+    { echo "\$ $*"; eval "$cmd" 2>&1; } | tee /dev/tty | pbcopy
 }
