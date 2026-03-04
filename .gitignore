@@ -3,3 +3,4 @@ package.json
 package-lock.json
 tags
 local_config.lua
+**/.venv/

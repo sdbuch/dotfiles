@@ -21,7 +21,10 @@
       "Bash(nvim:*)",
       "Bash(luac:*)",
       "Bash(lua:*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:dblp.org)"
     ],
     "deny": [],
     "ask": []

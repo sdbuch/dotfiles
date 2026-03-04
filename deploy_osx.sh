@@ -22,7 +22,12 @@ mln "$DOTFILES_DIR/.claude/hooks/notify.sh" ~/.claude/hooks/notify.sh
 mln "$DOTFILES_DIR/.claude/agents/deslop.md" ~/.claude/agents/deslop.md
 mln "$DOTFILES_DIR/.claude/skills/notion-llm-config" ~/.claude/skills/notion-llm-config
 mln "$DOTFILES_DIR/.claude/skills/arxiv-html" ~/.claude/skills/arxiv-html
+mln "$DOTFILES_DIR/.claude/skills/dblp-reffix" ~/.claude/skills/dblp-reffix
+mln "$DOTFILES_DIR/.claude/skills/scan" ~/.claude/skills/scan
+mln "$DOTFILES_DIR/.claude/skills/gmail" ~/.claude/skills/gmail
+mln "$DOTFILES_DIR/.claude/skills/calendar" ~/.claude/skills/calendar
 mln "$DOTFILES_DIR/.cursor/mcp.json" ~/.cursor/mcp.json
+mkdir -p ~/.config/google-oauth
 
 # Config files
 mln "$DOTFILES_DIR/latex.ctags" ~/.ctags.d/latex.ctags

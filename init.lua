@@ -488,10 +488,16 @@ local lazy_plugins = {
 
 			local builtin = require("telescope.builtin")
 			vim.keymap.set("n", "<Leader>ff", function()
-				builtin.find_files({ cwd = vim.b["Telescope#repository_root"] })
+				builtin.find_files({ cwd = vim.b["Telescope#repository_root"], hidden = true })
 			end)
 			vim.keymap.set("n", "<Leader>fg", function()
-				builtin.live_grep({ cwd = vim.b["Telescope#repository_root"] })
+				builtin.live_grep({ cwd = vim.b["Telescope#repository_root"], additional_args = { "--hidden" } })
+			end)
+			vim.keymap.set("n", "<Leader>fG", function()
+				builtin.live_grep({
+					cwd = vim.b["Telescope#repository_root"],
+					additional_args = { "--hidden", "--multiline" },
+				})
 			end)
 			vim.keymap.set("n", "<Leader>fb", builtin.buffers)
 			vim.keymap.set("n", "<Leader>fh", builtin.help_tags)
