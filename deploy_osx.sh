@@ -82,14 +82,58 @@ cp "$DOTFILES_DIR/keyremap_windowskb.sh" ~/keyremap_windowskb.sh
 sudo cp "$DOTFILES_DIR/com.user.keyboardmapping.plist" /Library/LaunchDaemons/com.user.keyboardmapping.plist
 git config --global core.excludesfile ~/.gitignore_global
 
+# Install Homebrew if not present
+if ! command -v brew &> /dev/null; then
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+# Brew packages
+brew install wget diff-so-fancy ripgrep tmux rbenv keychain
+brew install --cask docker
+
+# Install uv if not present
+if ! command -v uv &> /dev/null; then
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+fi
+
+# Mac App Store CLI (for Magnet, Strongbox)
+if ! command -v mas &> /dev/null; then
+    brew install mas
+fi
+# Magnet (id: 441258766), Strongbox (id: 897283731)
+mas install 441258766 || echo "Could not install Magnet — may need to be signed into App Store"
+mas install 897283731 || echo "Could not install Strongbox — may need to be signed into App Store"
+
 if [ ! -d ~/.oh-my-zsh ]; then
     curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o ~/zsh_install.sh
     sh ~/zsh_install.sh --keep-zshrc --unattended
 fi
-# TODO: custom oh-my-zsh plugins
+# Install oh-my-zsh custom plugins
+if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-vi-mode ]; then
+    git clone https://github.com/jeffreytse/zsh-vi-mode ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-vi-mode
+fi
+
+if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions ]; then
+    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+fi
 
 chmod +x "$DOTFILES_DIR/install_nvim_osx.sh"
 "$DOTFILES_DIR/install_nvim_osx.sh"
+
+# Install Node.js using nvm if not present
+if ! command -v node &> /dev/null; then
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    nvm install node
+fi
+
+# Ensure npm global packages are installed
+if command -v npm &> /dev/null; then
+    npm list -g tree-sitter-cli &> /dev/null || npm install -g tree-sitter-cli
+    npm list -g typewritten &> /dev/null || npm install -g typewritten
+fi
 
 # Tmux plugin manager
 if [ ! -d ~/.tmux/plugins/tpm ]; then

@@ -7,7 +7,7 @@
 local ENABLE_IMAGE_SUPPORT = false
 
 local ok, local_config = pcall(require, "local_config")
-if ok and local_config.ENABLE_IMAGE_SUPPORT ~= nil then
+if ok and type(local_config) == "table" and local_config.ENABLE_IMAGE_SUPPORT ~= nil then
 	ENABLE_IMAGE_SUPPORT = local_config.ENABLE_IMAGE_SUPPORT
 end
 
@@ -339,7 +339,7 @@ local lazy_plugins = {
 		},
 		config = function()
 			---@diagnostic disable-next-line: missing-fields
-			require("nvim-treesitter.configs").setup({
+			require("nvim-treesitter").setup({
 				ensure_installed = {
 					"c",
 					"cpp",
@@ -357,72 +357,50 @@ local lazy_plugins = {
 					"latex",
 					"bibtex",
 				},
-				matchup = {
-					enable = true,
-					disable = {
-						"tex",
-						"html",
-						"c",
-						"ruby",
-						"config",
-						"liquid",
-						"lua",
-						"make",
-						"plaintex",
-						"sh",
-						"vim",
-						"xml",
-					},
-				},
 				sync_install = false,
 				auto_install = true,
 				ignore_install = { "perl" },
-				highlight = {
+			})
+
+			-- Enable treesitter highlight and indent
+			vim.treesitter.start = vim.treesitter.start -- ensure available
+			vim.api.nvim_create_autocmd("FileType", {
+				callback = function(args)
+					pcall(vim.treesitter.start, args.buf)
+				end,
+			})
+
+			-- matchup integration
+			vim.g.matchup_matchparen_offscreen = { method = "popup" }
+
+			-- treesitter-textobjects
+			require("nvim-treesitter-textobjects").setup({
+				select = {
 					enable = true,
-					disable = {},
-					additional_vim_regex_highlighting = { "latex" },
-				},
-				indent = {
-					enable = false,
-					disable = { "latex" },
-				},
-				-- treesitter-textobjects
-				textobjects = {
-					select = {
-						enable = true,
-						lookahead = true,
-						keymaps = {
-							["af"] = "@function.outer",
-							["if"] = "@function.inner",
-							["ac"] = "@class.outer",
-							["ic"] = "@class.inner",
-						},
+					lookahead = true,
+					keymaps = {
+						["af"] = "@function.outer",
+						["if"] = "@function.inner",
+						["ac"] = "@class.outer",
+						["ic"] = "@class.inner",
 					},
-					move = {
-						enable = true,
-						set_jumps = true,
-						goto_next_end = {
-							["<leader>J"] = { query = { "@conditional.outer", "@loop.outer" } },
-							["<leader>j"] = { query = { "@function.outer", "@class.outer" } },
-						},
-						goto_previous_start = {
-							["<leader>K"] = { query = { "@conditional.outer", "@loop.outer" } },
-							["<leader>k"] = { query = { "@function.outer", "@class.outer" } },
-						},
+				},
+				move = {
+					enable = true,
+					set_jumps = true,
+					goto_next_end = {
+						["<leader>J"] = { query = { "@conditional.outer", "@loop.outer" } },
+						["<leader>j"] = { query = { "@function.outer", "@class.outer" } },
 					},
-					-- lsp_interop = {
-					-- 	enable = true,
-					-- 	border = "rounded",
-					-- 	peek_definition_code = {
-					-- 		["<leader>fK"] = "@function.outer",
-					-- 		["<leader>cK"] = "@class.outer",
-					-- 	},
-					-- },
+					goto_previous_start = {
+						["<leader>K"] = { query = { "@conditional.outer", "@loop.outer" } },
+						["<leader>k"] = { query = { "@function.outer", "@class.outer" } },
+					},
 				},
 			})
 
 			-- Repeatable movements with ;
-			local ts_repeat_move = require("nvim-treesitter.textobjects.repeatable_move")
+			local ts_repeat_move = require("nvim-treesitter-textobjects.repeatable_move")
 			vim.keymap.set({ "n", "x", "o" }, ";", ts_repeat_move.repeat_last_move)
 			-- Make builtin f, F, t, T repeatable with ;
 			vim.keymap.set({ "n", "x", "o" }, "f", ts_repeat_move.builtin_f_expr, { expr = true })

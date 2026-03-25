@@ -24,7 +24,8 @@
       "WebFetch(domain:github.com)",
       "Bash(gh api:*)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:dblp.org)"
+      "WebFetch(domain:dblp.org)",
+      "Bash(mas search:*)"
     ],
     "deny": [],
     "ask": []
