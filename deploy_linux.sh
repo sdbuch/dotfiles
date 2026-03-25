@@ -115,13 +115,20 @@ if ! command -v node &> /dev/null; then
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
     nvm install node
-    # Global npm packages (installed to ~/.local)
     npm config set prefix ~/.local
-    if [ "$INSTALL_MINIMAL" = true ]; then
-        npm install -g tree-sitter-cli
-    else
-        npm install -g tree-sitter-cli typewritten
+fi
+
+# Ensure npm global packages are installed
+if command -v npm &> /dev/null; then
+    npm list -g tree-sitter-cli &> /dev/null || npm install -g tree-sitter-cli
+    if [ "$INSTALL_MINIMAL" = false ]; then
+        npm list -g typewritten &> /dev/null || npm install -g typewritten
     fi
+fi
+
+# Install uv if not present
+if ! command -v uv &> /dev/null; then
+    curl -LsSf https://astral.sh/uv/install.sh | sh
 fi
 
 # Install ripgrep locally if not present
