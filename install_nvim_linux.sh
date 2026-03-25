@@ -3,29 +3,19 @@
 if ! command -v nvim &> /dev/null; then
     echo "nvim not found, installing..."
 
-    # Create ~/.local/bin if it doesn't exist
     mkdir -p ~/.local/bin
 
-    # Create temporary directory for download
     TEMP_DIR=$(mktemp -d)
     cd "$TEMP_DIR"
 
-    # Download nvim appimage
-    wget -O nvim.appimage https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.appimage
-    chmod +x nvim.appimage
+    wget https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.tar.gz
+    tar xzf nvim-linux-x86_64.tar.gz
 
-    # Extract the appimage
-    ./nvim.appimage --appimage-extract
-
-    # Remove any existing installation
     rm -rf ~/.local/nvim
     rm -f ~/.local/bin/nvim
+    mv nvim-linux-x86_64 ~/.local/nvim
+    ln -s ~/.local/nvim/bin/nvim ~/.local/bin/nvim
 
-    # Move to final location and create symlink
-    mv squashfs-root ~/.local/nvim
-    ln -s ~/.local/nvim/usr/bin/nvim ~/.local/bin/nvim
-
-    # Cleanup
     cd -
     rm -rf "$TEMP_DIR"
 

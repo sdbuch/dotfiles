@@ -126,6 +126,11 @@ if command -v npm &> /dev/null; then
     fi
 fi
 
+# Install Claude Code if not present
+if ! command -v claude &> /dev/null; then
+    curl -fsSL https://claude.ai/install.sh | sh
+fi
+
 # Install uv if not present
 if ! command -v uv &> /dev/null; then
     curl -LsSf https://astral.sh/uv/install.sh | sh

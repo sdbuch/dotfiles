@@ -89,7 +89,7 @@ if ! command -v brew &> /dev/null; then
 fi
 
 # Brew packages
-brew install wget diff-so-fancy ripgrep tmux rbenv keychain
+brew install wget diff-so-fancy ripgrep tmux rbenv keychain gh
 brew install --cask docker
 
 # Install uv if not present
@@ -133,6 +133,11 @@ fi
 if command -v npm &> /dev/null; then
     npm list -g tree-sitter-cli &> /dev/null || npm install -g tree-sitter-cli
     npm list -g typewritten &> /dev/null || npm install -g typewritten
+fi
+
+# Install Claude Code if not present
+if ! command -v claude &> /dev/null; then
+    curl -fsSL https://claude.ai/install.sh | sh
 fi
 
 # Tmux plugin manager
