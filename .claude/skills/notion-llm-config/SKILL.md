@@ -7,8 +7,10 @@ allowed-tools: mcp__notion__notion-search, mcp__notion__notion-fetch, mcp__notio
 # Notion LLM Config Table Management
 
 ## Database Information
-- **Database ID:** `ddfd95bd-109a-4ac6-955c-90541cc53d5e`
-- **Data Source ID:** `0a9fafd6-2cc2-4d6b-b6f0-3797ea777421`
+
+IDs are stored in `~/.config/notion/config.json`:
+- **Database ID:** `database_id` key
+- **Data Source ID:** `data_source_id` key
 - **Location:** Family Notes workspace → "LLM config table"
 - **Purpose:** Track LLM model configurations across multiple providers (Llama, GPT-2, Qwen, others)
 
@@ -99,7 +101,7 @@ mcp__notion__notion-update-page({
 mcp__notion__notion-search({
     "query": "Llama 4",
     "query_type": "internal",
-    "data_source_url": "collection://0a9fafd6-2cc2-4d6b-b6f0-3797ea777421"
+    "data_source_url": "collection://<DATA_SOURCE_ID>"
 })
 
 # Fetch page details
@@ -128,7 +130,7 @@ Representative "Main" models (user preference):
 ### Schema Updates
 ```python
 mcp__notion__notion-update-database({
-    "database_id": "ddfd95bd-109a-4ac6-955c-90541cc53d5e",
+    "database_id": "<DATABASE_ID>",
     "properties": {
         "New Column": {"type": "number", "number": {}}
     }

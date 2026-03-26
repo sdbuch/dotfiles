@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Parse command line arguments
+INSTALL_HOME=false
+for arg in "$@"; do
+    case $arg in
+        --home)
+            INSTALL_HOME=true
+            shift
+            ;;
+    esac
+done
+
 source "$(dirname "$0")/deploy_common.sh"
 
 # Create directory structure
@@ -16,16 +27,20 @@ mkdir -p ~/.cursor
 
 mln "$DOTFILES_DIR/.claude/CLAUDE.md" ~/.claude/CLAUDE.md
 mln "$DOTFILES_DIR/.claude/settings.json" ~/.claude/settings.json
+mln "$DOTFILES_DIR/.claude/statusline-command.sh" ~/.claude/statusline-command.sh
 mln "$DOTFILES_DIR/.claude/hooks/typecheck-python.sh" ~/.claude/hooks/typecheck-python.sh
 mln "$DOTFILES_DIR/.claude/hooks/ruff-python.sh" ~/.claude/hooks/ruff-python.sh
 mln "$DOTFILES_DIR/.claude/hooks/notify.sh" ~/.claude/hooks/notify.sh
 mln "$DOTFILES_DIR/.claude/agents/deslop.md" ~/.claude/agents/deslop.md
-mln "$DOTFILES_DIR/.claude/skills/notion-llm-config" ~/.claude/skills/notion-llm-config
-mln "$DOTFILES_DIR/.claude/skills/arxiv-html" ~/.claude/skills/arxiv-html
-mln "$DOTFILES_DIR/.claude/skills/dblp-reffix" ~/.claude/skills/dblp-reffix
-mln "$DOTFILES_DIR/.claude/skills/scan" ~/.claude/skills/scan
-mln "$DOTFILES_DIR/.claude/skills/gmail" ~/.claude/skills/gmail
-mln "$DOTFILES_DIR/.claude/skills/calendar" ~/.claude/skills/calendar
+if [ "$INSTALL_HOME" = true ]; then
+    mln "$DOTFILES_DIR/.claude/skills/notion-llm-config" ~/.claude/skills/notion-llm-config
+    mln "$DOTFILES_DIR/.claude/skills/arxiv-html" ~/.claude/skills/arxiv-html
+    mln "$DOTFILES_DIR/.claude/skills/dblp-reffix" ~/.claude/skills/dblp-reffix
+    mln "$DOTFILES_DIR/.claude/skills/scan" ~/.claude/skills/scan
+    mln "$DOTFILES_DIR/.claude/skills/gmail" ~/.claude/skills/gmail
+    mln "$DOTFILES_DIR/.claude/skills/calendar" ~/.claude/skills/calendar
+    mln "$DOTFILES_DIR/.claude/skills/nutrition" ~/.claude/skills/nutrition
+fi
 mln "$DOTFILES_DIR/.cursor/mcp.json" ~/.cursor/mcp.json
 mkdir -p ~/.config/google-oauth
 
@@ -90,7 +105,7 @@ fi
 
 # Brew packages
 brew install wget diff-so-fancy ripgrep tmux rbenv keychain gh
-brew install --cask docker cursor google-chrome
+brew install --cask docker
 
 # Install uv if not present
 if ! command -v uv &> /dev/null; then

@@ -89,10 +89,10 @@ IDs. With `--full` or other modes, outputs one message per section:
 
 ```
 ===== Message 1 of 3 =====
-From: Lisa <lisa@example.com>
-To: Sam <sam@example.com>
+From: Alice <alice@example.com>
+To: Bob <bob@example.com>
 Date: 2026-02-15 10:23 PST
-Subject: Re: Next Steps
+Subject: Re: Hello
 Message-ID: abc123  Thread-ID: def456
 
 [body text]

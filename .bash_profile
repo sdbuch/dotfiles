@@ -34,7 +34,6 @@ fi
 export EDITOR=nvim
 export PATH=${PATH}:/usr/local/lib
 export PATH=${PATH}:/opt/homebrew/lib
-export PATH=${PATH}:~/projects/github/keychain
 export PATH=${PATH}:~/bin
 export PATH=${PATH}:~/scripts
 export GEM_HOME="$HOME/.gem"

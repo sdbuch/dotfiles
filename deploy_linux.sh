@@ -3,6 +3,7 @@
 # Parse command line arguments
 INSTALL_SIXEL=false
 INSTALL_MINIMAL=false
+INSTALL_HOME=false
 for arg in "$@"; do
     case $arg in
         --sixel)
@@ -11,6 +12,10 @@ for arg in "$@"; do
             ;;
         --minimal)
             INSTALL_MINIMAL=true
+            shift
+            ;;
+        --home)
+            INSTALL_HOME=true
             shift
             ;;
     esac
@@ -41,12 +46,20 @@ mln "$DOTFILES_DIR/.tmux.conf" ~/.tmux.conf
 mln "$DOTFILES_DIR/.inputrc" ~/.inputrc
 mln "$DOTFILES_DIR/.claude/CLAUDE.md" ~/.claude/CLAUDE.md
 mln "$DOTFILES_DIR/.claude/settings.json" ~/.claude/settings.json
+mln "$DOTFILES_DIR/.claude/statusline-command.sh" ~/.claude/statusline-command.sh
 mln "$DOTFILES_DIR/.claude/hooks/typecheck-python.sh" ~/.claude/hooks/typecheck-python.sh
 mln "$DOTFILES_DIR/.claude/hooks/ruff-python.sh" ~/.claude/hooks/ruff-python.sh
 mln "$DOTFILES_DIR/.claude/hooks/notify.sh" ~/.claude/hooks/notify.sh
 mln "$DOTFILES_DIR/.claude/agents/deslop.md" ~/.claude/agents/deslop.md
-mln "$DOTFILES_DIR/.claude/skills/notion-llm-config" ~/.claude/skills/notion-llm-config
-mln "$DOTFILES_DIR/.claude/skills/arxiv-html" ~/.claude/skills/arxiv-html
+if [ "$INSTALL_HOME" = true ]; then
+    mln "$DOTFILES_DIR/.claude/skills/notion-llm-config" ~/.claude/skills/notion-llm-config
+    mln "$DOTFILES_DIR/.claude/skills/arxiv-html" ~/.claude/skills/arxiv-html
+    mln "$DOTFILES_DIR/.claude/skills/dblp-reffix" ~/.claude/skills/dblp-reffix
+    mln "$DOTFILES_DIR/.claude/skills/scan" ~/.claude/skills/scan
+    mln "$DOTFILES_DIR/.claude/skills/gmail" ~/.claude/skills/gmail
+    mln "$DOTFILES_DIR/.claude/skills/calendar" ~/.claude/skills/calendar
+    mln "$DOTFILES_DIR/.claude/skills/nutrition" ~/.claude/skills/nutrition
+fi
 
 if [ ! -f ~/.zshrc ]; then
     echo ". $DOTFILES_DIR/.zshrc_base_linux" > ~/.zshrc

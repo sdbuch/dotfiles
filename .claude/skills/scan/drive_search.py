@@ -105,6 +105,13 @@ def main():
     dl.add_argument("file_id", help="Drive file ID")
     dl.add_argument("-o", "--output", help="Output path (default: original filename)")
 
+    mv = sub.add_parser("move", help="Move a file to a different folder")
+    mv.add_argument("file_id", help="Drive file ID")
+    mv.add_argument("folder_id", help="Destination folder ID")
+
+    rm = sub.add_parser("delete", help="Trash a file by ID")
+    rm.add_argument("file_id", help="Drive file ID")
+
     args = parser.parse_args()
     service = get_service(args.profile)
 
@@ -130,6 +137,22 @@ def main():
             out = Path(meta["name"])
         download_file(service, args.file_id, out)
         print(f"Downloaded: {out}")
+
+    elif args.command == "move":
+        f = service.files().get(fileId=args.file_id, fields="parents,name").execute()
+        old_parents = ",".join(f.get("parents", []))
+        service.files().update(
+            fileId=args.file_id,
+            addParents=args.folder_id,
+            removeParents=old_parents,
+            fields="id,parents",
+        ).execute()
+        print(f"Moved {f['name']} to folder {args.folder_id}")
+
+    elif args.command == "delete":
+        f = service.files().get(fileId=args.file_id, fields="name").execute()
+        service.files().update(fileId=args.file_id, body={"trashed": True}).execute()
+        print(f"Trashed: {f['name']}")
 
 
 if __name__ == "__main__":

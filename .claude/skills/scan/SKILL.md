@@ -246,11 +246,12 @@ cd ~/.claude/skills/scan && uv run python drive_upload.py "$SCAN_DIR/scan.pdf" \
   --profile personal \
   --name "2026-03-03_meeting_notes.pdf" \
   --description "Notes from project planning session" \
-  --folder-id <DRIVE_FOLDER_ID>
+  --folder-id <SCANS_FOLDER_ID>
 ```
 
-The `--folder-id` flag is optional; without it, files upload to Drive root.
-Multiple files can be passed in a single invocation.
+**Always upload archived scans to the Scans folder** using `--folder-id`. The
+folder ID is stored in `~/.config/google-oauth/scan_config.json` under the
+`scans_folder_id` key. Multiple files can be passed in a single invocation.
 
 ### Retrieving archived scans
 
@@ -265,6 +266,18 @@ Download a file by its Drive ID:
 
 ```bash
 cd ~/.claude/skills/scan && uv run python drive_search.py download <FILE_ID> -o /tmp/document.pdf
+```
+
+Move a file to a different folder:
+
+```bash
+cd ~/.claude/skills/scan && uv run python drive_search.py --profile personal move <FILE_ID> <FOLDER_ID>
+```
+
+Trash a file:
+
+```bash
+cd ~/.claude/skills/scan && uv run python drive_search.py --profile personal delete <FILE_ID>
 ```
 
 ## Troubleshooting

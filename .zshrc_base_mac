@@ -5,6 +5,9 @@ if [ -f /etc/zshrc ]; then
 	. /etc/zshrc
 fi
 
+# Brew shellenv (must be before oh-my-zsh so plugins like keychain find brew binaries)
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 # Path specs
 export PATH=${PATH}:/usr/local/lib
 export PATH=${PATH}:/opt/homebrew/lib
@@ -78,7 +81,7 @@ zstyle :omz:plugins:iterm2 shell-integration yes
 
 # config for keychain
 zstyle :omz:plugins:keychain agents gpg,ssh
-zstyle :omz:plugins:keychain identities id_ed25519 hwagyesa-github google_compute_engine
+zstyle :omz:plugins:keychain identities id_ed25519 hwagyesa-github google_compute_engine raspi
 
 # Config for zsh-vi-mode
 export ZVM_VI_EDITOR=nvim
@@ -161,9 +164,6 @@ export COLORTERM=truecolor
 # History file parameters
 HISTSIZ=10000
 HISTFILESIZE=200000
-
-# Brew thing
-eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # for image.nvim luarocks
 export DYLD_FALLBACK_LIBRARY_PATH="$(brew --prefix)/lib:$DYLD_FALLBACK_LIBRARY_PATH"

@@ -1,35 +1,6 @@
 {
   "permissions": {
-    "allow": [
-      "WebFetch(domain:neovim.io)",
-      "Bash(python3:*)",
-      "Bash(tree:*)",
-      "WebFetch(domain:arxiv.org)",
-      "Bash(chmod:*)",
-      "Bash(command -v:*)",
-      "Bash(terminal-notifier:*)",
-      "Bash(./deploy_osx.sh:*)",
-      "Bash(bash:*)",
-      "Bash(tmux list-sessions:*)",
-      "Bash(tmux list-windows:*)",
-      "Bash(echo:*)",
-      "Bash(/opt/homebrew/bin/tmux list-sessions:*)",
-      "Bash(/usr/local/bin/tmux list-sessions:*)",
-      "Bash(/opt/homebrew/bin/tmux display-message:*)",
-      "Bash(/opt/homebrew/bin/tmux switch-client:*)",
-      "Bash(nvim --version:*)",
-      "Bash(nvim:*)",
-      "Bash(luac:*)",
-      "Bash(lua:*)",
-      "WebFetch(domain:github.com)",
-      "Bash(gh api:*)",
-      "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:dblp.org)",
-      "Bash(mas search:*)",
-      "Bash(claude --version)",
-      "Bash(npm list:*)",
-      "Read(//Users/reflectionloaner/.local/share/claude/versions/**)"
-    ],
+    "allow": [],
     "deny": [],
     "ask": []
   }

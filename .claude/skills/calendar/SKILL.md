@@ -51,7 +51,7 @@ When `--calendar-id` is not specified, the profile's default calendars are
 queried. For `--list` and `--search`, events from all default calendars are
 merged and sorted by start time.
 
-- `personal`: primary personal calendar + work/university calendar (see `PROFILE_DEFAULT_CALENDARS` in `calendar_cli.py`)
+- `personal`: calendars listed in `~/.config/google-oauth/calendar_config.json`
 - All other profiles: `primary`
 
 Use `--calendars` to discover available calendar IDs.

@@ -10,6 +10,7 @@ Token files:      ~/.config/google-oauth/token_<profile>.json (auto-generated)
 """
 
 import argparse
+import json
 import re
 import sys
 from datetime import datetime, timedelta, timezone
@@ -33,14 +34,16 @@ CREDENTIALS_PATH = CONFIG_DIR / "credentials.json"
 
 LOCAL_TZ = datetime.now(timezone.utc).astimezone().tzinfo
 
-PROFILE_DEFAULT_CALENDARS = {
-    "personal": [
-        "sambuchanan6@gmail.com",
-        "sdbuchanan@berkeley.edu",
-        "family01445701092410838480@group.calendar.google.com",
-        "9qub46jce80gl7n081g5jg19rs@group.calendar.google.com",
-    ],
-}
+
+def _load_calendar_config() -> dict:
+    """Load per-profile default calendar IDs from config file."""
+    path = CONFIG_DIR / "calendar_config.json"
+    if path.exists():
+        return json.loads(path.read_text()).get("profile_default_calendars", {})
+    return {}
+
+
+PROFILE_DEFAULT_CALENDARS = _load_calendar_config()
 
 
 def _get_oauth_credentials(profile: str) -> Credentials:
@@ -298,21 +301,13 @@ def cmd_create(service, args):
             {"email": email.strip()} for email in args.attendees.split(",")
         ]
 
-    event = (
-        service.events()
-        .insert(calendarId=cal_id, body=body)
-        .execute()
-    )
+    event = service.events().insert(calendarId=cal_id, body=body).execute()
     print(format_event_full(event))
 
 
 def cmd_modify(service, args):
     cal_id = _single_calendar_id(args)
-    event = (
-        service.events()
-        .get(calendarId=cal_id, eventId=args.modify)
-        .execute()
-    )
+    event = service.events().get(calendarId=cal_id, eventId=args.modify).execute()
 
     if args.title:
         event["summary"] = args.title
@@ -356,11 +351,7 @@ def cmd_delete(service, args):
 
 def cmd_get(service, args):
     cal_id = _single_calendar_id(args)
-    event = (
-        service.events()
-        .get(calendarId=cal_id, eventId=args.get)
-        .execute()
-    )
+    event = service.events().get(calendarId=cal_id, eventId=args.get).execute()
     print(format_event_full(event))
 
 
@@ -388,34 +379,47 @@ def main():
     group.add_argument("--modify", metavar="EVENT_ID", help="Modify an event")
     group.add_argument("--delete", metavar="EVENT_ID", help="Delete an event")
     group.add_argument("--get", metavar="EVENT_ID", help="Get full event details")
-    group.add_argument("--calendars", action="store_true", help="List available calendars")
+    group.add_argument(
+        "--calendars", action="store_true", help="List available calendars"
+    )
 
     parser.add_argument(
         "--profile", metavar="NAME", help="OAuth profile name (e.g. personal, work)"
     )
     parser.add_argument(
-        "--calendar-id", action="append", default=None,
+        "--calendar-id",
+        action="append",
+        default=None,
         help="Calendar ID (repeatable; default: profile-specific or 'primary')",
     )
     parser.add_argument(
-        "--days", type=int, default=7, help="Time window for --list/--search (default: 7)"
+        "--days",
+        type=int,
+        default=7,
+        help="Time window for --list/--search (default: 7)",
     )
     parser.add_argument(
         "--max-results", type=int, default=50, help="Max results for --list/--search"
     )
 
     # --create options
-    parser.add_argument("--start", help="Start time (ISO, 'YYYY-MM-DD HH:MM', 'YYYY-MM-DD H:MMam/pm')")
+    parser.add_argument(
+        "--start", help="Start time (ISO, 'YYYY-MM-DD HH:MM', 'YYYY-MM-DD H:MMam/pm')"
+    )
     parser.add_argument("--end", help="End time (same formats as --start)")
     parser.add_argument("--description", help="Event description")
     parser.add_argument("--attendees", help="Comma-separated email addresses")
-    parser.add_argument("--all-day", action="store_true", help="Create an all-day event")
+    parser.add_argument(
+        "--all-day", action="store_true", help="Create an all-day event"
+    )
 
     # --modify options
     parser.add_argument("--title", help="New title (with --modify)")
 
     # --delete options
-    parser.add_argument("--notify", action="store_true", help="Notify attendees on delete")
+    parser.add_argument(
+        "--notify", action="store_true", help="Notify attendees on delete"
+    )
 
     args = parser.parse_args()
     service = get_service(args.profile)
