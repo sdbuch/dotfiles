@@ -128,7 +128,6 @@ if ! command -v node &> /dev/null; then
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
     nvm install node
-    npm config set prefix ~/.local
 fi
 
 # Ensure npm global packages are installed
@@ -141,7 +140,7 @@ fi
 
 # Install Claude Code if not present
 if ! command -v claude &> /dev/null; then
-    curl -fsSL https://claude.ai/install.sh | sh
+    curl -fsSL https://claude.ai/install.sh | bash
 fi
 
 # Install uv if not present
