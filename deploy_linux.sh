@@ -1,15 +1,10 @@
 #!/bin/bash
 
 # Parse command line arguments
-INSTALL_SIXEL=false
 INSTALL_MINIMAL=false
 INSTALL_HOME=false
 for arg in "$@"; do
     case $arg in
-        --sixel)
-            INSTALL_SIXEL=true
-            shift
-            ;;
         --minimal)
             INSTALL_MINIMAL=true
             shift
@@ -170,12 +165,6 @@ fi
 # Install neovim from custom script
 chmod +x "$DOTFILES_DIR/install_nvim_linux.sh"
 "$DOTFILES_DIR/install_nvim_linux.sh"
-
-# Only install tmux and related packages if --sixel option is provided and --minimal is not
-if [ "$INSTALL_SIXEL" = true ] && [ "$INSTALL_MINIMAL" = false ]; then
-    chmod +x "$DOTFILES_DIR/install_tmux_ubuntu.sh"
-    "$DOTFILES_DIR/install_tmux_ubuntu.sh"
-fi
 
 # Install tmux plugin manager if not present
 if [ ! -d ~/.tmux/plugins/tpm ]; then
