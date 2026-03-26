@@ -25,7 +25,10 @@
       "Bash(gh api:*)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:dblp.org)",
-      "Bash(mas search:*)"
+      "Bash(mas search:*)",
+      "Bash(claude --version)",
+      "Bash(npm list:*)",
+      "Read(//Users/reflectionloaner/.local/share/claude/versions/**)"
     ],
     "deny": [],
     "ask": []
