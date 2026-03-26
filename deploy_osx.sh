@@ -107,6 +107,10 @@ fi
 brew install wget diff-so-fancy ripgrep tmux rbenv keychain gh
 brew install --cask docker cursor google-chrome
 
+# Fonts for WezTerm (skip if already installed)
+brew list --cask font-source-code-pro-for-powerline &>/dev/null || brew install --cask font-source-code-pro-for-powerline
+brew list --cask font-monaspace &>/dev/null || brew install --cask font-monaspace
+
 # Install uv if not present
 if ! command -v uv &> /dev/null; then
     curl -LsSf https://astral.sh/uv/install.sh | sh
