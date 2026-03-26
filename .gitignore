@@ -1,0 +1,6 @@
+tmux-3.5a
+package.json
+package-lock.json
+tags
+local_config.lua
+**/.venv/

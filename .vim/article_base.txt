@@ -1,0 +1,166 @@
+\documentclass[10pt]{article}
+\usepackage[letterpaper,margin=1in]{geometry}
+
+% Math
+\usepackage{amsmath,amsbsy,amsfonts,amssymb,amsthm,color,dsfont,mleftright}
+\usepackage{thmtools}
+\usepackage{mathtools}
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+
+% Fonts
+\usepackage{csquotes}
+\usepackage{polyglossia}
+\setdefaultlanguage{english}
+% --------------------------------------
+% SETTINGS FOR MATH WITHOUT unicode-math
+% (have to load fontspec after)
+% --------------------------------------
+% \usepackage[bigdelims,vvarbb]{newpxmath}
+% \usepackage{fontspec}
+% \usepackage{mathrsfs}
+% \usepackage{bm}
+% \setmainfont{TeX Gyre Pagella}
+% \setsansfont{DejaVu Sans}
+% \setmonofont{Source Code Pro}
+% \DeclareSymbolFont{operators}{TU}{\rmdefault}{m}{n}
+% \SetSymbolFont{operators}{bold}{TU}{\rmdefault}{b}{n}
+% --------------------------------------
+% SETTINGS FOR MATH WITH unicode-math
+% --------------------------------------
+\usepackage[
+    math-style=TeX,
+    bold-style=TeX,
+    sans-style=upright,
+]{unicode-math}
+\usepackage{fontspec}
+\setmainfont{TeX Gyre Termes}
+\setmathfont{Latin Modern Math}
+\setsansfont{TeX Gyre Heros}
+\setmonofont{Source Code Pro}
+\setmathfont{Asana Math}[range={cal, bfcal}]                 % computer modern \mathcal
+\setmathfont{XITS Math}[range={scr, bfscr}, StylisticSet=1]  % mathrsfs-type \mathscr
+\setmathfont{STIX Two Math}[range={bb, bbit}]                % mirrors newpxmath with vvarbb
+% --------------------------------------
+%\usepackage{lineno}
+%\linenumbers
+
+\usepackage[
+backend=biber,
+style=alphabetic,
+sorting=ynt,
+doi=false,
+hyperref=true,
+isbn=false,
+sortcites,
+url=false,
+maxbibnames=99,
+maxalphanames=3,
+minalphanames=3,
+maxcitenames=2,
+mincitenames=1,
+backref=true
+]{biblatex}
+\addbibresource{refs.bib}
+\renewbibmacro{in:}{}
+\AtEveryBibitem{%
+  \clearlist{language}%
+}
+% Backref in biblatex
+\renewbibmacro*{pageref}{. \iflistundef{pageref}{}{{\printlist[pageref][-\value{listtotal}]{pageref}}}}
+
+% Etc
+\allowdisplaybreaks
+\usepackage[toc,page]{appendix}
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{enumitem}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{wrapfig}
+\usepackage[normalem]{ulem}
+\usepackage[bf,small]{caption}
+\usepackage{subcaption}
+\usepackage{overpic}
+\usepackage{tikz}
+\usepackage{graphicx}
+
+% References
+\usepackage{hyperref}       % hyperlinks
+\usepackage{nameref}
+\usepackage[capitalise,noabbrev,sort]{cleveref}
+%\crefrangeformat{equation}{(#3#1#4) to~(#5#2#6)} % get rid of eqs.
+\crefname{equation}{}{}
+\numberwithin{equation}{section} % Set up to label eqns by section...
+
+% Colors
+\newcommand{\linkcolor}{RoyalBlue}
+\newcommand{\citecolor}{Red}
+\hypersetup{
+  linkcolor = \linkcolor,
+  citecolor = \citecolor,
+  urlcolor = \citecolor,
+  colorlinks = true,
+  linktocpage = true,
+}
+
+
+%\usepackage{xr}
+%\externaldocument{}
+
+%Set up theorems
+\newtheorem{theoreminformal}{Theorem}
+\newtheorem{theorembody}{Theorem}
+\newtheorem{propositionbody}{Proposition}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+% Sam's macros
+\input{sam_macros.def}
+
+%\usepackage{etoolbox} %% <- for \pretocmd and \apptocmd
+%\makeatletter %% <- make @ usable in macro names
+%\newcommand*\linenomathpatch{\@ifstar{\linenomathpatch@AMS}{\linenomathpatch@}}
+%\newcommand*\linenomathpatch@[1]{
+%  \expandafter\pretocmd\csname #1\endcsname {\linenomathWithnumbers}{}{}
+%  \expandafter\pretocmd\csname #1*\endcsname{\linenomathWithnumbers}{}{}
+%  \expandafter\apptocmd\csname end#1\endcsname {\endlinenomath}{}{}
+%  \expandafter\apptocmd\csname end#1*\endcsname{\endlinenomath}{}{}
+%}
+%\newcommand*\linenomathpatch@AMS[1]{
+%  \expandafter\pretocmd\csname #1\endcsname {\linenomathWithnumbersAMS}{}{}
+%  \expandafter\pretocmd\csname #1*\endcsname{\linenomathWithnumbersAMS}{}{}
+%  \expandafter\apptocmd\csname end#1\endcsname {\endlinenomath}{}{}
+%  \expandafter\apptocmd\csname end#1*\endcsname{\endlinenomath}{}{}
+%}
+%\let\linenomathWithnumbersAMS\linenomathWithnumbers
+%\patchcmd\linenomathWithnumbersAMS{\advance\postdisplaypenalty\linenopenalty}{}{}{}
+%\makeatother %% revert @
+%
+%\linenomathpatch{equation}
+%\linenomathpatch*{gather}
+%\linenomathpatch*{multline}
+%\linenomathpatch*{align}
+%\linenomathpatch*{alignat}
+%\linenomathpatch*{flalign}
+
+\title{}
+
+\author{
+  Sam Buchanan
+}
+
+\begin{document}
+
+\maketitle
+
+
+\printbibliography
+
+\end{document}

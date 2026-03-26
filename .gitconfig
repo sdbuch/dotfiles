@@ -1,0 +1,23 @@
+[user]
+	name = sdbuch
+	email = 19997120+sdbuch@users.noreply.github.com
+[credential]
+	helper = osxkeychain
+[core]
+	excludesfile = ~/.gitignore_global
+	pager = diff-so-fancy | less --tabs=4 -RF
+[credential "https://git.overleaf.com"]
+	username = git
+	helper = cache
+[init]
+	defaultBranch = main
+[diff]
+	tool = nvimdiff
+[difftool]
+	prompt = false
+[difftool "nvimdiff"]
+	cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
+[pull]
+	rebase = false
+[interactive]
+	diffFilter = diff-so-fancy --patch

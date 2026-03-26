@@ -1,0 +1,498 @@
+# some more ls aliases
+alias ll='ls -FhlasG'
+alias la='ls -A'
+alias l='ls -CF'
+alias lt='ls -FhlasGrt'
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+# alias ls='ls -G'
+
+# latex
+alias cp-sam-macros='cp ~/projects/github/dotfiles/sam_macros.def . && cp ~/projects/github/dotfiles/sam_macros_nofontspec.def . && cp ~/projects/github/dotfiles/sam_macros_common.def .'
+
+# tmux
+# NOTE: these are redundant with oh-my-zsh
+alias ta='tmux attach-session -t'
+alias tk='tmux kill-session -t'
+alias tl='tmux ls'
+
+# nvim vs. vim
+alias vim='nvim'
+
+# uv
+alias uvim='uv run nvim'
+alias upyterm='uv run ipython --profile=term'
+# uinit - Initialize a uv project with common dependencies and ruff configuration
+uinit() {
+    echo "🚀 Initializing uv project..."
+    uv init --bare
+
+    echo "📦 Adding dependencies..."
+    uv add \
+        jax \
+        matplotlib \
+        treescope \
+        matplotlib-backend-sixel \
+        pynvim \
+        jupyter_client \
+        ipykernel \
+        requests \
+        websocket-client
+
+    echo "🔧 Adding ruff configuration to pyproject.toml..."
+    cat >> pyproject.toml << 'EOF'
+
+[tool.ruff]
+line-length = 88
+indent-width = 2
+
+[tool.ruff.format]
+indent-style = "space"
+
+[tool.ruff.lint]
+fixable = ["ALL"]
+unfixable = []
+
+select = ["E", "W", "F"]  # Error, Warning, and Pyflakes rules
+
+ignore = [
+    "F401",  # Unused import
+    "F821",  # Undefined name
+    "E402",  # Module level import not at top of file
+    "F841",  # Local variable assigned but not used
+    "E731",  # use a def, not a lambda
+]
+EOF
+}
+
+alias action="source .venv/bin/activate"
+
+#
+# gcloud / tpus
+#
+
+# Command shorthands
+alias gtd="gcloud compute tpus tpu-vm delete"
+alias gti="gcloud compute tpus tpu-vm describe"
+alias gts="gcloud compute tpus tpu-vm stop"
+alias gtl="gcloud compute tpus tpu-vm list"
+alias gtqd="gcloud compute tpus queued-resources delete"
+alias gtqi="gcloud compute tpus queued-resources describe"
+alias gtssh="gcloud compute tpus tpu-vm ssh --ssh-flag='-A -o ForwardAgent=yes'"
+alias gtscp="gcloud compute tpus tpu-vm scp"
+function gtcom() {
+    # Check if we have at least source and tpu_name
+    if [ $# -lt 2 ]; then
+        echo "Usage: gtcom <tpu_name> <command> [additional_flags]"
+        echo "Examples:"
+        echo "  gtcom tpu-v4-32 'echo hi'"
+        echo "  gtcom tpu-v4-32 'echo hi' --worker=all"
+        return 1
+    fi
+
+    # Get source and tpu_name
+    local tpu_name="$1"
+    local command="$2"
+    shift 2
+
+    # Build the command with any additional args
+    gtssh "$tpu_name" --command="$command" "$@"
+}
+
+# Startup script location
+STARTUP_SCRIPT="/Users/sdbuch/projects/github/baremetal-gpt/deploy/startup.sh"
+
+# Create or queue standard configs
+# NOTE: v6e (trillium) specifies chip count; v4 specifies core count (2x chip count)
+alias gtc6x1="gcloud compute tpus tpu-vm create tpu-v6e-8 --spot --zone=us-east1-d --accelerator-type=v6e-8 --version=v2-alpha-tpuv6e --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+alias gtc6x4="gcloud compute tpus tpu-vm create tpu-v6e-64 --spot --zone=us-east1-d --accelerator-type=v6e-64 --version=v2-alpha-tpuv6e --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+
+# For these, need to manually append --spot if want preemptible
+alias gtc4x1="gcloud compute tpus tpu-vm create tpu-v4-8 --zone=us-central2-b --accelerator-type=v4-8 --version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+alias gtc4x2="gcloud compute tpus tpu-vm create tpu-v4-16 --zone=us-central2-b --accelerator-type=v4-16 --version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+alias gtc4x3="gcloud compute tpus tpu-vm create tpu-v4-16 --zone=us-central2-b --accelerator-type=v4-16 --version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+alias gtc4x4="gcloud compute tpus tpu-vm create tpu-v4-64 --zone=us-central2-b --accelerator-type=v4-64 --version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+alias gtcs4x4="gcloud compute tpus tpu-vm create tpu-v4-64-spot --spot --zone=us-central2-b --accelerator-type=v4-64 --version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+
+# Queued resources with startup script
+alias gtqc4x1="gcloud compute tpus queued-resources create tpu-v4-8 --node-id=tpu-v4-8 --project=tpus-447923 --zone=us-central2-b --accelerator-type=v4-8 --runtime-version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+alias gtqc4x4="gcloud compute tpus queued-resources create tpu-v4-32 --node-id=tpu-v4-32 --project=tpus-447923 --zone=us-central2-b --accelerator-type=v4-32 --runtime-version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+alias gtqc4x8="gcloud compute tpus queued-resources create tpu-v4-64 --node-id=tpu-v4-64 --project=tpus-447923 --zone=us-central2-b --accelerator-type=v4-64 --runtime-version=tpu-ubuntu2204-base --metadata-from-file=\"startup-script=$STARTUP_SCRIPT\""
+
+# Set up a jupyter kernel on a remote tpu VM, exposing a server
+# (Could modify this for more general hosts. Using gcloud cli here.)
+gtjsetup() {
+    local host_name="$1"
+    local port="${2:-8888}"
+    local session_name="${3:-jupyter}"
+
+    # Validate arguments
+    if [ -z "$host_name" ]; then
+        echo "❌ Error: Host name is required!"
+        echo "Usage: tpu_setup <host_name> [port] [session_name]"
+        echo "Example: tpu_setup my-tpu-vm-0 8888 my_jupyter"
+        return 1
+    fi
+
+    echo "🚀 Setting up TPU Jupyter environment on $host_name..."
+    echo "   Port: $port"
+    echo "   Session: $session_name"
+    echo ""
+
+    # Create the setup script that will be executed remotely
+    local setup_script=$(cat << 'EOF'
+set -e
+
+# Source environment to get uv and other tools in PATH
+if [ -f "$HOME/.local/bin/env" ]; then
+    source "$HOME/.local/bin/env"
+elif [ -f "$HOME/.bashrc" ]; then
+    # Force source bashrc even in non-interactive mode
+    source "$HOME/.bashrc" || true
+fi
+
+# Verify uv is available
+if ! command -v uv &> /dev/null; then
+    echo "❌ Error: uv command not found in PATH"
+    echo "Current PATH: $PATH"
+    echo "Trying to find uv..."
+    find "$HOME" -name "uv" -type f 2>/dev/null | head -5
+    exit 1
+fi
+
+echo "📁 Creating scratch directory..."
+mkdir -p scratch
+cd scratch
+
+echo "🔧 Initializing uv project..."
+uv init
+
+echo "📦 Adding jupyter..."
+uv add jupyter
+
+# Check if tmux session already exists
+if tmux has-session -t "$1" 2>/dev/null; then
+    echo "⚠️  tmux session '$1' already exists!"
+    echo "   You can attach with: tmux attach -t $1"
+    echo "   Or kill it with: tmux kill-session -t $1"
+    exit 1
+fi
+
+echo "🖥️  Starting tmux session '$1' with Jupyter Lab on port $2..."
+tmux new-session -d -s "$1" -c "$(pwd)"
+
+# Send jupyter command to tmux session
+tmux send-keys -t "$1" "uv run jupyter lab --no-browser --port=$2 --ip=0.0.0.0 --allow-root" Enter
+
+# Wait for jupyter to start
+echo "⏳ Waiting for Jupyter to start..."
+sleep 3
+
+# Get the token from jupyter server list
+echo "🔑 Getting Jupyter token..."
+TOKEN_INFO=$(uv run jupyter server list 2>/dev/null || echo "")
+if [[ "$TOKEN_INFO" =~ token=([a-zA-Z0-9]+) ]]; then
+    TOKEN="${BASH_REMATCH[1]}"
+    echo "✅ Setup complete on $(hostname)!"
+    echo ""
+    echo "🔑 Jupyter Token: $TOKEN"
+else
+    echo "✅ Setup complete on $(hostname)!"
+    echo "⚠️  Could not extract token automatically"
+    echo "📊 Server info:"
+    echo "$TOKEN_INFO"
+fi
+EOF
+    )
+
+    # Execute the setup script on the remote host
+    echo "🔗 Connecting to $host_name and running setup..."
+    if echo "$setup_script" | gtcom "$host_name" "bash -s $session_name $port"; then
+        echo ""
+        echo "🎉 Remote setup completed successfully!"
+        echo ""
+        echo "📝 Next steps:"
+        local tunnel_spec="${port}:localhost:${port}"
+        echo "   1. Set up SSH tunnel:"
+        echo "      gtssh $host_name --ssh-flag='-L $tunnel_spec'"
+        echo "   2. Open http://localhost:$port in your browser"
+        echo ""
+        echo "💡 Tip: You can use gtjtunnel $host_name $port to create the tunnel"
+        echo "💡 Tip: You can use gtjtoken $host_name to see the access token"
+    else
+        echo "❌ Setup failed on remote host!"
+        return 1
+    fi
+}
+
+# Helper function to create SSH tunnel
+gtjtunnel() {
+    local host_name="$1"
+    local port="${2:-8888}"
+
+    if [ -z "$host_name" ]; then
+        echo "❌ Error: Host name is required!"
+        echo "Usage: tpu_tunnel <host_name> [port]"
+        echo "Example: tpu_tunnel my-tpu-vm-0 8888"
+        return 1
+    fi
+
+    echo "🔗 Creating SSH tunnel to $host_name:$port..."
+    echo "   Local access: http://localhost:$port"
+    echo "   Press Ctrl+C to close tunnel"
+    echo ""
+
+    local tunnel_spec="${port}:localhost:${port}"
+    gtssh "$host_name" --ssh-flag="-L $tunnel_spec"
+}
+
+# Get token
+gtjtoken() {
+    local quiet=false
+    local host_name=""
+
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --quiet|-q)
+                quiet=true
+                shift
+                ;;
+            *)
+                host_name="$1"
+                shift
+                ;;
+        esac
+    done
+
+    if [ -z "$host_name" ]; then
+        if [ "$quiet" = false ]; then
+            echo "❌ Error: Host name is required!"
+            echo "Usage: gtjtoken [--quiet|-q] <host_name>"
+            echo "Example: gtjtoken my-tpu-vm-0"
+            echo "Example: gtjtoken --quiet my-tpu-vm-0"
+        fi
+        return 1
+    fi
+
+    if [ "$quiet" = false ]; then
+        echo "🔑 Getting Jupyter token from $host_name..."
+    fi
+
+    # Get the raw output
+    local token_script='
+if [ -f "$HOME/.local/bin/env" ]; then
+    source "$HOME/.local/bin/env"
+elif [ -f "$HOME/.bashrc" ]; then
+    source "$HOME/.bashrc" || true
+fi
+cd scratch
+uv run jupyter server list
+'
+
+    # Pass --quiet to gtcom when in quiet mode
+    local output
+    if [ "$quiet" = true ]; then
+        output=$(echo "$token_script" | gtcom "$host_name" "bash -s" 2>/dev/null)
+    else
+        output=$(echo "$token_script" | gtcom "$host_name" "bash -s")
+    fi
+
+    # Extract token using sed
+    local token=$(echo "$output" | sed -n 's/.*token=\([a-f0-9]*\).*/\1/p')
+
+    if [ -n "$token" ]; then
+        if [ "$quiet" = false ]; then
+            echo "🔑 Token: $token"
+        else
+            echo "$token"
+        fi
+    else
+        # Try grep as fallback
+        local grep_result=$(echo "$output" | grep -o "token=[a-f0-9]*")
+        if [ -n "$grep_result" ]; then
+            local token_from_grep=$(echo "$grep_result" | cut -d'=' -f2)
+            if [ "$quiet" = false ]; then
+                echo "🔑 Token (from grep): $token_from_grep"
+            else
+                echo "$token_from_grep"
+            fi
+        else
+            if [ "$quiet" = false ]; then
+                echo "❌ Failed with grep too. Manual extraction needed."
+                echo "Look for 'token=' in the output above."
+            fi
+            # In quiet mode, output empty string on error
+            return 1
+        fi
+    fi
+}
+# Book v2 Sync Functions
+# Add these to your ~/.bashrc or ~/.zshrc by running:
+#   cat bookv2_sync_aliases.sh >> ~/.bashrc  # or ~/.zshrc
+# Then reload your shell: source ~/.bashrc
+
+# REQUIRED SETUP!
+# OVERLEAF:
+# https://docs.overleaf.com/integrations-and-add-ons/git-integration-and-github-synchronization/git-integration/git-integration-authentication-tokens
+# Follow the above guide to allow git access to Overleaf projects.
+#
+# GITHUB:
+# Add a SSH authentication token to your Github
+# And be added as a collaborator on the book repo to have push/pull access
+# For this, you can be in the Ma-Lab-Berkeley org, or manually be a collaborator.
+# Ask Druv or Sam.
+
+# 1. Initial setup: Clone from Overleaf and add GitHub remote
+bookv2_setup() {
+    echo "Cloning from Overleaf..."
+    git clone https://git@git.overleaf.com/6497b7a012c443686a0e87a3 book-v2 || {
+        echo "✗ ERROR: Failed to clone repository"
+        return 1
+    }
+
+    cd book-v2 || return 1
+
+    echo "Adding GitHub remote..."
+    git remote add github git@github.com:Ma-Lab-Berkeley/deep-representation-learning-book.git || {
+        echo "✗ ERROR: Failed to add remote"
+        return 1
+    }
+
+    git fetch github || {
+        echo "✗ ERROR: Failed to fetch from GitHub"
+        return 1
+    }
+
+    echo "Checking out v2-preview branch..."
+    git checkout -b v2-preview github/v2-preview || {
+        echo "✗ ERROR: Failed to checkout v2-preview"
+        return 1
+    }
+
+    echo "✓ Setup complete! On v2-preview branch in book-v2 directory."
+}
+
+# 2. Sync GitHub → Overleaf (pull from GitHub, push to Overleaf master)
+bookv2_gh_to_ol() {
+    echo "Committing any local changes..."
+    git add .
+    git commit -m "command line sync github<->overleaf" || true
+
+    echo "Fetching from GitHub..."
+    git fetch github || {
+        echo "✗ ERROR: Failed to fetch from GitHub"
+        return 1
+    }
+
+    echo "Merging github/v2-preview..."
+    git merge github/v2-preview || {
+        echo "✗✗✗ PANIC: MERGE CONFLICT! ✗✗✗"
+        echo "Fix conflicts manually, then run:"
+        echo "  git merge --continue  # after fixing"
+        echo "  git merge --abort     # to cancel"
+        return 1
+    }
+
+    echo "Pushing to Overleaf master..."
+    # Overleaf only accepts pushes to master branch
+    git push origin HEAD:master || {
+        echo "✗ ERROR: Failed to push to Overleaf"
+        return 1
+    }
+
+    echo "✓ Successfully synced GitHub → Overleaf"
+}
+
+# 3. Sync Overleaf → GitHub (pull from Overleaf master, push to GitHub v2-preview)
+bookv2_ol_to_gh() {
+    echo "Committing any local changes..."
+    git add .
+    git commit -m "command line sync github<->overleaf" || true
+
+    echo "Fetching from Overleaf..."
+    git fetch origin || {
+        echo "✗ ERROR: Failed to fetch from Overleaf"
+        return 1
+    }
+
+    echo "Merging from Overleaf master..."
+    git merge origin/master || {
+        echo "✗✗✗ PANIC: MERGE CONFLICT! ✗✗✗"
+        echo "Fix conflicts manually, then run:"
+        echo "  git merge --continue  # after fixing"
+        echo "  git merge --abort     # to cancel"
+        return 1
+    }
+
+    echo "Pushing to GitHub v2-preview..."
+    git push github HEAD:v2-preview || {
+        echo "✗ ERROR: Failed to push to GitHub"
+        return 1
+    }
+
+    echo "✓ Successfully synced Overleaf → GitHub"
+}
+
+bookv2_sync() {
+    echo "═══════════════════════════════════════"
+    echo "Starting bidirectional sync..."
+    echo "═══════════════════════════════════════"
+
+    echo ""
+    echo "Step 1/2: Overleaf → GitHub"
+    echo "───────────────────────────────────────"
+    bookv2_ol_to_gh || {
+        echo "✗✗✗ Sync failed at step 1 ✗✗✗"
+        return 1
+    }
+
+    echo ""
+    echo "Step 2/2: GitHub → Overleaf"
+    echo "───────────────────────────────────────"
+    bookv2_gh_to_ol || {
+        echo "✗✗✗ Sync failed at step 2 ✗✗✗"
+        return 1
+    }
+
+    echo ""
+    echo "═══════════════════════════════════════"
+    echo "✓✓✓ Full sync complete! ✓✓✓"
+    echo "═══════════════════════════════════════"
+}
+
+bookv2_sync_rev() {
+    echo "═══════════════════════════════════════"
+    echo "Starting bidirectional sync..."
+    echo "═══════════════════════════════════════"
+
+    echo ""
+    echo "Step 1/2: GitHub → Overleaf"
+    echo "───────────────────────────────────────"
+    bookv2_gh_to_ol || {
+        echo "✗✗✗ Sync failed at step 2 ✗✗✗"
+        return 1
+    }
+
+    echo ""
+    echo "Step 2/2: Overleaf → GitHub"
+    echo "───────────────────────────────────────"
+    bookv2_ol_to_gh || {
+        echo "✗✗✗ Sync failed at step 1 ✗✗✗"
+        return 1
+    }
+
+
+    echo ""
+    echo "═══════════════════════════════════════"
+    echo "✓✓✓ Full sync complete! ✓✓✓"
+    echo "═══════════════════════════════════════"
+}
+
+# Run command and copy both command + output to clipboard
+cprun() {
+    local cmd
+    cmd=$(printf '%q ' "$@")
+    { echo "\$ $*"; eval "$cmd" 2>&1; } | tee /dev/tty | pbcopy
+}
