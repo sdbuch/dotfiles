@@ -105,7 +105,7 @@ fi
 
 # Brew packages
 brew install wget diff-so-fancy ripgrep tmux rbenv keychain gh
-brew install --cask docker
+brew install --cask docker cursor google-chrome
 
 # Install uv if not present
 if ! command -v uv &> /dev/null; then
