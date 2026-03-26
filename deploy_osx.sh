@@ -104,7 +104,7 @@ if ! command -v brew &> /dev/null; then
 fi
 
 # Brew packages
-brew install wget diff-so-fancy ripgrep tmux rbenv keychain gh
+brew install wget diff-so-fancy ripgrep tmux rbenv keychain gh terminal-notifier
 brew install --cask docker cursor google-chrome
 
 # Install uv if not present
