@@ -5,6 +5,9 @@ if [ -f /etc/zshrc ]; then
 	. /etc/zshrc
 fi
 
+# Brew shellenv (must be before oh-my-zsh so plugins like keychain find brew binaries)
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 # Path specs
 export PATH=${PATH}:/usr/local/lib
 export PATH=${PATH}:/opt/homebrew/lib
@@ -161,9 +164,6 @@ export COLORTERM=truecolor
 # History file parameters
 HISTSIZ=10000
 HISTFILESIZE=200000
-
-# Brew thing
-eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # for image.nvim luarocks
 export DYLD_FALLBACK_LIBRARY_PATH="$(brew --prefix)/lib:$DYLD_FALLBACK_LIBRARY_PATH"
