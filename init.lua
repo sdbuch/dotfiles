@@ -447,7 +447,7 @@ local lazy_plugins = {
 	-- Fuzzy find (requires ripgrep)
 	{
 		"nvim-telescope/telescope.nvim",
-		tag = "0.1.4",
+		branch = "master",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
 			require("telescope").setup({})
