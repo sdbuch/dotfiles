@@ -31,7 +31,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "afplay /System/Library/Sounds/Glass.aiff"
+            "command": "if [[ \"$(uname)\" == \"Darwin\" ]]; then afplay /System/Library/Sounds/Glass.aiff; else printf '\\a'; fi"
           }
         ]
       }

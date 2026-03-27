@@ -1,9 +1,19 @@
 #!/bin/bash
-# Requires: brew install terminal-notifier
+# macOS: uses terminal-notifier (brew install terminal-notifier) or osascript
+# Linux: uses notify-send if available, otherwise just terminal bell
 
 MSG="Claude needs your attention"
 TITLE="Claude Code"
 
+if [[ "$(uname)" != "Darwin" ]]; then
+    if command -v notify-send &>/dev/null; then
+        notify-send "$TITLE" "$MSG"
+    fi
+    printf '\a'
+    exit 0
+fi
+
+# macOS path
 get_bundle_id() {
     if [[ -n "$__CFBundleIdentifier" ]]; then
         echo "$__CFBundleIdentifier"

@@ -35,6 +35,7 @@ mln "$DOTFILES_DIR/.gitconfig_linux" ~/.gitconfig
 mln "$DOTFILES_DIR/.gitignore_global" ~/.gitignore_global
 git config --global core.excludesfile ~/.gitignore_global
 mln "$DOTFILES_DIR/.vimrc" ~/.vimrc
+mln "$DOTFILES_DIR/.aliases" ~/.aliases
 mln "$DOTFILES_DIR/.aliases" ~/.bash_aliases
 mln "$DOTFILES_DIR/.dircolors" ~/.dircolors
 mln "$DOTFILES_DIR/.tmux.conf" ~/.tmux.conf
