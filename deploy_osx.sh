@@ -105,7 +105,8 @@ fi
 
 # Brew packages
 brew install wget diff-so-fancy ripgrep tmux rbenv keychain gh terminal-notifier
-brew install --cask docker cursor google-chrome
+brew install mutagen-io/mutagen/mutagen
+brew install --cask claude docker cursor google-chrome
 
 # Fonts for WezTerm (skip if already installed)
 brew list --cask font-source-code-pro-for-powerline &>/dev/null || brew install --cask font-source-code-pro-for-powerline
