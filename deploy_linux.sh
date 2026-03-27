@@ -118,11 +118,20 @@ if [ "$INSTALL_MINIMAL" = false ]; then
     fi
 fi
 
-# Install Node.js using nvm if not present
-if ! command -v node &> /dev/null; then
+# Remove prefix setting that conflicts with nvm
+sed -i '/^prefix=/d' ~/.npmrc 2>/dev/null
+
+# Install nvm if not present
+if [ ! -d "$HOME/.nvm" ]; then
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+fi
+
+# Source nvm so node/npm are available for the rest of the script
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Install Node.js if not present
+if ! command -v node &> /dev/null; then
     nvm install node
 fi
 
