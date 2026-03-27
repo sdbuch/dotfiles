@@ -8,14 +8,13 @@
 # Editors / IDE
 *.swp
 *~
-tags
-tags *
+/tags
 
 # Python
-__pycache__*
+__pycache__/
 *.pyc
 
 # Misc
 .sass-cache
 .hypothesis
-wandb
+/wandb
