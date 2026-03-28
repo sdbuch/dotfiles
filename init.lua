@@ -890,6 +890,7 @@ local lazy_plugins = {
 						args = {
 							"check",
 							"--fix",
+							"--exit-zero",
 							"--stdin-filename",
 							"$FILENAME",
 							"--quiet",
@@ -897,7 +898,7 @@ local lazy_plugins = {
 						},
 					},
 					ruff_organize_imports = {
-						args = { "check", "--select", "I", "--fix", "--stdin-filename", "$FILENAME", "--quiet", "-" },
+						args = { "check", "--select", "I", "--fix", "--exit-zero", "--stdin-filename", "$FILENAME", "--quiet", "-" },
 					},
 				},
 			})
