@@ -41,8 +41,7 @@ if [ "$INSTALL_HOME" = true ]; then
     mln "$DOTFILES_DIR/.claude/skills/calendar" ~/.claude/skills/calendar
     mln "$DOTFILES_DIR/.claude/skills/nutrition" ~/.claude/skills/nutrition
 fi
-mln "$DOTFILES_DIR/.cursor/mcp.json" ~/.cursor/mcp.json
-mkdir -p ~/.config/google-oauth
+mln "$DOTFILES_DIR/.cursor/mcp.json" ~/.cursor/mcp.jsonmkdir -p ~/.config/google-oauth
 
 # Config files
 mln "$DOTFILES_DIR/latex.ctags" ~/.ctags.d/latex.ctags
@@ -97,6 +96,81 @@ cp "$DOTFILES_DIR/keyremap_windowskb.sh" ~/keyremap_windowskb.sh
 sed "s|/Users/sdbuch|$HOME|g" "$DOTFILES_DIR/com.user.keyboardmapping.plist" | sudo tee /Library/LaunchDaemons/com.user.keyboardmapping.plist > /dev/null
 git config --global core.excludesfile ~/.gitignore_global
 
+# Disable mouse acceleration
+defaults write .GlobalPreferences com.apple.mouse.scaling -1
+
+# Rebind Spotlight search to Ctrl+Option+Space (default: Cmd+Space)
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 64 '
+  <dict>
+    <key>enabled</key><true/>
+    <key>value</key><dict>
+      <key>parameters</key><array>
+        <integer>32</integer>
+        <integer>49</integer>
+        <integer>786432</integer>
+      </array>
+      <key>type</key><string>standard</string>
+    </dict>
+  </dict>'
+
+# Swap screenshot hotkeys: Cmd+Shift+3/4 → clipboard, Cmd+Ctrl+Shift+3/4 → file
+# (default is the opposite)
+# Full screenshot to file: Cmd+Ctrl+Shift+3
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 28 '
+  <dict>
+    <key>enabled</key><true/>
+    <key>value</key><dict>
+      <key>parameters</key><array>
+        <integer>51</integer>
+        <integer>20</integer>
+        <integer>1441792</integer>
+      </array>
+      <key>type</key><string>standard</string>
+    </dict>
+  </dict>'
+# Full screenshot to clipboard: Cmd+Shift+3
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 29 '
+  <dict>
+    <key>enabled</key><true/>
+    <key>value</key><dict>
+      <key>parameters</key><array>
+        <integer>51</integer>
+        <integer>20</integer>
+        <integer>1179648</integer>
+      </array>
+      <key>type</key><string>standard</string>
+    </dict>
+  </dict>'
+# Area screenshot to file: Cmd+Ctrl+Shift+4
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 30 '
+  <dict>
+    <key>enabled</key><true/>
+    <key>value</key><dict>
+      <key>parameters</key><array>
+        <integer>52</integer>
+        <integer>21</integer>
+        <integer>1441792</integer>
+      </array>
+      <key>type</key><string>standard</string>
+    </dict>
+  </dict>'
+# Area screenshot to clipboard: Cmd+Shift+4
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 31 '
+  <dict>
+    <key>enabled</key><true/>
+    <key>value</key><dict>
+      <key>parameters</key><array>
+        <integer>52</integer>
+        <integer>21</integer>
+        <integer>1179648</integer>
+      </array>
+      <key>type</key><string>standard</string>
+    </dict>
+  </dict>'
+
+# Apply symbolic hotkey changes
+/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+
 # Install Homebrew if not present
 if ! command -v brew &> /dev/null; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -106,7 +180,7 @@ fi
 # Brew packages
 brew install wget diff-so-fancy ripgrep tmux rbenv keychain gh terminal-notifier
 brew install mutagen-io/mutagen/mutagen
-brew install --cask claude docker cursor google-chrome
+brew install --cask claude docker cursor google-chrome linearmouse
 
 # Fonts for WezTerm (skip if already installed)
 brew list --cask font-source-code-pro-for-powerline &>/dev/null || brew install --cask font-source-code-pro-for-powerline
