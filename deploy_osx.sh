@@ -94,7 +94,7 @@ mln "$DOTFILES_DIR/.ipython/sam_utility.py" ~/.ipython/sam_utility.py
 mln "$DOTFILES_DIR/.ipython/profile_default/ipython_config.py" ~/.ipython/profile_default/ipython_config.py
 mln "$DOTFILES_DIR/.ipython/profile_default/ipython_kernel_config.py" ~/.ipython/profile_default/ipython_kernel_config.py
 cp "$DOTFILES_DIR/keyremap_windowskb.sh" ~/keyremap_windowskb.sh
-sudo cp "$DOTFILES_DIR/com.user.keyboardmapping.plist" /Library/LaunchDaemons/com.user.keyboardmapping.plist
+sed "s|/Users/sdbuch|$HOME|g" "$DOTFILES_DIR/com.user.keyboardmapping.plist" | sudo tee /Library/LaunchDaemons/com.user.keyboardmapping.plist > /dev/null
 git config --global core.excludesfile ~/.gitignore_global
 
 # Install Homebrew if not present

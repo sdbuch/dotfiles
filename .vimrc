@@ -1,11 +1,3 @@
-"" export a PYTHONHOME environment variable
-" vim seems to need this to run python... but other python software doesn't
-" interact properly
-" so after this is set here, probably can't run many other programs in this
-" session
-" let $PYTHONHOME = "/Users/sdbuch/anaconda3"
-" set python 3 dll
-set pythonthreedll=/Users/sdbuch/anaconda3/bin/python
 
 " set leader character
 let mapleader = ","
