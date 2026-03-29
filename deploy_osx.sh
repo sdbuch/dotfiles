@@ -180,7 +180,7 @@ fi
 # Brew packages
 brew install wget diff-so-fancy ripgrep tmux rbenv keychain gh terminal-notifier
 brew install mutagen-io/mutagen/mutagen
-brew install --cask claude docker cursor google-chrome linearmouse
+brew install --cask claude docker cursor google-chrome linearmouse notion linear-linear granola obsidian
 
 # Fonts for WezTerm (skip if already installed)
 brew list --cask font-source-code-pro-for-powerline &>/dev/null || brew install --cask font-source-code-pro-for-powerline
@@ -195,9 +195,10 @@ fi
 if ! command -v mas &> /dev/null; then
     brew install mas
 fi
-# Magnet (id: 441258766), Strongbox (id: 897283731)
+# Magnet (id: 441258766), Strongbox (id: 897283731), Amphetamine (id: 937984704)
 mas install 441258766 || echo "Could not install Magnet — may need to be signed into App Store"
 mas install 897283731 || echo "Could not install Strongbox — may need to be signed into App Store"
+mas install 937984704 || echo "Could not install Amphetamine — may need to be signed into App Store"
 
 if [ ! -d ~/.oh-my-zsh ]; then
     curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o ~/zsh_install.sh
