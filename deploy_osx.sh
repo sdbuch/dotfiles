@@ -98,6 +98,8 @@ git config --global core.excludesfile ~/.gitignore_global
 
 # Disable mouse acceleration
 defaults write .GlobalPreferences com.apple.mouse.scaling -1
+defaults write .GlobalPreferences com.apple.trackpad.scaling -1
+defaults write NSGlobalDomain com.apple.mouse.linear -bool true
 
 # Rebind Spotlight search to Ctrl+Option+Space (default: Cmd+Space)
 defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 64 '
@@ -180,7 +182,7 @@ fi
 # Brew packages
 brew install wget diff-so-fancy ripgrep tmux rbenv keychain gh terminal-notifier
 brew install mutagen-io/mutagen/mutagen
-brew install --cask claude docker cursor google-chrome linearmouse notion linear-linear granola obsidian
+brew install --cask claude docker cursor google-chrome notion linear-linear granola obsidian
 
 # Fonts for WezTerm (skip if already installed)
 brew list --cask font-source-code-pro-for-powerline &>/dev/null || brew install --cask font-source-code-pro-for-powerline
