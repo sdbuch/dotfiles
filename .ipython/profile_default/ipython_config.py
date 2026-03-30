@@ -31,28 +31,8 @@ c = get_config()
 
 ## lines of code to run at IPython startup.
 c.InteractiveShellApp.exec_lines = [
-    "import numpy as np",
-    #'import tensorflow as tf',
-    "import numpy.linalg as npla",
-    "import scipy as sp",
-    "import scipy.io as sio",
-    "import torch",
-    "from torch import nn",
-    "import torch.nn.functional as F",
-    "import matplotlib",
-    "matplotlib.use('module://matplotlib-backend-sixel')",
-    "import matplotlib.pyplot as plt",
-    "from numpy.random import default_rng",
-    "from matplotlib import cm",
-    "import sys",
-    "from IPython.core.debugger import set_trace",
-    "%load_ext autoreload",
-    "%autoreload 2",
-    "matplotlib.rcParams['figure.facecolor'] = (1, 1, 1, 1)",
-    "matplotlib.rcParams['figure.figsize'] = [9.6, 7.2]",
-    "sys.breakpointhook = set_trace",
-    "import treescope",
-    # "treescope.basic_interactive_setup(autovisualize_arrays=True)",  # currently no sixel support
+  '%load_ext autoreload',
+  '%autoreload 2',
 ]
 
 ## A list of dotted module names of IPython extensions to load.
