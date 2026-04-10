@@ -545,6 +545,27 @@ local lazy_plugins = {
 		},
 	},
 	{ "akinsho/git-conflict.nvim", version = "*", config = true },
+	{ "sindrets/diffview.nvim", dependencies = { "nvim-tree/nvim-web-devicons" }, config = true },
+	{
+		"pwntester/octo.nvim",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-telescope/telescope.nvim",
+			"lewis6991/gitsigns.nvim",
+		},
+		config = function()
+			require("octo").setup()
+		end,
+	},
+	{
+		"linrongbin16/gitlinker.nvim",
+		cmd = "GitLink",
+		keys = {
+			{ "<leader>gy", "<cmd>GitLink<cr>", mode = { "n", "v" }, desc = "Copy git permalink" },
+			{ "<leader>gY", "<cmd>GitLink!<cr>", mode = { "n", "v" }, desc = "Open git permalink in browser" },
+		},
+		opts = {},
+	},
 	-- Motions.
 	{ "kylechui/nvim-surround", config = true },
 	{ "andymass/vim-matchup" },

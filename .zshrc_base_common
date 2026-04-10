@@ -60,6 +60,7 @@ DISABLE_AUTO_TITLE="true"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   git
+  fzf
   zsh-vi-mode
   zsh-autosuggestions
   iterm2
@@ -75,6 +76,10 @@ zstyle :omz:plugins:iterm2 shell-integration yes
 export ZVM_VI_EDITOR=nvim
 
 source $ZSH/oh-my-zsh.sh
+
+# after commands
+zvm_after_init_commands+=('source <(fzf --zsh)')
+
 
 # Tab completion for ssh hosts in .ssh/config file
 zstyle ':completion:*:hosts' hosts $( cat ~/.ssh/config 2>/dev/null | grep '^Host ' | cut -d ' ' -f 2 )
