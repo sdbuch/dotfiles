@@ -4,7 +4,7 @@
 [credential]
 	helper = osxkeychain
 [core]
-	excludesfile = ~/.gitignore_global
+	excludesfile = /Users/sbuchanan/.gitignore_global
 	pager = diff-so-fancy | less --tabs=4 -RF
 [credential "https://git.overleaf.com"]
 	username = git

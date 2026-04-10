@@ -71,6 +71,7 @@ alias action="source .venv/bin/activate"
 #
 # gcloud / tpus
 #
+alias glogin="gcloud auth login --update-adc"
 
 # Command shorthands
 alias gtd="gcloud compute tpus tpu-vm delete"
