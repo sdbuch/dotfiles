@@ -29,6 +29,73 @@ function M.setup()
 	vim.keymap.set("n", "<leader>mk", ":MoltenInterrupt<CR>", { desc = "interrupt running Molten cell", silent = true })
 	vim.keymap.set("n", "<leader>mi", ":MoltenInit<CR>", { desc = "Initialize Molten kernel", silent = true })
 
+	local function molten_is_initialized()
+		if vim.fn.exists("*MoltenStatusLineInit") ~= 1 then
+			return false
+		end
+
+		local ok, status = pcall(vim.fn.MoltenStatusLineInit)
+		return ok and status == "Molten"
+	end
+
+	local function call_molten_function(name)
+		if not molten_is_initialized() or vim.fn.exists("*" .. name) ~= 1 then
+			return
+		end
+
+		pcall(function()
+			vim.fn[name]()
+		end)
+	end
+
+	local function clear_image_nvim_buffer(bufnr)
+		local ok, image = pcall(require, "image")
+		if not ok or type(image.get_images) ~= "function" then
+			return
+		end
+
+		for _, img in ipairs(image.get_images({ buffer = bufnr })) do
+			pcall(function()
+				img:clear()
+			end)
+		end
+	end
+
+	local function setup_external_reload_autocmds()
+		local group = vim.api.nvim_create_augroup("MoltenExternalReload", { clear = true })
+		local patterns = { "*.qmd", "*.md", "*.ipynb", "*.py" }
+
+		vim.api.nvim_create_autocmd("BufReadPre", {
+			group = group,
+			pattern = patterns,
+			desc = "Close Molten UI before notebook buffers reload",
+			callback = function(args)
+				if not molten_is_initialized() then
+					return
+				end
+
+				call_molten_function("MoltenBufLeave")
+				if vim.fn.exists(":MoltenHideOutput") == 2 then
+					pcall(vim.cmd, "silent! noautocmd MoltenHideOutput")
+				end
+				clear_image_nvim_buffer(args.buf)
+			end,
+		})
+
+		vim.api.nvim_create_autocmd({ "BufReadPost", "FileChangedShellPost" }, {
+			group = group,
+			pattern = patterns,
+			desc = "Refresh Molten UI after notebook buffers reload",
+			callback = function()
+				vim.schedule(function()
+					call_molten_function("MoltenUpdateInterface")
+				end)
+			end,
+		})
+	end
+
+	setup_external_reload_autocmds()
+
 	vim.keymap.set("n", "<leader>mj", function()
 		local host = vim.fn.input("Enter host node: ")
 		if host and host ~= "" then

@@ -86,6 +86,7 @@ mln "$DOTFILES_DIR/latex_highlights.scm" ~/.config/nvim/bundle/nvim-treesitter/q
 mln "$DOTFILES_DIR/plugins.lua" ~/.config/nvim/lua/plugins.lua
 touch "$DOTFILES_DIR/local_config.lua"
 mln "$DOTFILES_DIR/local_config.lua" ~/.config/nvim/lua/local_config.lua
+mln "$DOTFILES_DIR/lua/config/codex_btw.lua" ~/.config/nvim/lua/config/codex_btw.lua
 mln "$DOTFILES_DIR/lua/config/quarto.lua" ~/.config/nvim/lua/config/quarto.lua
 mln "$DOTFILES_DIR/lua/config/molten.lua" ~/.config/nvim/lua/config/molten.lua
 mln "$DOTFILES_DIR/.jupyter/jupyter_qtconsole_config.py" ~/.jupyter/jupyter_qtconsole_config.py
@@ -228,7 +229,10 @@ fi
 
 # Ensure npm global packages are installed
 if command -v npm &> /dev/null; then
-    npm list -g tree-sitter-cli &> /dev/null || npm install -g tree-sitter-cli
+    # Pin tree-sitter-cli to 0.25.x: 0.26+ removed `--no-bindings` (breaks
+    # nvim-treesitter master), 0.24 and older only support ABI 14 (nvim 0.11
+    # wants ABI 15).
+    npm list -g tree-sitter-cli@^0.25.0 &> /dev/null || npm install -g tree-sitter-cli@^0.25.0
     npm list -g typewritten &> /dev/null || npm install -g typewritten
 fi
 
@@ -241,4 +245,5 @@ fi
 if [ ! -d ~/.tmux/plugins/tpm ]; then
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 fi
-mln "$DOTFILES_DIR/scripts/dev-tmux" ~/scripts/dev-tmux
+mln "$DOTFILES_DIR/scripts/dev-tmux" ~/.local/bin/dev-tmux
+mln "$DOTFILES_DIR/scripts/memory_viz" ~/.local/bin/memory_viz

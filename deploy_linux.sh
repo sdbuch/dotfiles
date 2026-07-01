@@ -68,6 +68,7 @@ mln "$DOTFILES_DIR/latex_highlights.scm" ~/.config/nvim/bundle/nvim-treesitter/q
 mln "$DOTFILES_DIR/plugins.lua" ~/.config/nvim/lua/plugins.lua
 touch "$DOTFILES_DIR/local_config.lua"
 mln "$DOTFILES_DIR/local_config.lua" ~/.config/nvim/lua/local_config.lua
+mln "$DOTFILES_DIR/lua/config/codex_btw.lua" ~/.config/nvim/lua/config/codex_btw.lua
 mln "$DOTFILES_DIR/lua/config/quarto.lua" ~/.config/nvim/lua/config/quarto.lua
 mln "$DOTFILES_DIR/lua/config/molten.lua" ~/.config/nvim/lua/config/molten.lua
 
@@ -80,7 +81,8 @@ fi
 mln "$DOTFILES_DIR/.vim/python_imports.txt" ~/.vim/python_skeleton.py
 mln "$DOTFILES_DIR/.vim/colors/wombat256mod.vim" ~/.vim/colors/wombat256mod.vim
 mln "$DOTFILES_DIR/.vim/snippets/python.json" ~/.vim/snippets/python.json
-mln "$DOTFILES_DIR/scripts/dev-tmux" ~/scripts/dev-tmux
+mln "$DOTFILES_DIR/scripts/dev-tmux" ~/.local/bin/dev-tmux
+mln "$DOTFILES_DIR/scripts/memory_viz" ~/.local/bin/memory_viz
 mln "$DOTFILES_DIR/.ipython/profile_default/ipython_config.py" ~/.ipython/profile_default/ipython_config.py
 
 if [ "$INSTALL_MINIMAL" = false ]; then
@@ -137,7 +139,10 @@ fi
 
 # Ensure npm global packages are installed
 if command -v npm &> /dev/null; then
-    npm list -g tree-sitter-cli &> /dev/null || npm install -g tree-sitter-cli
+    # Pin tree-sitter-cli to 0.25.x: 0.26+ removed `--no-bindings` (breaks
+    # nvim-treesitter master), 0.24 and older only support ABI 14 (nvim 0.11
+    # wants ABI 15).
+    npm list -g tree-sitter-cli@^0.25.0 &> /dev/null || npm install -g tree-sitter-cli@^0.25.0
     if [ "$INSTALL_MINIMAL" = false ]; then
         npm list -g typewritten &> /dev/null || npm install -g typewritten
     fi

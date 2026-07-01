@@ -93,7 +93,12 @@ export LANG=en_US.UTF-8
 #ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#6A5E59"
 
 # completion for uv
-eval "$(uv generate-shell-completion zsh)"
+# Regenerate with: uv generate-shell-completion zsh > ~/.zfunctions/_uv
+if [[ -f "$HOME/.zfunctions/_uv" ]]; then
+  autoload -Uz _uv
+else
+  eval "$(uv generate-shell-completion zsh)"
+fi
 
 _uv_run_mod() {
     if [[ "$words[2]" == "run" && "$words[CURRENT]" != -* ]]; then

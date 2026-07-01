@@ -4,6 +4,20 @@ local wezterm = require("wezterm")
 -- This will hold the configuration.
 local config = wezterm.config_builder()
 
+local home = os.getenv("HOME")
+if home then
+	config.font_dirs = { home .. "/Library/Fonts" }
+end
+
+local tmux_new_session = {
+	"/usr/bin/env",
+	"-u",
+	"TMUX",
+	"/bin/zsh",
+	"-lc",
+	'exec "$(command -v tmux)" new-session -A -s "agent-$(/bin/date +%Y%m%d-%H%M%S)-$$"',
+}
+
 -- This is where you actually apply your config choices
 -- Window Settings
 config.use_fancy_tab_bar = false
@@ -25,6 +39,13 @@ config.audible_bell = "SystemBeep"
 
 -- key remappings
 config.keys = {
+	{
+		key = "t",
+		mods = "CMD",
+		action = wezterm.action.SpawnCommandInNewTab({
+			args = tmux_new_session,
+		}),
+	},
 	{
 		key = "Enter",
 		mods = "CTRL",
@@ -60,7 +81,120 @@ config.keys = {
 		mods = "CTRL",
 		action = wezterm.action.SendString("\x1b[127;5u"),
 	},
+	{
+		key = "Z",
+		mods = "CTRL|SHIFT",
+		action = wezterm.action.PromptInputLine({
+			description = "Enter new name for tab",
+			action = wezterm.action_callback(function(window, _pane, line)
+				if line ~= nil then
+					window:active_tab():set_title(line)
+				end
+			end),
+		}),
+	},
 }
+
+local status_title_prefixes = {
+	"⠁",
+	"⠂",
+	"⠄",
+	"⠈",
+	"⠋",
+	"⠙",
+	"⠹",
+	"⠸",
+	"⠼",
+	"⠴",
+	"⠦",
+	"⠧",
+	"⠇",
+	"⠏",
+	"⠐",
+	"⠠",
+	"⡀",
+	"⢀",
+	"✳",
+	"✶",
+	"✻",
+	"✢",
+	"✽",
+	"✺",
+}
+
+local function starts_with(value, prefix)
+	return value:sub(1, #prefix) == prefix
+end
+
+local function split_leading_status_marker(value)
+	local marker, rest = value:match("^(%[%s*[!?.]+%s*%])%s*(.*)$")
+	if marker == nil then
+		return nil, value
+	end
+
+	return "[" .. marker:sub(2, -2):gsub("%s+", "") .. "]", rest
+end
+
+local function split_status_indicators(title)
+	if title == nil then
+		return "", ""
+	end
+
+	local indicators = {}
+	local rest = title
+	local found = true
+
+	while found do
+		found = false
+
+		for _, prefix in ipairs(status_title_prefixes) do
+			if starts_with(rest, prefix .. " ") then
+				table.insert(indicators, prefix)
+				rest = rest:sub(#prefix + 2)
+				found = true
+				break
+			end
+		end
+
+		if not found then
+			local marker, marker_rest = split_leading_status_marker(rest)
+			if marker ~= nil then
+				table.insert(indicators, marker)
+				rest = marker_rest
+				found = true
+			end
+		end
+	end
+
+	if #indicators == 0 then
+		return "", title
+	end
+
+	return table.concat(indicators, " "), rest
+end
+
+wezterm.on("format-tab-title", function(tab, _tabs, _panes, _config, _hover, max_width)
+	local pane_title = tab.active_pane and tab.active_pane.title or ""
+	local status_indicators, pane_title_without_status = split_status_indicators(pane_title)
+	local title = tab.tab_title
+	local tab_number = tostring((tab.tab_index or 0) + 1)
+
+	if title == nil or title == "" then
+		title = pane_title_without_status
+	end
+	if title == nil or title == "" then
+		title = "tab"
+	end
+	if status_indicators ~= "" then
+		title = status_indicators .. " " .. title
+	end
+	title = tab_number .. ": " .. title
+	if max_width and max_width > 2 then
+		title = wezterm.truncate_right(title, max_width - 2)
+	end
+
+	return " " .. title .. " "
+end)
 
 -- fonts
 config.font_size = 26   -- Optimized for 3840x2160

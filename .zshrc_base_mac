@@ -15,6 +15,7 @@ PLATFORM_PLUGINS=(bundler gpg-agent keychain brew)
 # config for keychain (must be set before oh-my-zsh sources the plugin)
 zstyle :omz:plugins:keychain agents gpg,ssh
 zstyle :omz:plugins:keychain identities id_ed25519 hwagyesa-github google_compute_engine raspi
+zstyle :omz:plugins:keychain options --quick --quiet --ignore-missing
 
 # Source common config
 source "${0:a:h}/.zshrc_base_common"
@@ -49,7 +50,7 @@ export MYPYPATH=~/.vim/vim-lsp-settings/stubs
 export CLICOLOR=1
 
 # for image.nvim luarocks
-export DYLD_FALLBACK_LIBRARY_PATH="$(brew --prefix)/lib:$DYLD_FALLBACK_LIBRARY_PATH"
+export DYLD_FALLBACK_LIBRARY_PATH="${HOMEBREW_PREFIX:-/opt/homebrew}/lib:$DYLD_FALLBACK_LIBRARY_PATH"
 
 # Gstreamer setup...
 export GST_PLUGIN_PATH="/opt/homebrew/lib/gstreamer-1.0"

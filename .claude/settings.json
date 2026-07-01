@@ -1,4 +1,8 @@
 {
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "permissions": {
     "allow": [
       "Bash(uv:*)",
@@ -45,6 +49,7 @@
     "deny": [],
     "defaultMode": "auto"
   },
+  "model": "opus[1m]",
   "hooks": {
     "Notification": [
       {
@@ -93,5 +98,6 @@
     "command": "bash ~/.claude/statusline-command.sh"
   },
   "effortLevel": "high",
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "remoteControlAtStartup": true
 }

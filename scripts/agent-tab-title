@@ -1,0 +1,354 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import subprocess
+import sys
+from collections import OrderedDict
+
+
+DEFAULT_MAX_CHARS = 30
+WEZTERM_CLI = "/Applications/WezTerm.app/Contents/MacOS/wezterm"
+
+STOPWORDS = {
+    "a",
+    "about",
+    "after",
+    "again",
+    "all",
+    "also",
+    "an",
+    "and",
+    "any",
+    "are",
+    "around",
+    "as",
+    "at",
+    "based",
+    "be",
+    "because",
+    "but",
+    "by",
+    "can",
+    "could",
+    "do",
+    "does",
+    "doing",
+    "for",
+    "from",
+    "given",
+    "have",
+    "having",
+    "here",
+    "how",
+    "i",
+    "if",
+    "in",
+    "into",
+    "is",
+    "it",
+    "its",
+    "just",
+    "look",
+    "make",
+    "maybe",
+    "me",
+    "more",
+    "my",
+    "need",
+    "no",
+    "not",
+    "of",
+    "on",
+    "or",
+    "please",
+    "right",
+    "see",
+    "so",
+    "some",
+    "take",
+    "than",
+    "that",
+    "the",
+    "there",
+    "this",
+    "to",
+    "too",
+    "use",
+    "using",
+    "want",
+    "way",
+    "what",
+    "when",
+    "where",
+    "with",
+    "without",
+    "would",
+    "you",
+}
+
+ACTION_WORDS = {
+    "add",
+    "audit",
+    "build",
+    "check",
+    "compare",
+    "convert",
+    "create",
+    "debug",
+    "deploy",
+    "diagnose",
+    "edit",
+    "fix",
+    "inspect",
+    "investigate",
+    "launch",
+    "move",
+    "refactor",
+    "review",
+    "run",
+    "sync",
+    "test",
+    "triage",
+    "update",
+    "write",
+}
+
+IMPORTANT = {
+    "agent": 4,
+    "agents": 5,
+    "api": 5,
+    "baseline": 6,
+    "bazel": 9,
+    "branch": 5,
+    "codex": 6,
+    "commit": 5,
+    "doc": 4,
+    "eval": 6,
+    "gpu": 7,
+    "job": 6,
+    "launch": 6,
+    "log": 5,
+    "memory": 6,
+    "mfu": 7,
+    "mutagen": 9,
+    "pane": 6,
+    "pr": 6,
+    "prompt": 5,
+    "remote": 5,
+    "review": 6,
+    "rev": 5,
+    "skill": 7,
+    "slack": 6,
+    "sync": 6,
+    "tab": 6,
+    "title": 8,
+    "tmux": 9,
+    "venv": 8,
+    "wezterm": 10,
+    "workflow": 8,
+    "xid": 6,
+}
+
+ALIASES = {
+    "agents.md": "agents",
+    "gpus": "gpu",
+    "skills": "skill",
+    "skill.md": "skill",
+    "tabs": "tab",
+    "titles": "title",
+    "titling": "title",
+    "venvs": "venv",
+    "wezterm.lua": "wezterm",
+}
+
+
+def run_text(command: list[str]) -> str:
+    return subprocess.check_output(command, stderr=subprocess.DEVNULL, text=True).strip()
+
+
+def wezterm_cli_path() -> str:
+    executable = os.environ.get("WEZTERM_EXECUTABLE", "")
+    if executable.endswith("/wezterm"):
+        return executable
+    if executable.endswith("/wezterm-gui"):
+        return executable[: -len("wezterm-gui")] + "wezterm"
+    return WEZTERM_CLI
+
+
+def tmux_client_tty() -> str | None:
+    if "TMUX" not in os.environ:
+        return None
+    try:
+        return run_text(["tmux", "display-message", "-p", "#{client_tty}"]) or None
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        return None
+
+
+def stdin_tty() -> str | None:
+    try:
+        return os.ttyname(sys.stdin.fileno())
+    except OSError:
+        return None
+
+
+def pane_id_from_tty(wezterm: str, tty: str) -> str | None:
+    try:
+        panes = json.loads(run_text([wezterm, "cli", "list", "--format", "json"]))
+    except (FileNotFoundError, subprocess.CalledProcessError, json.JSONDecodeError):
+        return None
+
+    for pane in panes:
+        if pane.get("tty_name") == tty:
+            return str(pane.get("pane_id"))
+    return None
+
+
+def current_pane_id(wezterm: str) -> str | None:
+    # Inside tmux, WEZTERM_PANE can be a stale tmux-server global. Prefer the
+    # attached client tty and map it back to the outer WezTerm pane.
+    tty = tmux_client_tty() or stdin_tty()
+    if tty:
+        pane_id = pane_id_from_tty(wezterm, tty)
+        if pane_id:
+            return pane_id
+
+    return os.environ.get("WEZTERM_PANE") or None
+
+
+def normalize_token(token: str) -> list[str]:
+    token = token.lower().strip("._-:/")
+    token = ALIASES.get(token, token)
+    token = re.sub(
+        r"\.(md|markdown|txt|py|sh|lua|json|ya?ml|toml|go|rs|tsx?|jsx?)$",
+        "",
+        token,
+    )
+    pieces = re.split(r"[/_.]+", token)
+    normalized = []
+    for piece in pieces:
+        piece = piece.strip("-")
+        piece = ALIASES.get(piece, piece)
+        if piece.endswith("s") and len(piece) > 4 and piece[:-1] in IMPORTANT:
+            piece = piece[:-1]
+        if piece and piece not in STOPWORDS:
+            normalized.append(piece)
+    return normalized
+
+
+def tokenize(text: str) -> list[str]:
+    raw_tokens = re.findall(r"[A-Za-z0-9][A-Za-z0-9._/+-]*", text)
+    tokens = []
+    for raw_token in raw_tokens:
+        tokens.extend(normalize_token(raw_token))
+    return tokens
+
+
+def score_token(token: str, index: int) -> float:
+    score = 1.0
+    score += IMPORTANT.get(token, 0)
+    if token in ACTION_WORDS:
+        score += 4
+    if re.match(r"rev\d", token):
+        score += 8
+    if re.match(r"t\d", token):
+        score += 7
+    if any(char.isalpha() for char in token) and any(char.isdigit() for char in token):
+        score += 4
+    if len(token) >= 7:
+        score += 2
+    score += max(0, 5 - index * 0.15)
+    return score
+
+
+def compact_title(text: str, max_chars: int) -> str:
+    tokens = tokenize(text)
+    if not tokens:
+        return "agent-task"
+
+    first_seen: OrderedDict[str, int] = OrderedDict()
+    for index, token in enumerate(tokens):
+        first_seen.setdefault(token, index)
+
+    scored = [
+        (token, score_token(token, index), index)
+        for token, index in first_seen.items()
+        if len(token) > 1 or token in {"go", "pr"}
+    ]
+    if not scored:
+        return "agent-task"
+
+    action = next((token for token in tokens if token in ACTION_WORDS), None)
+    topic_pool = [
+        item for item in sorted(scored, key=lambda item: (-item[1], item[2]))
+        if item[0] != action
+    ]
+
+    selected = []
+    if action:
+        selected.append(action)
+
+    for token, _score, _index in topic_pool:
+        if token in selected:
+            continue
+        trial = selected + [token]
+        if len("-".join(trial)) <= max_chars:
+            selected.append(token)
+        if len(selected) >= 4:
+            break
+
+    if not selected:
+        selected = [topic_pool[0][0]]
+
+    title = "-".join(selected)
+    if len(title) <= max_chars:
+        return title
+
+    return title[:max_chars].rstrip("-") or "agent-task"
+
+
+def read_title_input(args: argparse.Namespace) -> str:
+    if args.text:
+        return " ".join(args.text).strip()
+    if not sys.stdin.isatty():
+        return sys.stdin.read().strip()
+    return ""
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Set a concise, tmux-safe WezTerm tab title for an agent task."
+    )
+    parser.add_argument("--literal", action="store_true", help="Use the text as the exact title.")
+    parser.add_argument("--print", action="store_true", dest="print_only", help="Print the generated title without setting it.")
+    parser.add_argument("--max-chars", type=int, default=DEFAULT_MAX_CHARS)
+    parser.add_argument("text", nargs="*")
+    args = parser.parse_args()
+
+    raw_text = read_title_input(args)
+    if not raw_text:
+        return 0
+
+    title = raw_text if args.literal else compact_title(raw_text, args.max_chars)
+    if args.print_only:
+        print(title)
+        return 0
+
+    wezterm = wezterm_cli_path()
+    pane_id = current_pane_id(wezterm)
+    if not pane_id:
+        print(title, file=sys.stderr)
+        return 0
+
+    subprocess.run(
+        [wezterm, "cli", "set-tab-title", "--pane-id", pane_id, title],
+        check=False,
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
