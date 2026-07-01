@@ -17,6 +17,14 @@ end
 
 vim.g.mapleader = ","
 
+-- Point the python3 provider at the cwd's uv venv if it has one. Required
+-- for Molten: it spawns the host through this interpreter and imports
+-- `pynvim` / `jupyter_client` from it.
+local cwd_venv = vim.fn.getcwd() .. "/.venv/bin/python"
+if vim.fn.executable(cwd_venv) == 1 then
+	vim.g.python3_host_prog = cwd_venv
+end
+
 -- vim visual
 vim.wo.relativenumber = true
 vim.wo.number = true
@@ -74,6 +82,8 @@ vim.keymap.set("n", "<F7>", ":setlocal spell! spelllang=en_us<CR>", { noremap = 
 -- terminal shortcuts
 vim.keymap.set("n", "<Leader>ot", ":split term://bash<CR>", { noremap = true, silent = true })
 vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]])
+
+require("config.codex_btw").setup()
 
 -- hotkey to close quickfix menus
 vim.keymap.set("n", "<Leader>cc", function()
@@ -167,7 +177,6 @@ vim.api.nvim_create_autocmd("BufNewFile", {
 })
 
 -- Neotree commands
-vim.keymap.set("n", "\\", "<cmd>Neotree toggle current reveal_force_cwd<CR>", { silent = true })
 vim.keymap.set("n", "<F6>", "<cmd>Neotree toggle<CR>", { silent = true })
 vim.keymap.set("n", "<leader>gs", "<cmd>Neotree float git_status<CR>", { silent = true })
 vim.keymap.set("n", "<leader>sb", "<cmd>Neotree toggle show buffers right<CR>", { silent = true })
@@ -334,73 +343,81 @@ local lazy_plugins = {
 	{
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
+		-- Pin to `master`: upstream switched the default branch to `main`,
+		-- which is a full rewrite that drops `ensure_installed`/`auto_install`
+		-- and requires Neovim 0.12+. We're on 0.11.x, so use the legacy
+		-- branch. `nvim-treesitter-textobjects` must also be pinned to its
+		-- `master` since its `main` branch only pairs with treesitter `main`.
+		branch = "master",
 		dependencies = {
-			"nvim-treesitter/nvim-treesitter-textobjects",
+			{ "nvim-treesitter/nvim-treesitter-textobjects", branch = "master" },
 		},
 		config = function()
 			---@diagnostic disable-next-line: missing-fields
-			require("nvim-treesitter").setup({
+			require("nvim-treesitter.configs").setup({
 				ensure_installed = {
+					"bash",
+					"bibtex",
 					"c",
 					"cpp",
-					"cuda",
-					"lua",
-					"vim",
-					"python",
-					"html",
 					"css",
-					"scss",
+					"cuda",
+					"go",
+					"html",
 					"javascript",
+					"json",
+					"julia",
+					"latex",
+					"lua",
 					"markdown",
 					"markdown_inline",
+					"python",
+					"r",
 					"rust",
-					"latex",
-					"bibtex",
+					"scala",
+					"scss",
+					"sql",
+					"toml",
+					"typescript",
+					"vim",
+					"yaml",
 				},
 				sync_install = false,
 				auto_install = true,
 				ignore_install = { "perl" },
-			})
-
-			-- Enable treesitter highlight and indent
-			vim.treesitter.start = vim.treesitter.start -- ensure available
-			vim.api.nvim_create_autocmd("FileType", {
-				callback = function(args)
-					pcall(vim.treesitter.start, args.buf)
-				end,
+				highlight = { enable = true },
+				indent = { enable = true },
+				textobjects = {
+					select = {
+						enable = true,
+						lookahead = true,
+						keymaps = {
+							["af"] = "@function.outer",
+							["if"] = "@function.inner",
+							["ac"] = "@class.outer",
+							["ic"] = "@class.inner",
+						},
+					},
+					move = {
+						enable = true,
+						set_jumps = true,
+						goto_next_end = {
+							["<leader>J"] = { query = { "@conditional.outer", "@loop.outer" } },
+							["<leader>j"] = { query = { "@function.outer", "@class.outer" } },
+						},
+						goto_previous_start = {
+							["<leader>K"] = { query = { "@conditional.outer", "@loop.outer" } },
+							["<leader>k"] = { query = { "@function.outer", "@class.outer" } },
+						},
+					},
+				},
 			})
 
 			-- matchup integration
 			vim.g.matchup_matchparen_offscreen = { method = "popup" }
 
-			-- treesitter-textobjects
-			require("nvim-treesitter-textobjects").setup({
-				select = {
-					enable = true,
-					lookahead = true,
-					keymaps = {
-						["af"] = "@function.outer",
-						["if"] = "@function.inner",
-						["ac"] = "@class.outer",
-						["ic"] = "@class.inner",
-					},
-				},
-				move = {
-					enable = true,
-					set_jumps = true,
-					goto_next_end = {
-						["<leader>J"] = { query = { "@conditional.outer", "@loop.outer" } },
-						["<leader>j"] = { query = { "@function.outer", "@class.outer" } },
-					},
-					goto_previous_start = {
-						["<leader>K"] = { query = { "@conditional.outer", "@loop.outer" } },
-						["<leader>k"] = { query = { "@function.outer", "@class.outer" } },
-					},
-				},
-			})
-
 			-- Repeatable movements with ;
-			local ts_repeat_move = require("nvim-treesitter-textobjects.repeatable_move")
+			local ts_repeat_move = require("nvim-treesitter.textobjects.repeatable_move")
 			vim.keymap.set({ "n", "x", "o" }, ";", ts_repeat_move.repeat_last_move)
 			-- Make builtin f, F, t, T repeatable with ;
 			vim.keymap.set({ "n", "x", "o" }, "f", ts_repeat_move.builtin_f_expr, { expr = true })
@@ -485,6 +502,7 @@ local lazy_plugins = {
 	-- Tagbar-style code overview.
 	{
 		"stevearc/aerial.nvim",
+		branch = "nvim-0.11",
 		config = function()
 			require("aerial").setup({
 				backends = { "treesitter", "lsp", "markdown" },
@@ -545,7 +563,109 @@ local lazy_plugins = {
 		},
 	},
 	{ "akinsho/git-conflict.nvim", version = "*", config = true },
-	{ "sindrets/diffview.nvim", dependencies = { "nvim-tree/nvim-web-devicons" }, config = true },
+	{
+		"sindrets/diffview.nvim",
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+		config = function()
+			local diffview = require("diffview")
+			diffview.setup()
+
+			local function start_pyright_for_diffview(bufnr)
+				bufnr = bufnr or vim.api.nvim_get_current_buf()
+				if vim.bo[bufnr].filetype ~= "python" then
+					return
+				end
+				if next(vim.lsp.get_clients({ bufnr = bufnr, name = "pyright" })) then
+					return
+				end
+
+				local bufname = vim.api.nvim_buf_get_name(bufnr)
+				local root = bufname:match("^diffview://(.+)/%.git/")
+				if not root or vim.fn.isdirectory(root) ~= 1 then
+					return
+				end
+
+				for _, skipped_root in ipairs(local_config.diffview_pyright_skip_roots or {}) do
+					skipped_root = vim.fn.expand(skipped_root)
+					if root == skipped_root or vim.startswith(root, skipped_root .. "/") then
+						return
+					end
+				end
+
+				local pyright = vim.lsp.config and vim.lsp.config.pyright
+				if not pyright then
+					return
+				end
+
+				local config = vim.deepcopy(pyright)
+				config.root_dir = root
+				vim.lsp.start(config, { bufnr = bufnr })
+			end
+
+			vim.api.nvim_create_autocmd("User", {
+				pattern = "DiffviewDiffBufRead",
+				callback = function()
+					start_pyright_for_diffview()
+				end,
+			})
+
+			vim.api.nvim_create_autocmd("BufEnter", {
+				pattern = "diffview://*",
+				callback = function(ev)
+					start_pyright_for_diffview(ev.buf)
+				end,
+			})
+
+			local function append_all(dst, src)
+				if src then
+					vim.list_extend(dst, src)
+				end
+				return dst
+			end
+
+			-- The upstream completer expands revision candidates with unpack().
+			-- Large repos can exceed LuaJIT's vararg limit before cmp can filter.
+			diffview.completers.DiffviewOpen = function(ctx)
+				if ctx.argidx <= 1 then
+					return {}
+				end
+
+				local has_rev_arg = false
+				local adapter = diffview.get_adapter()
+
+				for i = 2, math.min(#ctx.args, ctx.divideridx) do
+					if ctx.args[i]:sub(1, 1) ~= "-" and i ~= ctx.argidx then
+						has_rev_arg = true
+						break
+					end
+				end
+
+				local candidates = {}
+
+				if ctx.argidx > ctx.divideridx then
+					if adapter then
+						append_all(candidates, adapter:path_candidates(ctx.arg_lead))
+					else
+						append_all(candidates, vim.fn.getcompletion(ctx.arg_lead, "file", 0))
+					end
+				elseif adapter then
+					if not has_rev_arg and ctx.arg_lead:sub(1, 1) ~= "-" then
+						append_all(candidates, adapter.comp.open:get_all_names())
+						append_all(candidates, adapter:rev_candidates(ctx.arg_lead, {
+							accept_range = true,
+						}))
+					else
+						append_all(
+							candidates,
+							adapter.comp.open:get_completion(ctx.arg_lead) or adapter.comp.open:get_all_names()
+						)
+					end
+				end
+
+				return candidates
+			end
+		end,
+	},
 	{
 		"pwntester/octo.nvim",
 		dependencies = {
@@ -600,7 +720,7 @@ local lazy_plugins = {
 					theme = "monokai",
 				},
 			}
-			vim.g.mkdp_combine_preview = 1
+			vim.g.mkdp_combine_preview = 0
 			vim.g.mkdp_combine_preview_auto_refresh = 1
 			vim.g.mkdp_auto_close = 0
 
