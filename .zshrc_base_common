@@ -74,11 +74,13 @@ zstyle :omz:plugins:iterm2 shell-integration yes
 
 # Config for zsh-vi-mode
 export ZVM_VI_EDITOR=nvim
+DISABLE_FZF_KEY_BINDINGS="true"
 
 source $ZSH/oh-my-zsh.sh
 
-# after commands
-zvm_after_init_commands+=('source <(fzf --zsh)')
+if [[ -r /usr/share/doc/fzf/examples/key-bindings.zsh ]]; then
+  zvm_after_init_commands+=('source /usr/share/doc/fzf/examples/key-bindings.zsh 2>/dev/null')
+fi
 
 
 # Tab completion for ssh hosts in .ssh/config file
