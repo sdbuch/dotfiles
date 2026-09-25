@@ -43,6 +43,27 @@ For remote development with the olympus repo on a GCP VM, see
 
 Setup order: `deploy_osx.sh` first, then `dotfiles-private/olympus/setup.sh`.
 
+### Tmux status maintenance
+
+The status bar reads `#{@mutagen-status}` directly. One server-owned timer polls
+Mutagen every 60 seconds and checks Continuum's existing five-minute autosave
+logic. Plugin initialization completes before the timer takes over, preserving
+Continuum's restore behavior and its multiple-server save safeguard.
+
+Keep shell commands out of status formats: `status-interval` only controls
+periodic redraws. Pane title/progress updates can otherwise launch a separate
+`#()` command for every client every second, generating excessive endpoint
+security activity. The timer changes the displayed option only when its text
+changes; reloads retain one timer chain, and callbacks never start a server.
+
+The timer requires Python 3.8+ and tmux with `run-shell -d` support. Inspect
+`tmux show-options -g @status-timer-error` if updates stop; reloading the config
+repairs an expired timer. Tests use fake commands and never create a tmux server:
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
 ## Structure
 
 ```
