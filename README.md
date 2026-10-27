@@ -66,7 +66,6 @@ if machine-loss recovery is required; cloning this repository restores only
 the tool. `AGE_ENV_CONFIG_DIR`, `AGE_ENV_DATA_DIR`, `AGE_ENV_PROFILE_DIR`, and
 `AGE_ENV_IDENTITY` can override the defaults.
 
-
 ## Structure
 
 ```
@@ -74,10 +73,10 @@ deploy_osx.sh          # macOS setup (symlinks + brew + tools)
 deploy_linux.sh        # Linux setup
 deploy_common.sh       # Shared helpers (mln symlink function)
 init.lua               # Neovim config (symlinked to ~/.config/nvim/init.lua)
-.tmux.conf             # Tmux config (powerline + mutagen status)
+.tmux.conf             # Tmux config (powerline + optional local extension)
 .gitconfig             # Git config
 .zshrc_base_mac        # Base zsh config (sourced from ~/.zshrc)
-scripts/               # Helper scripts (tmux sessions, mutagen status)
+scripts/               # Portable helper scripts
 .claude/               # Claude Code config (hooks, skills, agents)
 ```
 

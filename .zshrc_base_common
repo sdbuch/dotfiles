@@ -117,9 +117,6 @@ compdef _uv_run_mod uv
 if [ -f ~/.aliases ]; then
   . ~/.aliases
 fi
-if [ -f ~/.aliases_local ]; then
-  . ~/.aliases_local
-fi
 
 # User functions
 function cdl() {

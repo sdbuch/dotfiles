@@ -22,9 +22,7 @@
       "mcp__claude_ai_Slack__slack_search_public_and_private",
       "mcp__claude_ai_Notion__notion-fetch",
       "Bash(pip show:*)",
-      "Bash(pip3 show:*)",
-      "Read(//Users/sbuchanan/.local/bin/**)",
-      "Read(//Users/sbuchanan/.local/share/nvim/mason/bin/**)"
+      "Bash(pip3 show:*)"
     ],
     "deny": [],
     "ask": []

@@ -70,14 +70,14 @@ export LIBGS="/opt/homebrew/Cellar/ghostscript/10.01.2/lib/libgs.dylib"
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/Users/sdbuch/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+__conda_setup="$("$HOME/anaconda3/bin/conda" shell.bash hook 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/Users/sdbuch/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/Users/sdbuch/anaconda3/etc/profile.d/conda.sh"
+    if [ -f "$HOME/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "$HOME/anaconda3/etc/profile.d/conda.sh"
     else
-        export PATH="/Users/sdbuch/anaconda3/bin:$PATH"
+        export PATH="$HOME/anaconda3/bin:$PATH"
     fi
 fi
 unset __conda_setup
@@ -89,7 +89,7 @@ brew () {
   export PATH="$PATHO"
   # echo "Anaconda removed from path"
   command brew "$@"
-  export PATH="/Users/sdbuch/anaconda3/bin:$PATHO"
+  export PATH="$HOME/anaconda3/bin:$PATHO"
   # echo "Anaconda restored to path"
 }
 
@@ -100,10 +100,10 @@ brew () {
 eval "$(rbenv init - bash)"
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/sdbuch/google-cloud-sdk/path.bash.inc' ]; then . '/Users/sdbuch/google-cloud-sdk/path.bash.inc'; fi
+if [ -f "$HOME/google-cloud-sdk/path.bash.inc" ]; then . "$HOME/google-cloud-sdk/path.bash.inc"; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/Users/sdbuch/google-cloud-sdk/completion.bash.inc' ]; then . '/Users/sdbuch/google-cloud-sdk/completion.bash.inc'; fi
+if [ -f "$HOME/google-cloud-sdk/completion.bash.inc" ]; then . "$HOME/google-cloud-sdk/completion.bash.inc"; fi
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm

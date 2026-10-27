@@ -41,8 +41,6 @@ if [ "$INSTALL_HOME" = true ]; then
     mln "$DOTFILES_DIR/.claude/skills/calendar" ~/.claude/skills/calendar
     mln "$DOTFILES_DIR/.claude/skills/nutrition" ~/.claude/skills/nutrition
 fi
-mln "$DOTFILES_DIR/.cursor/mcp.json" ~/.cursor/mcp.jsonmkdir -p ~/.config/google-oauth
-
 # Config files
 mln "$DOTFILES_DIR/latex.ctags" ~/.ctags.d/latex.ctags
 mln "$DOTFILES_DIR/.gitconfig" ~/.gitconfig
@@ -94,7 +92,7 @@ mln "$DOTFILES_DIR/.ipython/sam_utility.py" ~/.ipython/sam_utility.py
 mln "$DOTFILES_DIR/.ipython/profile_default/ipython_config.py" ~/.ipython/profile_default/ipython_config.py
 mln "$DOTFILES_DIR/.ipython/profile_default/ipython_kernel_config.py" ~/.ipython/profile_default/ipython_kernel_config.py
 cp "$DOTFILES_DIR/keyremap_windowskb.sh" ~/keyremap_windowskb.sh
-sed "s|/Users/sdbuch|$HOME|g" "$DOTFILES_DIR/com.user.keyboardmapping.plist" | sudo tee /Library/LaunchDaemons/com.user.keyboardmapping.plist > /dev/null
+sed "s|__HOME__|$HOME|g" "$DOTFILES_DIR/com.user.keyboardmapping.plist" | sudo tee /Library/LaunchDaemons/com.user.keyboardmapping.plist > /dev/null
 git config --global core.excludesfile ~/.gitignore_global
 
 # Disable mouse acceleration

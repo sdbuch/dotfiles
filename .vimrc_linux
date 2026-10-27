@@ -3,10 +3,10 @@
 " interact properly
 " so after this is set here, probably can't run many other programs in this
 " session
-"let $PYTHONHOME = "/home/sam/miniconda3"
+"let $PYTHONHOME = expand("$HOME/miniconda3")
 let $PYTHONHOME = ""
 " set python 3 dll
-set pythonthreedll=/home/sam/miniconda3/envs/pytorch181/bin/python
+execute "set pythonthreedll=" . expand("$HOME/miniconda3/envs/pytorch181/bin/python")
 
 " Silent (squash warnings...)
 if has('python3')
@@ -331,6 +331,6 @@ let g:SimpylFold_docstring_preview = 1
 "python3 << EOF
 "import sys
 "#sys.path.insert(-1, "~/.vim/pack/git-plugins/start/jedi-vim/pythonx")
-"sys.path.insert(0, "/Users/sadboys/.vim/pack/git-plugins/start/jedi-vim/pythonx/jedi")
-"sys.path.insert(0, "/Users/sadboys/.vim/pack/git-plugins/start/jedi-vim/pythonx/parso")
+"sys.path.insert(0, "$HOME/.vim/pack/git-plugins/start/jedi-vim/pythonx/jedi")
+"sys.path.insert(0, "$HOME/.vim/pack/git-plugins/start/jedi-vim/pythonx/parso")
 "EOF

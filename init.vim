@@ -729,7 +729,7 @@ lua << EOF
         capabilities = capabilities
     }
     require("lspconfig").texlab.setup{
-        -- cmd = { 'texlab', '-vvvv', '--log-file', '/Users/sdbuch/.local/state/nvim/texlab.log' },
+        -- cmd = { 'texlab', '-vvvv', '--log-file', '~/.local/state/nvim/texlab.log' },
         capabilities = capabilities,
         settings = {
             texlab = {

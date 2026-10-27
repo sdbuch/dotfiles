@@ -5,7 +5,7 @@
    <key>Label</key>
    <string>com.user.loginscript</string>
    <key>ProgramArguments</key>
-   <array><string>/Users/sdbuch/keyremap_windowskb.sh</string></array>
+   <array><string>__HOME__/keyremap_windowskb.sh</string></array>
    <key>RunAtLoad</key>
    <true/>
 </dict>
