@@ -8,9 +8,10 @@ import re
 import subprocess
 import sys
 from collections import OrderedDict
-
+from datetime import datetime, timezone
 
 DEFAULT_MAX_CHARS = 30
+MAX_REQUEST_CHARS = 1000
 WEZTERM_CLI = "/Applications/WezTerm.app/Contents/MacOS/wezterm"
 
 STOPWORDS = {
@@ -219,6 +220,55 @@ def current_pane_id(wezterm: str) -> str | None:
     return os.environ.get("WEZTERM_PANE") or None
 
 
+def single_line(text: str, max_chars: int) -> str:
+    return re.sub(r"\s+", " ", text).strip()[:max_chars]
+
+
+def agent_identity() -> tuple[str, str]:
+    codex_thread_id = os.environ.get("CODEX_THREAD_ID", "")
+    if codex_thread_id:
+        return "codex", codex_thread_id
+
+    claude_session_id = (
+        os.environ.get("CLAUDE_SESSION_ID", "")
+        or os.environ.get("CLAUDE_CODE_SESSION_ID", "")
+    )
+    if claude_session_id or os.environ.get("CLAUDECODE"):
+        return "claude", claude_session_id
+
+    return "agent", ""
+
+
+def record_tmux_context(title: str, raw_text: str) -> None:
+    pane_id = os.environ.get("TMUX_PANE")
+    if not pane_id:
+        return
+
+    agent, thread_id = agent_identity()
+    try:
+        cwd = os.getcwd()
+    except OSError:
+        cwd = os.environ.get("PWD", "")
+
+    values = {
+        "@agent_kind": agent,
+        "@agent_title": single_line(title, 200),
+        "@agent_request": single_line(raw_text, MAX_REQUEST_CHARS),
+        "@agent_thread_id": single_line(thread_id, 128),
+        "@agent_cwd": single_line(cwd, 1000),
+        "@agent_updated_utc": datetime.now(timezone.utc).isoformat(  # noqa: UP017
+            timespec="seconds"
+        ),
+    }
+    for option, value in values.items():
+        subprocess.run(
+            ["tmux", "set-option", "-p", "-t", pane_id, option, value],
+            check=False,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+
+
 def normalize_token(token: str) -> list[str]:
     token = token.lower().strip("._-:/")
     token = ALIASES.get(token, token)
@@ -336,6 +386,8 @@ def main() -> int:
     if args.print_only:
         print(title)
         return 0
+
+    record_tmux_context(title, raw_text)
 
     wezterm = wezterm_cli_path()
     pane_id = current_pane_id(wezterm)

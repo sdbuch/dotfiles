@@ -1,0 +1,77 @@
+#!/bin/zsh -f
+
+# Fail closed unless the recovery binary contains the macOS allocator fix used
+# by this workstation. With --exec, replace this process with the verified tmux.
+set -eu
+
+readonly preferred_tmux="${HOME}/.local/opt/tmux-3.7c-jemalloc/bin/tmux"
+tmux_candidate="$preferred_tmux"
+mode="print"
+
+usage() {
+	print -u2 "usage: resolve-tmux-binary [--check ABSOLUTE_PATH | --exec TMUX_ARGS...]"
+	exit 64
+}
+
+if (( $# > 0 )); then
+	case "$1" in
+		--check)
+			(( $# == 2 )) || usage
+			tmux_candidate="$2"
+			;;
+		--exec)
+			shift
+			(( $# > 0 )) || usage
+			mode="exec"
+			;;
+		-h|--help)
+			usage
+			;;
+		*)
+			usage
+			;;
+	esac
+fi
+
+if [[ "$tmux_candidate" != /* ]]; then
+	print -u2 "tmux recovery binary must be an absolute path: $tmux_candidate"
+	exit 1
+fi
+if [[ ! -x "$tmux_candidate" ]]; then
+	print -u2 "tmux recovery binary is not executable: $tmux_candidate"
+	exit 1
+fi
+
+tmux_version="$($tmux_candidate -V 2>/dev/null)"
+version_number="${tmux_version#tmux }"
+major="${version_number%%.*}"
+minor_and_suffix="${version_number#*.}"
+minor="${minor_and_suffix%%[^0-9]*}"
+
+if [[ "$tmux_version" == "$version_number" || "$major" != <-> || "$minor" != <-> ]]; then
+	print -u2 "could not parse tmux version from: $tmux_version"
+	exit 1
+fi
+if (( major < 3 || (major == 3 && minor < 7) )); then
+	print -u2 "tmux recovery requires 3.7c or newer; found: $tmux_version"
+	exit 1
+fi
+case "$version_number" in
+	3.7|3.7a|3.7b)
+		print -u2 "tmux recovery requires the 3.7c allocator fix; found: $tmux_version"
+		exit 1
+		;;
+esac
+
+if [[ "$(/usr/bin/uname -s)" == "Darwin" ]]; then
+	if ! /usr/bin/otool -L "$tmux_candidate" | /usr/bin/grep -q 'libjemalloc'; then
+		print -u2 "tmux recovery binary is not linked with jemalloc: $tmux_candidate"
+		exit 1
+	fi
+fi
+
+if [[ "$mode" == "exec" ]]; then
+	exec "$tmux_candidate" "$@"
+fi
+
+print -r -- "$tmux_candidate"

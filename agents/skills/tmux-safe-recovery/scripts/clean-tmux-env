@@ -1,0 +1,29 @@
+#!/bin/zsh -f
+
+# Run a tmux client/server command without agent-specific environment state.
+if (( $# == 0 )); then
+	print -u2 "usage: clean-tmux-env COMMAND [ARG ...]"
+	exit 64
+fi
+
+for name in ${(k)parameters}; do
+	case "$name" in
+		CODEX*|SANDBOX*|TMUX|TMUX_PANE|NO_COLOR|FORCE_COLOR|CLICOLOR_FORCE)
+			unset "$name"
+			;;
+	esac
+done
+
+typeset -a clean_path
+for entry in ${(s.:.)PATH}; do
+	case "$entry" in
+		*/node_modules/@openai/codex/*|*/.codex/tmp/*|*/codex.system/*)
+			;;
+		*)
+			clean_path+=("$entry")
+			;;
+	esac
+done
+export PATH="${(j.:.)clean_path}"
+
+exec "$@"

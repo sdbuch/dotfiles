@@ -26,6 +26,7 @@ mkdir -p ~/.vim/{colors,snippets}
 mkdir -p ~/scripts
 mkdir -p ~/.config/nvim/lua/lualine/themes
 mkdir -p ~/.config/nvim/lua/config
+mkdir -p ~/.config/nvim/queries/cuda
 mkdir -p ~/.claude/hooks
 mkdir -p ~/.claude/skills
 mkdir -p ~/.claude/agents
@@ -64,6 +65,7 @@ else
 fi
 
 mln "$DOTFILES_DIR/init.lua" ~/.config/nvim/init.lua
+mln "$DOTFILES_DIR/queries/cuda/matchup.scm" ~/.config/nvim/queries/cuda/matchup.scm
 mln "$DOTFILES_DIR/latex_highlights.scm" ~/.config/nvim/bundle/nvim-treesitter/queries/latex/highlights.scm
 mln "$DOTFILES_DIR/plugins.lua" ~/.config/nvim/lua/plugins.lua
 touch "$DOTFILES_DIR/local_config.lua"

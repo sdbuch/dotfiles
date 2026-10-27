@@ -505,7 +505,10 @@ local lazy_plugins = {
 		branch = "nvim-0.11",
 		config = function()
 			require("aerial").setup({
-				backends = { "treesitter", "lsp", "markdown" },
+				backends = {
+					["_"] = { "treesitter", "lsp", "markdown" },
+					cuda = { "treesitter", "lsp" },
+				},
 				filter_kind = {
 					["_"] = {
 						"Class",
@@ -527,6 +530,28 @@ local lazy_plugins = {
 					},
 					markdown = false,
 				},
+				post_parse_symbol = function(_, item, ctx)
+					if ctx.backend_name ~= "treesitter" or ctx.lang ~= "cuda" or item.kind ~= "Function" then
+						return true
+					end
+
+					local symbol = ctx.match and ctx.match.symbol
+					local symbol_node = symbol and symbol.node
+					local ancestor = symbol_node and symbol_node:parent()
+					while ancestor and ancestor:type() ~= "function_definition" do
+						if ancestor:type() == "parameter_declaration" then
+							return false
+						end
+						if ancestor:type() == "declaration" then
+							local container = ancestor:parent()
+							if container and container:type() == "compound_statement" then
+								return false
+							end
+						end
+						ancestor = ancestor:parent()
+					end
+					return true
+				end,
 				icons = {
 					Class = "C ",
 					Constructor = "c ",

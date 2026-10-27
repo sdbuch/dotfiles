@@ -1,0 +1,4 @@
+interface:
+  display_name: "Safe tmux Recovery"
+  short_description: "Recover tmux without sandbox or environment leaks"
+  default_prompt: "Use $tmux-safe-recovery to inspect and safely restore my tmux/WezTerm sessions."

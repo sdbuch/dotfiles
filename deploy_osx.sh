@@ -17,12 +17,14 @@ source "$(dirname "$0")/deploy_common.sh"
 mkdir -p ~/.config/nvim/lua/lualine/themes
 mkdir -p ~/.config/nvim/lua/config
 mkdir -p ~/.config/nvim/snippets
+mkdir -p ~/.config/nvim/queries/cuda
 mkdir -p ~/.vim/{colors,snippets}
 mkdir -p ~/scripts
 mkdir -p ~/.ctags.d
 mkdir -p ~/.claude/hooks
 mkdir -p ~/.claude/skills
 mkdir -p ~/.claude/agents
+mkdir -p ~/.codex/skills
 mkdir -p ~/.cursor
 
 mln "$DOTFILES_DIR/.claude/CLAUDE.md" ~/.claude/CLAUDE.md
@@ -32,6 +34,8 @@ mln "$DOTFILES_DIR/.claude/hooks/typecheck-python.sh" ~/.claude/hooks/typecheck-
 mln "$DOTFILES_DIR/.claude/hooks/ruff-python.sh" ~/.claude/hooks/ruff-python.sh
 mln "$DOTFILES_DIR/.claude/hooks/notify.sh" ~/.claude/hooks/notify.sh
 mln "$DOTFILES_DIR/.claude/agents/deslop.md" ~/.claude/agents/deslop.md
+mln "$DOTFILES_DIR/agents/skills/tmux-safe-recovery" ~/.claude/skills/tmux-safe-recovery
+mln "$DOTFILES_DIR/agents/skills/tmux-safe-recovery" ~/.codex/skills/tmux-safe-recovery
 if [ "$INSTALL_HOME" = true ]; then
     mln "$DOTFILES_DIR/.claude/skills/notion-llm-config" ~/.claude/skills/notion-llm-config
     mln "$DOTFILES_DIR/.claude/skills/arxiv-html" ~/.claude/skills/arxiv-html
@@ -80,6 +84,7 @@ mln "$DOTFILES_DIR/.vim/snippets/python.json" ~/.vim/snippets/python.json
 mln "$DOTFILES_DIR/.vim/snippets/tex.json" ~/.config/nvim/snippets/tex.json
 mln "$DOTFILES_DIR/.vim/snippets/python.json" ~/.config/nvim/snippets/python.json
 mln "$DOTFILES_DIR/init.lua" ~/.config/nvim/init.lua
+mln "$DOTFILES_DIR/queries/cuda/matchup.scm" ~/.config/nvim/queries/cuda/matchup.scm
 mln "$DOTFILES_DIR/latex_highlights.scm" ~/.config/nvim/bundle/nvim-treesitter/queries/latex/highlights.scm
 mln "$DOTFILES_DIR/plugins.lua" ~/.config/nvim/lua/plugins.lua
 touch "$DOTFILES_DIR/local_config.lua"

@@ -49,7 +49,7 @@
     "deny": [],
     "defaultMode": "auto"
   },
-  "model": "opus[1m]",
+  "model": "fable[1m]",
   "hooks": {
     "Notification": [
       {
@@ -98,6 +98,11 @@
     "command": "bash ~/.claude/statusline-command.sh"
   },
   "effortLevel": "high",
+  "remoteControlAtStartup": true,
   "skipAutoPermissionPrompt": true,
-  "remoteControlAtStartup": true
+  "modelSettings": {
+    "claude-fable-5-1": {
+      "effortLevel": "xhigh"
+    }
+  }
 }

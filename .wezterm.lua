@@ -13,9 +13,11 @@ local tmux_new_session = {
 	"/usr/bin/env",
 	"-u",
 	"TMUX",
+	"-u",
+	"NO_COLOR",
 	"/bin/zsh",
 	"-lc",
-	'exec "$(command -v tmux)" new-session -A -s "agent-$(/bin/date +%Y%m%d-%H%M%S)-$$"',
+	'exec "$HOME/.codex/skills/tmux-safe-recovery/scripts/clean-tmux-env" "$HOME/.codex/skills/tmux-safe-recovery/scripts/resolve-tmux-binary" --exec new-session -A -s "agent-$(/bin/date +%Y%m%d-%H%M%S)-$$"',
 }
 
 -- This is where you actually apply your config choices
@@ -30,6 +32,37 @@ config.window_padding = {
 }
 
 config.audible_bell = "SystemBeep"
+config.bypass_mouse_reporting_modifiers = "SUPER"
+config.hyperlink_rules = wezterm.default_hyperlink_rules()
+config.hyperlink_rules[1] = {
+	regex = [[\((\w+://[^\s\\]+)\\?\)]],
+	format = "$1",
+	highlight = 1,
+}
+
+local function strip_unmatched_trailing_parentheses(uri)
+	local open_parentheses = select(2, uri:gsub("%(", ""))
+	local close_parentheses = select(2, uri:gsub("%)", ""))
+	local unmatched_parentheses = close_parentheses - open_parentheses
+
+	while unmatched_parentheses > 0 and uri:sub(-1) == ")" do
+		uri = uri:sub(1, -2)
+		if uri:sub(-1) == "\\" then
+			uri = uri:sub(1, -2)
+		end
+		unmatched_parentheses = unmatched_parentheses - 1
+	end
+
+	return uri
+end
+
+wezterm.on("open-uri", function(_, _, uri)
+	local cleaned_uri = strip_unmatched_trailing_parentheses(uri)
+	if cleaned_uri ~= uri then
+		wezterm.open_with(cleaned_uri)
+		return false
+	end
+end)
 -- config.visual_bell = {
 -- 	fade_in_function = "EaseIn",
 -- 	fade_in_duration_ms = 150,
@@ -148,7 +181,12 @@ local function split_status_indicators(title)
 		found = false
 
 		for _, prefix in ipairs(status_title_prefixes) do
-			if starts_with(rest, prefix .. " ") then
+			if rest == prefix then
+				table.insert(indicators, prefix)
+				rest = ""
+				found = true
+				break
+			elseif starts_with(rest, prefix .. " ") then
 				table.insert(indicators, prefix)
 				rest = rest:sub(#prefix + 2)
 				found = true
