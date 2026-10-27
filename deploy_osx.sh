@@ -181,7 +181,7 @@ if ! command -v brew &> /dev/null; then
 fi
 
 # Brew packages
-brew install wget diff-so-fancy ripgrep tmux rbenv keychain gh terminal-notifier
+brew install wget diff-so-fancy ripgrep tmux rbenv keychain gh terminal-notifier age
 brew install mutagen-io/mutagen/mutagen
 brew install --cask claude docker cursor google-chrome notion linear-linear granola obsidian
 
@@ -246,4 +246,5 @@ if [ ! -d ~/.tmux/plugins/tpm ]; then
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 fi
 mln "$DOTFILES_DIR/scripts/dev-tmux" ~/.local/bin/dev-tmux
+mln "$DOTFILES_DIR/scripts/age-env" ~/.local/bin/age-env
 mln "$DOTFILES_DIR/scripts/memory_viz" ~/.local/bin/memory_viz

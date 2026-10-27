@@ -18,3 +18,7 @@ __pycache__/
 .sass-cache
 .hypothesis
 /wandb
+
+# Local age-env identities and encrypted profiles
+/.config/age-env/
+/.local/share/age-env/

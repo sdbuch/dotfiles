@@ -82,6 +82,7 @@ mln "$DOTFILES_DIR/.vim/python_imports.txt" ~/.vim/python_skeleton.py
 mln "$DOTFILES_DIR/.vim/colors/wombat256mod.vim" ~/.vim/colors/wombat256mod.vim
 mln "$DOTFILES_DIR/.vim/snippets/python.json" ~/.vim/snippets/python.json
 mln "$DOTFILES_DIR/scripts/dev-tmux" ~/.local/bin/dev-tmux
+mln "$DOTFILES_DIR/scripts/age-env" ~/.local/bin/age-env
 mln "$DOTFILES_DIR/scripts/memory_viz" ~/.local/bin/memory_viz
 mln "$DOTFILES_DIR/.ipython/profile_default/ipython_config.py" ~/.ipython/profile_default/ipython_config.py
 

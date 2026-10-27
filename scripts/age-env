@@ -1,0 +1,430 @@
+#!/usr/bin/env python3
+"""Manage local age-encrypted environment profiles without exposing values."""
+
+from __future__ import annotations
+
+import argparse
+import getpass
+import os
+import re
+import shutil
+import stat
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+PROFILE_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
+KEY_PATTERN = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
+
+
+class AgeEnvError(RuntimeError):
+    pass
+
+
+def config_dir() -> Path:
+    override = os.environ.get("AGE_ENV_CONFIG_DIR")
+    if override:
+        return Path(override).expanduser()
+    root = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
+    return root / "age-env"
+
+
+def data_dir() -> Path:
+    override = os.environ.get("AGE_ENV_DATA_DIR")
+    if override:
+        return Path(override).expanduser()
+    root = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share"))
+    return root / "age-env"
+
+
+def identity_path() -> Path:
+    override = os.environ.get("AGE_ENV_IDENTITY")
+    return Path(override).expanduser() if override else data_dir() / "identity.txt"
+
+
+def profiles_dir() -> Path:
+    override = os.environ.get("AGE_ENV_PROFILE_DIR")
+    return Path(override).expanduser() if override else config_dir() / "profiles"
+
+
+def validate_profile(profile: str) -> str:
+    if not PROFILE_PATTERN.fullmatch(profile):
+        raise AgeEnvError(
+            "profile names must start with an alphanumeric character and contain "
+            "only letters, numbers, dots, underscores, or hyphens"
+        )
+    return profile
+
+
+def profile_paths(profile: str) -> tuple[Path, Path]:
+    validate_profile(profile)
+    root = profiles_dir()
+    return root / f"{profile}.env.age", root / f"{profile}.keys"
+
+
+def require_program(name: str) -> str:
+    executable = shutil.which(name)
+    if executable is None:
+        raise AgeEnvError(f"required program is not installed: {name}")
+    return executable
+
+
+def ensure_private_directory(path: Path) -> None:
+    path.mkdir(mode=0o700, parents=True, exist_ok=True)
+    mode = stat.S_IMODE(path.stat().st_mode)
+    if mode & 0o077:
+        raise AgeEnvError(
+            f"directory permits group or other access (mode {mode:o}): {path}"
+        )
+
+
+def require_private_identity(path: Path) -> None:
+    try:
+        metadata = path.stat()
+    except FileNotFoundError as error:
+        raise AgeEnvError(
+            f"missing age identity: {path}; run 'age-env init'"
+        ) from error
+    if not stat.S_ISREG(metadata.st_mode):
+        raise AgeEnvError(f"age identity is not a regular file: {path}")
+    if metadata.st_uid != os.geteuid():
+        raise AgeEnvError(f"age identity is not owned by the current user: {path}")
+    mode = stat.S_IMODE(metadata.st_mode)
+    if mode & 0o077:
+        raise AgeEnvError(
+            f"age identity permits group or other access (mode {mode:o}): {path}"
+        )
+
+
+def read_allowed_keys(path: Path) -> list[str]:
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except FileNotFoundError as error:
+        raise AgeEnvError(f"missing profile key allowlist: {path}") from error
+
+    keys: list[str] = []
+    seen: set[str] = set()
+    for line_number, raw in enumerate(lines, start=1):
+        key = raw.strip()
+        if not key or key.startswith("#"):
+            continue
+        if not KEY_PATTERN.fullmatch(key):
+            raise AgeEnvError(f"invalid key in {path} at line {line_number}")
+        if key in seen:
+            raise AgeEnvError(f"duplicate key in profile allowlist: {key}")
+        seen.add(key)
+        keys.append(key)
+    if not keys:
+        raise AgeEnvError(f"profile key allowlist is empty: {path}")
+    return keys
+
+
+def parse_environment(payload: bytes, allowed_keys: list[str]) -> dict[str, str]:
+    try:
+        text = payload.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise AgeEnvError("decrypted profile is not valid UTF-8") from error
+
+    values: dict[str, str] = {}
+    for line_number, raw in enumerate(text.splitlines(), start=1):
+        if not raw or raw.startswith("#"):
+            continue
+        line = raw.removeprefix("export ")
+        if "=" not in line:
+            raise AgeEnvError(f"invalid decrypted profile line {line_number}")
+        key, value = line.split("=", 1)
+        if not KEY_PATTERN.fullmatch(key):
+            raise AgeEnvError(
+                f"invalid variable name on decrypted profile line {line_number}"
+            )
+        if key in values:
+            raise AgeEnvError(f"duplicate variable in decrypted profile: {key}")
+        values[key] = value
+
+    allowed = set(allowed_keys)
+    actual = set(values)
+    unexpected = sorted(actual - allowed)
+    missing = sorted(allowed - actual)
+    if unexpected:
+        raise AgeEnvError(f"unexpected variable in decrypted profile: {unexpected[0]}")
+    if missing:
+        raise AgeEnvError(f"missing variable in decrypted profile: {missing[0]}")
+    return values
+
+
+def recipient_for(identity: Path) -> str:
+    require_private_identity(identity)
+    result = subprocess.run(
+        [require_program("age-keygen"), "-y", str(identity)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        raise AgeEnvError("could not derive recipient from age identity")
+    recipient = result.stdout.strip()
+    if not recipient:
+        raise AgeEnvError("age-keygen returned an empty recipient")
+    return recipient
+
+
+def decrypt_profile(profile: str) -> tuple[list[str], dict[str, str]]:
+    encrypted, key_file = profile_paths(profile)
+    if not encrypted.is_file():
+        raise AgeEnvError(f"missing encrypted profile: {encrypted}")
+    allowed_keys = read_allowed_keys(key_file)
+    identity = identity_path()
+    require_private_identity(identity)
+    result = subprocess.run(
+        [
+            require_program("age"),
+            "--decrypt",
+            "--identity",
+            str(identity),
+            str(encrypted),
+        ],
+        check=False,
+        capture_output=True,
+    )
+    if result.returncode != 0:
+        raise AgeEnvError(f"failed to decrypt profile: {profile}")
+    return allowed_keys, parse_environment(result.stdout, allowed_keys)
+
+
+def atomic_write(path: Path, payload: bytes, mode: int = 0o600) -> None:
+    # Preserve a deployment symlink while replacing its checked-in target.
+    target = path.resolve() if path.is_symlink() else path
+    target.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{target.name}.", dir=target.parent
+    )
+    temporary = Path(temporary_name)
+    try:
+        os.fchmod(descriptor, mode)
+        with os.fdopen(descriptor, "wb") as stream:
+            stream.write(payload)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, target)
+    finally:
+        try:
+            temporary.unlink()
+        except FileNotFoundError:
+            pass
+
+
+def command_init(_: argparse.Namespace) -> int:
+    identity = identity_path()
+    if identity.exists() or identity.is_symlink():
+        raise AgeEnvError(f"age identity already exists: {identity}")
+    ensure_private_directory(identity.parent)
+    require_program("age-keygen")
+
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=".identity.", dir=identity.parent
+    )
+    os.close(descriptor)
+    temporary = Path(temporary_name)
+    temporary.unlink()
+    try:
+        result = subprocess.run(
+            ["age-keygen", "-o", str(temporary)],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0 or not temporary.is_file():
+            raise AgeEnvError("age-keygen failed to create an identity")
+        temporary.chmod(0o600)
+        os.replace(temporary, identity)
+    finally:
+        try:
+            temporary.unlink()
+        except FileNotFoundError:
+            pass
+
+    print(f"created identity: {identity}")
+    print(f"recipient: {recipient_for(identity)}")
+    return 0
+
+
+def command_put(arguments: argparse.Namespace) -> int:
+    profile = validate_profile(arguments.profile)
+    keys = arguments.keys
+    if len(set(keys)) != len(keys):
+        raise AgeEnvError("profile keys must be unique")
+    invalid = [key for key in keys if not KEY_PATTERN.fullmatch(key)]
+    if invalid:
+        raise AgeEnvError(f"invalid environment variable name: {invalid[0]}")
+
+    encrypted, key_file = profile_paths(profile)
+    if not arguments.force and (encrypted.exists() or key_file.exists()):
+        raise AgeEnvError(
+            f"profile already exists: {profile}; pass --force to replace it"
+        )
+    if not sys.stdin.isatty():
+        raise AgeEnvError("put requires an interactive terminal")
+
+    values: list[str] = []
+    for key in keys:
+        value = getpass.getpass(f"{key}: ")
+        if not value:
+            raise AgeEnvError(f"refusing to store an empty value for {key}")
+        if "\n" in value or "\r" in value or "\0" in value:
+            raise AgeEnvError(f"values may not contain newlines or NUL bytes: {key}")
+        values.append(value)
+
+    recipient = recipient_for(identity_path())
+    plaintext = "".join(f"{key}={value}\n" for key, value in zip(keys, values)).encode()
+    result = subprocess.run(
+        [require_program("age"), "--encrypt", "--recipient", recipient],
+        input=plaintext,
+        check=False,
+        capture_output=True,
+    )
+    del plaintext
+    values.clear()
+    if result.returncode != 0:
+        raise AgeEnvError(f"failed to encrypt profile: {profile}")
+
+    ensure_private_directory(profiles_dir())
+    atomic_write(encrypted, result.stdout)
+    atomic_write(key_file, "".join(f"{key}\n" for key in keys).encode())
+    print(f"stored profile: {profile} ({len(keys)} keys)")
+    return 0
+
+
+def available_profiles() -> list[tuple[str, Path]]:
+    root = profiles_dir()
+    if not root.is_dir():
+        return []
+    profiles: list[tuple[str, Path]] = []
+    for key_file in sorted(root.glob("*.keys")):
+        profile = key_file.name[: -len(".keys")]
+        if PROFILE_PATTERN.fullmatch(profile):
+            profiles.append((profile, key_file))
+    return profiles
+
+
+def command_list(_: argparse.Namespace) -> int:
+    for profile, key_file in available_profiles():
+        encrypted, _ = profile_paths(profile)
+        state = "ready" if encrypted.is_file() else "missing-ciphertext"
+        keys = ",".join(read_allowed_keys(key_file))
+        print(f"{profile}\t{state}\t{keys}")
+    return 0
+
+
+def command_has(arguments: argparse.Namespace) -> int:
+    encrypted, key_file = profile_paths(arguments.profile)
+    present = encrypted.is_file() and key_file.is_file()
+    if present and arguments.key:
+        present = arguments.key in read_allowed_keys(key_file)
+    print("yes" if present else "no")
+    return 0 if present else 1
+
+
+def command_doctor(arguments: argparse.Namespace) -> int:
+    require_program("age")
+    require_program("age-keygen")
+    identity = identity_path()
+    require_private_identity(identity)
+    recipient_for(identity)
+
+    if arguments.profile:
+        profiles = [validate_profile(arguments.profile)]
+    else:
+        profiles = [profile for profile, _ in available_profiles()]
+    if not profiles:
+        print("identity: ok; no profiles configured")
+        return 0
+    for profile in profiles:
+        keys, _ = decrypt_profile(profile)
+        print(f"{profile}: ok ({len(keys)} keys)")
+    return 0
+
+
+def command_recipient(_: argparse.Namespace) -> int:
+    print(recipient_for(identity_path()))
+    return 0
+
+
+def command_run(arguments: argparse.Namespace) -> int:
+    command = arguments.command
+    if command and command[0] == "--":
+        command = command[1:]
+    if not command:
+        raise AgeEnvError("run requires a command after '--'")
+    _, values = decrypt_profile(arguments.profile)
+    environment = os.environ.copy()
+    environment.update(values)
+    values.clear()
+    try:
+        return subprocess.run(command, env=environment, check=False).returncode
+    except FileNotFoundError as error:
+        raise AgeEnvError(f"command not found: {command[0]}") from error
+    finally:
+        for key in list(environment):
+            if key not in os.environ or environment[key] != os.environ.get(key):
+                environment.pop(key, None)
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description=__doc__)
+    subparsers = parser.add_subparsers(dest="subcommand", required=True)
+
+    init_parser = subparsers.add_parser("init", help="create the local age identity")
+    init_parser.set_defaults(handler=command_init)
+
+    put_parser = subparsers.add_parser(
+        "put", help="interactively create or replace a profile"
+    )
+    put_parser.add_argument("profile")
+    put_parser.add_argument("keys", nargs="+")
+    put_parser.add_argument(
+        "--force", action="store_true", help="replace an existing profile"
+    )
+    put_parser.set_defaults(handler=command_put)
+
+    list_parser = subparsers.add_parser("list", help="list profile and key names")
+    list_parser.set_defaults(handler=command_list)
+
+    has_parser = subparsers.add_parser("has", help="check for a profile or allowed key")
+    has_parser.add_argument("profile")
+    has_parser.add_argument("key", nargs="?")
+    has_parser.set_defaults(handler=command_has)
+
+    doctor_parser = subparsers.add_parser(
+        "doctor", help="validate identity and profiles"
+    )
+    doctor_parser.add_argument("profile", nargs="?")
+    doctor_parser.set_defaults(handler=command_doctor)
+
+    recipient_parser = subparsers.add_parser(
+        "recipient", help="print the public age recipient"
+    )
+    recipient_parser.set_defaults(handler=command_recipient)
+
+    run_parser = subparsers.add_parser("run", help="run a command with one profile")
+    run_parser.add_argument("profile")
+    run_parser.add_argument("command", nargs=argparse.REMAINDER)
+    run_parser.set_defaults(handler=command_run)
+    return parser
+
+
+def main() -> int:
+    os.umask(0o077)
+    arguments = build_parser().parse_args()
+    try:
+        return arguments.handler(arguments)
+    except AgeEnvError as error:
+        print(f"age-env: {error}", file=sys.stderr)
+        return 1
+    except KeyboardInterrupt:
+        print("age-env: interrupted", file=sys.stderr)
+        return 130
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
